@@ -9,9 +9,9 @@ public class BplayerControllerScript : MonoBehaviour
 	Animator anim;
 	bool grounded = false;
 	public Transform groundCheck;
-	float groundRadius = 0.2f;
+	float groundRadius = 0.1f;
 	public LayerMask whatIsGround;
-	public float jumpForce = 700;
+	public float jumpForce;
 
 	// Use this for initialization
 	void Start () 
@@ -27,25 +27,25 @@ public class BplayerControllerScript : MonoBehaviour
 
 		anim.SetFloat ("vSpeed", rigidbody2D.velocity.y);
 
-		float move = Input.GetAxis ("Horizontal");
+		float move = Input.GetAxis ("Horizontal1");
 
 		anim.SetFloat("speed", Mathf.Abs(move));
 
 		rigidbody2D.velocity = new Vector2 (move * maxspeed, rigidbody2D.velocity.y);
 	
-		if (move > 0 && !facingRight) 
+		if ( Input.GetAxis("Horizontal1") > 0 && !facingRight) 
 		{
 			Flip ();
 		} 
-		else if (move < 0 && facingRight) 
+		else if (Input.GetAxis("Horizontal1") < 0 && facingRight) 
 		{
 			Flip ();
 		}
 	}
-
+	//Input.GetKeyDown (KeyCode.Space))
 	void Update()
 	{
-		if (grounded && Input.GetKeyDown (KeyCode.Space)) 
+		if ( grounded && ( Input.GetAxis("Jump1") < 0 ) ) 
 		{
 			anim.SetBool ("Ground", false);
 			rigidbody2D.AddForce( new Vector2(0,jumpForce));
