@@ -26,19 +26,19 @@ public class EnemyAI : MonoBehaviour
 	{
 		// Setting up the references.
 		//ren = transform.Find("body").GetComponent<SpriteRenderer>();
-		frontCheck = transform.Find("frontCheck").transform;
+		//frontCheck = transform.Find("frontCheck").transform;
 		
-		player = GameObject.FindGameObjectWithTag("Player").transform;
+		player = GameObject.FindGameObjectWithTag("BPlayer").transform;
 		myTransform = transform;
 	}
 	
 	void FixedUpdate ()
 	{
 		// Create an array of all the colliders in front of the enemy.
-		Collider2D[] frontHits = Physics2D.OverlapPointAll(frontCheck.position, 1);
+		//Collider2D[] frontHits = Physics2D.OverlapPointAll(frontCheck.position, 1);
 		
 		// Check each of the colliders.
-		foreach(Collider2D c in frontHits)
+		/*foreach(Collider2D c in frontHits)
 		{
 			// If any of the colliders is an Obstacle...
 			if(c.tag == "Obstacle")
@@ -47,11 +47,11 @@ public class EnemyAI : MonoBehaviour
 				Flip2 ();
 				break;
 			}
-		}
+		}*/
 		
-		print (myTransform.position.x);
+		//print (myTransform.position.x);
 		
-		/*if (myTransform.position.x - player.position.x > 0 && !faceLeft)
+		if (myTransform.position.x - player.position.x > 0 && !faceLeft)
 		{
 			Flip2 ();
 			faceLeft = true;
@@ -60,7 +60,7 @@ public class EnemyAI : MonoBehaviour
 		{
 			Flip2 ();
 			faceLeft = false;
-		}*/
+		}
 		
 		// Set the enemy's velocity to moveSpeed in the x direction.
 		//rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);	
