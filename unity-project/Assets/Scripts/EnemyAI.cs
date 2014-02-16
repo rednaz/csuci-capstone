@@ -3,7 +3,7 @@ using System.Collections;
 
 public class EnemyAI : MonoBehaviour
 {
-	public float moveSpeed = 0f;		// The speed the enemy moves at.
+	public float moveSpeed = 2f;		// The speed the enemy moves at.
 	public int HP = 2;					// How many times the enemy can be hit before it dies.
 	public Sprite deadEnemy;			// A sprite of the enemy when it's dead.
 	public Sprite damagedEnemy;			// An optional sprite of the enemy when it's damaged.
@@ -60,6 +60,16 @@ public class EnemyAI : MonoBehaviour
 		{
 			Flip2 ();
 			faceLeft = false;
+		}
+
+		if (Mathf.Abs (myTransform.position.x - player.position.x) > 6)
+		{
+			print (2);
+			rigidbody2D.velocity = new Vector2(transform.localScale.x *10, rigidbody2D.velocity.y);
+		}
+		else
+		{
+			rigidbody2D.velocity = new Vector2(0, rigidbody2D.velocity.y);
 		}
 		
 		// Set the enemy's velocity to moveSpeed in the x direction.
