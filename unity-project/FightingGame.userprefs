@@ -1,9 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\CplayerControllerScript.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\BplayerControllerScript.cs">
     <Files>
-      <File FileName="Assets\scripts\CplayerControllerScript.cs" Line="57" Column="50" />
-      <File FileName="Assets\scripts\BplayerControllerScript.cs" Line="46" Column="15" />
+      <File FileName="Assets\scripts\BplayerControllerScript.cs" Line="39" Column="27" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
