@@ -64,16 +64,29 @@ public class EnemyAI : MonoBehaviour
 
 		if (Mathf.Abs (myTransform.position.x - player.position.x) > 6)
 		{
-			print (2);
-			rigidbody2D.velocity = new Vector2(transform.localScale.x *10, rigidbody2D.velocity.y);
+			//if (Random.Range(0,100) > 80) enemy not constantly moving towards player
+			//{
+				move (10);
+			//}
 		}
 		else
 		{
-			rigidbody2D.velocity = new Vector2(0, rigidbody2D.velocity.y);
 		}
 		
 		// Set the enemy's velocity to moveSpeed in the x direction.
 		//rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);	
+	}
+
+	public void move(float moveSpeed)
+	{
+		rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);
+
+		Invoke ("stop", 2);
+	}
+
+	public void stop()
+	{
+		rigidbody2D.velocity = new Vector2(0, rigidbody2D.velocity.y);
 	}
 	
 	public void Hurt()
