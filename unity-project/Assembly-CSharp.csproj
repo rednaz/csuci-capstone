@@ -49,9 +49,11 @@
      <Compile Include="Assets\scripts\BplayerControllerScript.cs" />
      <Compile Include="Assets\scripts\CplayerControllerScript.cs" />
      <Compile Include="Assets\scripts\GameController.cs" />
+     <Compile Include="Assets\Scripts\BplayerControllerScript.cs" />
+     <Compile Include="Assets\Scripts\CplayerControllerScript.cs" />
+     <Compile Include="Assets\Scripts\EnemyAI.cs" />
      <None Include="Assets\Standard Assets\Projectors\Guidelines.txt" />
      <None Include="Assets\Standard Assets\Projectors\Sources\Shaders\Projector Multiply.shader" />
-     <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
      <None Include="Assets\Standard Assets\Projectors\Sources\Shaders\Projector Light.shader" />
   </ItemGroup>
   <ItemGroup>

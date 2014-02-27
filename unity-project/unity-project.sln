@@ -7,6 +7,8 @@ Project("{C73C5F25-EA5A-DE20-B930-29A109C9585E}") = "unity-project", "Assembly-C
 EndProject
 Project("{C73C5F25-EA5A-DE20-B930-29A109C9585E}") = "unity-project", "Assembly-UnityScript-firstpass.unityproj", "{956416C9-27CE-2263-FB3B-E6078DB327EC}"
 EndProject
+Project("{C73C5F25-EA5A-DE20-B930-29A109C9585E}") = "unity-project", "Assembly-CSharp.csproj", "{44996401-0BC2-05A4-C38E-06E316D044A7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 										GlobalSection(MonoDevelopProperties) = preSolution
+								GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1
