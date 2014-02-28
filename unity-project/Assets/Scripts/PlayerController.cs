@@ -4,7 +4,10 @@ using System.Collections;
 public class PlayerController : MonoBehaviour
 {
 	//animator declaration
-	Animator anim;
+	public Animator anim;
+	public string facingLeftstring;
+	public string velocityXString;
+
 
 	//maxSpeed declaration
 	public float maxspeed;
@@ -103,6 +106,9 @@ public class PlayerController : MonoBehaviour
 	//the heart of all actions-------------------------------------------------------
 	void FixedUpdate () 
 	{
+		anim.SetFloat ( velocityXString, moveX ); //telling the animator what 
+										//horizontal direction the character is
+
 		//Phase 0 
 		//Player is hit and got to 0 health, player falls to ground
 		//Control is relinquished from the player here
@@ -207,9 +213,13 @@ public class PlayerController : MonoBehaviour
 		//Phase 9 (normals)
 
 
-		//Phase 10 (walking)
+		//Phase 10 (walking and flipping)
 		//Player is ready to take any commands without interruptions
+		//moving left and right
+		anim.SetBool ( facingLeftstring, facingLeft );  //telling the animator if facing left or not
 
+		moveX = Input.GetAxis ( moveXgrabber );
+		rigidbody2D.velocity = new Vector2 ( moveX * maxspeed, rigidbody2D.velocity.y );
 		determineFlip ();
 
 

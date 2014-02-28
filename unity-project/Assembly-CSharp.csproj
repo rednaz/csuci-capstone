@@ -46,6 +46,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\BPlayerController.cs" />
      <Compile Include="Assets\Scripts\BplayerControllerScript.cs" />
      <Compile Include="Assets\Scripts\CplayerControllerScript.cs" />
      <Compile Include="Assets\Scripts\EnemyAI.cs" />
@@ -54,6 +55,7 @@
      <None Include="Assets\Standard Assets\Projectors\Guidelines.txt" />
      <None Include="Assets\Standard Assets\Projectors\Sources\Shaders\Projector Multiply.shader" />
      <None Include="Assets\Standard Assets\Projectors\Sources\Shaders\Projector Light.shader" />
+     <None Include="Assets\Sprites\BPlayer\Barrett Reference.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
