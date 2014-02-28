@@ -106,8 +106,8 @@ public class PlayerController : MonoBehaviour
 	//the heart of all actions-------------------------------------------------------
 	void FixedUpdate () 
 	{
-		anim.SetFloat ( velocityXString, moveX ); //telling the animator what 
-										//horizontal direction the character is
+		anim.SetFloat ( velocityXString, moveX ); 	//telling the animator what 
+													//horizontal direction the character is going (not facing)
 
 		//Phase 0 
 		//Player is hit and got to 0 health, player falls to ground
@@ -186,7 +186,7 @@ public class PlayerController : MonoBehaviour
 		//One super and hyper and only one of each are possible if allows
 		//Blocking isn't possible here
 		moveX = Input.GetAxis ( moveXgrabber );
-		moveY = Input.GetAxis ( moveYgrabber );
+		//moveY = Input.GetAxis ( moveYgrabber );
 		nextInput = buttonListener ();
 		buttonRegister ();
 
@@ -216,6 +216,7 @@ public class PlayerController : MonoBehaviour
 		//Phase 10 (walking and flipping)
 		//Player is ready to take any commands without interruptions
 		//moving left and right
+
 		anim.SetBool ( facingLeftstring, facingLeft );  //telling the animator if facing left or not
 
 		moveX = Input.GetAxis ( moveXgrabber );

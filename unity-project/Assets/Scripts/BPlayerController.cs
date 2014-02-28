@@ -19,7 +19,8 @@ public class BPlayerController : PlayerController
 		
 		//player declaration
 		maxspeed = 10f;
-		
+		health = 1000;
+
 		//input declaration
 		moveXgrabber = "Horizontal1";
 		moveYgrabber = "Vertical1";
