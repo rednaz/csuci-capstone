@@ -94,6 +94,7 @@ public class PlayerController : MonoBehaviour
 
 	//player health declaration
 	public int health;
+	public GUIText healthUI;
 
 	//player being hurt
 	public bool beingHurt = false;
@@ -380,6 +381,20 @@ public class PlayerController : MonoBehaviour
 		previousInput = "";
 		nextInput = "";
 		beingHurt = false;
+	}
+
+	void modifyHealth(int deltaHealth)
+	{
+		if (health > 0)
+		{
+			health += deltaHealth;
+			healthUI.text = "P1 Health: " + health;
+		}
+	}
+	
+	int getHealth()
+	{
+		return this.health;
 	}
 
 	/*
