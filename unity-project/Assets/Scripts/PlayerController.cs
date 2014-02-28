@@ -1,19 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerControl : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
 	//animator declaration
 	Animator anim;
-	
+
 	//maxSpeed declaration
 	public float maxspeed;
-	
+
 	//opposing player declaration
 	public string OtherPlayer; //declaring who the enemy is
 	public Transform OtherWhere; //spying on the enemy position
 	public float enemyX; //grabbing the exact position of the enemy at the exact frame
-	
+
 	//button pushes: only one button can be registered in the system at a time per frame
 	//turns true when the button is being pressed down, false when button is released
 	//standard attacks
@@ -21,83 +21,83 @@ public class PlayerControl : MonoBehaviour
 	public bool	HP = false;		public string HPgrabber;
 	public bool LK = false;		public string LKgrabber;
 	public bool HK = false;		public string HKgrabber;
-	
+
 	//crouching or not
 	public bool crouchCheck = false;
-	
+
 	//blocking or not
 	public bool blockCheck = false;
-	
+
 	//checking if player is on the ground
 	public bool groundCheck = false;
-	
+		
 	//needed because only one attack can be done in the air
 	//player must land before another air attack can be done again
 	public bool airLock = false; 
-	
+
 	//countDown is needed when the player is recovering and getting up
 	//a value of 0 means the player is up and ready for more punishment
 	public int countDown = 0;
-	
+
 	//countDelayHyper is needed when the player is in a state of action
 	//this prevents the spamming of an attack per frame
 	public int countDelayHyper = 0;
-	
+
 	//countDelayHyper is needed when the player is in a state of action
 	//this prevents the spamming of an attack per frame
 	public int countDelaySuper = 0;
-	
+
 	//checking what direction the player is facing at the time of the frame
 	//note: player can't turn when in the air
 	public bool facingLeft = false;
-	
+
 	//button combinations listener
 	public string commands = "XXXXXXX";
 	public string currentInput;
 	public string nextInput; //this is compared to previousInput to ensure doubles aren't registered into the system
 	public string previousInput = "x";  //the x is done because the first input doesn't have anything to match up to
-	
+
 	//directional movement
 	public float moveX; //grabbing X directional input
 	public float moveY; //grabbing Y directional input
 	public string moveXgrabber;
 	public string moveYgrabber;
-	
+
 	//super and hyper locks
 	//can't execute normals when super is locked
 	//can't execute supers when hyper is locked
 	public bool superLock = false;
 	public bool hyperLock = false;
-	
+
 	//super 1 declarations
 	public string super1Aleft;
 	public string super1Bleft;
 	public string super1Aright;
 	public string super1Bright;
 	public int super1delay;
-	
-	
+
+
 	public string super2;
-	
+
 	//hyper declarations
 	public string hyper1Aleft;
 	public string hyper1Bleft;
 	public string hyper1Aright;
 	public string hyper1Bright;
 	public int hyper1delay;
-	
+
 	//combo declaration
 	int beingComboed = 0;
-	
+
 	//KO declaration (knocked out)
 	bool KO = false;
-	
+
 	//player health declaration
 	public int health;
-	
+
 	//player being hurt
 	public bool beingHurt = false;
-	
+
 	//called every frame
 	//the heart of all actions-------------------------------------------------------
 	void FixedUpdate () 
@@ -113,8 +113,8 @@ public class PlayerControl : MonoBehaviour
 		{
 			return;
 		}
-		
-		
+
+
 		//Phase 1
 		//Player is in the air and no control, being hurt
 		//Set countDown from the hit
@@ -122,8 +122,8 @@ public class PlayerControl : MonoBehaviour
 		{
 			return;
 		}
-		
-		
+
+
 		//Phase 2
 		//Player is on the ground and no control, being hurt
 		//Set countDown from the hit
@@ -131,8 +131,8 @@ public class PlayerControl : MonoBehaviour
 		{
 			return;
 		}
-		
-		
+
+
 		//Phase 3
 		//Player is on the ground, no control, and recovering from hurt (getting up)
 		//Flush the status here when countDown reaches 0
@@ -146,8 +146,8 @@ public class PlayerControl : MonoBehaviour
 			countDown--;
 			flush ();
 		}
-		
-		
+
+
 		//Phase 4
 		//Player is in the middle of a super/hyper and cannot move till
 		//the move completes, prevents spamming of supers/hypers
@@ -171,8 +171,8 @@ public class PlayerControl : MonoBehaviour
 			countDelaySuper--;
 			flush ();
 		}
-		
-		
+
+
 		//Phase 5
 		//Player is in the air, left and right control not possible
 		//Only one normal air attack in the air is possible
@@ -182,44 +182,44 @@ public class PlayerControl : MonoBehaviour
 		moveY = Input.GetAxis ( moveYgrabber );
 		nextInput = buttonListener ();
 		buttonRegister ();
-		
-		
+
+
 		//Phase 6
 		//Player is on the ground and attacking, left and right control not possible
 		//Super and hyper are possible here
 		//Jumping is not possible
 		//Blocking isn't possible here
-		
-		
+
+
 		//Phase 7
 		//player successfully implemented a hyper, game executes hyper
 		//hyper 1, 2, and 3 checked if entered at this moment
 		hyper1Check ();
-		
-		
-		
+
+
+
 		//Phase 8
 		//player successfully implemented a super, game executes super
 		//super 1 and 2 checked if entered a this moment
-		
-		
+
+
 		//Phase 9 (normals)
-		
-		
+
+
 		//Phase 10 (walking)
 		//Player is ready to take any commands without interruptions
-		
+
 		determineFlip ();
-		
-		
+
+
 		//Debug.Log ( moveX + ", " + moveY );
 	}
 	//end FixedUpdate() -------------------------------------------------------------
-	
-	
-	
-	
-	
+
+
+
+
+
 	void determineFlip()
 	{
 		//getting other player's position
@@ -234,7 +234,7 @@ public class PlayerControl : MonoBehaviour
 			Flip ();
 		}
 	}
-	
+
 	//command called to turn the character around
 	void Flip()
 	{
@@ -243,8 +243,8 @@ public class PlayerControl : MonoBehaviour
 		theScale.x *= -1;
 		transform.localScale = theScale;
 	}
-	
-	
+
+
 	string buttonListener()
 	{
 		//buttons get priority to be pushed
@@ -264,7 +264,7 @@ public class PlayerControl : MonoBehaviour
 		{
 			currentInput = "D";
 		} 
-		
+
 		//no buttons, so joystick inputs are next
 		else if( moveX < - 0.5f && moveY > .5f ) //down + left 
 		{
@@ -297,7 +297,7 @@ public class PlayerControl : MonoBehaviour
 		//Debug.Log (currentInput);
 		return currentInput;
 	}
-	
+
 	//method to stack what button combinations have been done
 	void buttonRegister ()
 	{
@@ -305,7 +305,7 @@ public class PlayerControl : MonoBehaviour
 		{ 
 			return;
 		}
-		
+
 		else if( commands.Length == 7 ) //string is at 7 characters, it's time to trim it so it doesn't exceed 7 characters
 		{
 			//shifting, commands[0] is tossed out
@@ -322,7 +322,7 @@ public class PlayerControl : MonoBehaviour
 			//Debug.Log ( placeHolder1 + placeHolder3 + placeHolder4 + placeHolder5 + placeHolder6 );
 			Debug.Log (commands);
 		}
-		
+
 		else 
 		{
 			//Debug.Log ("adder" + nextInput);
@@ -331,8 +331,8 @@ public class PlayerControl : MonoBehaviour
 			//Debug.Log (commands);
 		}
 	}
-	
-	
+
+
 	//checkpoint if the hyper1 has been executed at this frame
 	void hyper1Check ()
 	{
@@ -350,7 +350,7 @@ public class PlayerControl : MonoBehaviour
 			nextInput = "X";
 			buttonRegister ();
 		}
-		
+
 		//all conditions for hyper1 has been met
 		if ( Equals (commands, hyper1Aleft ) && facingLeft == false && groundCheck == true || 
 		    Equals (commands, hyper1Bleft ) && facingLeft == false && groundCheck == true ) 
@@ -370,7 +370,7 @@ public class PlayerControl : MonoBehaviour
 			return;
 		}
 	}
-	
+
 	//all memory from player control and status is wiped after being hurt and recovering
 	void flush()
 	{
@@ -381,7 +381,7 @@ public class PlayerControl : MonoBehaviour
 		nextInput = "";
 		beingHurt = false;
 	}
-	
+
 	/*
 	 * if(Input.GetKeyDown(KeyCode.R))
 		{
