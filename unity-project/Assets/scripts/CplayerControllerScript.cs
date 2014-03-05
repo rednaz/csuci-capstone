@@ -13,15 +13,11 @@ public class CplayerControllerScript : MonoBehaviour
 	float groundRadius2 = 0.2f;
 	public LayerMask whatIsGround2;
 	public float jumpforce2 = 700f;
-	private int health;
-	public GUIText healthUI;
 
 	// Use this for initialization
 	void Start () 
 	{
 		anim2 = GetComponent<Animator>();
-		health = 100;
-		healthUI.text = "P2 Health: " + health;
 	}
 
 	void FixedUpdate()
@@ -53,7 +49,6 @@ public class CplayerControllerScript : MonoBehaviour
 		Vector3 theScale = transform.localScale;
 		theScale.x *= -1;
 		transform.localScale = theScale;
-		modifyHealth (-1);
 	}
 
 	// Update is called once per frame
@@ -64,19 +59,5 @@ public class CplayerControllerScript : MonoBehaviour
 			anim2.SetBool ("Ground2", false);
 			rigidbody2D.AddForce (new Vector2(0, jumpforce2));
 		}
-	}
-
-	void modifyHealth(int deltaHealth)
-	{
-		if (health > 0)
-		{
-			health += deltaHealth;
-			healthUI.text = "P2 Health: " + health;
-		}
-	}
-
-	int getHealth()
-	{
-		return this.health;
 	}
 }
