@@ -78,6 +78,26 @@ public class EnemyAI : MonoBehaviour
 		//rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);	
 	}
 
+	public void startState()
+	{
+
+	}
+
+	public void meleeState()
+	{
+
+	}
+
+	public void rangeState()
+	{
+
+	}
+
+	public void moveState()
+	{
+
+	}
+
 	public void move(float moveSpeed)
 	{
 		rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);
