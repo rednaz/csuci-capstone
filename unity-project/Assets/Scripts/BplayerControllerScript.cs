@@ -17,6 +17,11 @@ public class BplayerControllerScript : MonoBehaviour
 	void Start () 
 	{
 		anim = GetComponent<Animator> ();
+<<<<<<< HEAD
+		//health = 100;
+		//healthUI.text = "P1 Health: " + health;
+=======
+>>>>>>> merge-fix
 	}
 	
 	// Update is called once per frame
@@ -45,7 +50,7 @@ public class BplayerControllerScript : MonoBehaviour
 	//Input.GetKeyDown (KeyCode.Space))
 	void Update()
 	{
-		if ( grounded && ( Input.GetAxis("Jump1") < 0 ) ) 
+		if ( grounded && ( Input.GetAxis("Vertical1") < 0 ) ) 
 		{
 			anim.SetBool ("Ground", false);
 			rigidbody2D.AddForce( new Vector2(0,jumpForce));
