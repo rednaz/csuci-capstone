@@ -3,11 +3,18 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
+	public LPunchScript punch;
+
 	//animator declaration
 	public Animator anim;
 	public string facingLeftstring;
 	public string velocityXString;
 
+	//damage declaration
+	public int instantDamage  = 1; //the exact damage being done at the exact moment
+
+	//creators of the punch hit boxes
+	//public LPunchScript LPunch;
 
 	//maxSpeed declaration
 	public float maxspeed;
@@ -106,6 +113,7 @@ public class PlayerController : MonoBehaviour
 	//the heart of all actions-------------------------------------------------------
 	void FixedUpdate () 
 	{
+
 		anim.SetFloat ( velocityXString, moveX ); //telling the animator what 
 										//horizontal direction the character is
 
@@ -125,6 +133,7 @@ public class PlayerController : MonoBehaviour
 		//Phase 1
 		//Player is in the air and no control, being hurt
 		//Set countDown from the hit
+
 		if( groundCheck == false && beingHurt == true )
 		{
 			return;
@@ -210,10 +219,24 @@ public class PlayerController : MonoBehaviour
 		//super 1 and 2 checked if entered a this moment
 
 
-		//Phase 9 (normals)
+		//Phase 9 (crouching)
 
 
-		//Phase 10 (walking and flipping)
+
+		//Phase 10 (crouching normals)
+
+
+
+		//Phase 11 (normals)
+		//if ( Input.GetButton (LPgrabber) == true )
+		if (Input.GetKeyDown (KeyCode.Space))
+		{
+			//script = GetComponent<LPunchScript>();
+			punch.DoSomething();
+		}
+
+
+		//Phase 12 (walking and flipping)
 		//Player is ready to take any commands without interruptions
 		//moving left and right
 		anim.SetBool ( facingLeftstring, facingLeft );  //telling the animator if facing left or not
@@ -405,6 +428,23 @@ public class PlayerController : MonoBehaviour
 	int getHealth()
 	{
 		return this.health;
+	}
+
+
+	void minusHealth( int currentDamage )
+	{
+		health = health - currentDamage;
+		//Debug.Log (health);
+	}
+
+
+	//when a hit successfully touches a player
+	void OnTriggerEnter2D (Collider2D other)
+	{
+		if (other.gameObject.tag == "LowPunchStanding")
+		{
+			minusHealth( instantDamage );
+		}
 	}
 
 	/*

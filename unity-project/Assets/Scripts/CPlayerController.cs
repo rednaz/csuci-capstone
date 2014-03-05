@@ -44,8 +44,12 @@ public class CPlayerController : PlayerController
 		hyper1Bright = "236236B";
 		hyper1delay = 100;
 		
+		punch = new LPunchScript ();
+		
 		//GamePad.GetButtonDown(GamePad.Button.A, 1);
 	}
-	
+
+
+
 	
 }

@@ -6,6 +6,8 @@ public class BPlayerController : PlayerController
 	//initializing for BPlayer1
 	void Start () 
 	{
+		punch = new LPunchScript ();
+
 		anim = GetComponent<Animator> ();
 		//string animation declarations
 		//this is so the PlayerController can reference to the animator's variables
@@ -47,5 +49,5 @@ public class BPlayerController : PlayerController
 		//GamePad.GetButtonDown(GamePad.Button.A, 1);
 	}
 	
-	
+
 }
