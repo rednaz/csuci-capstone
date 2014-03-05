@@ -28,7 +28,7 @@ public class EnemyAI : MonoBehaviour
 		//ren = transform.Find("body").GetComponent<SpriteRenderer>();
 		//frontCheck = transform.Find("frontCheck").transform;
 		
-		player = GameObject.FindGameObjectWithTag("BPlayer").transform;
+		player = GameObject.FindGameObjectWithTag("CPlayer2").transform;
 		myTransform = transform;
 	}
 	
@@ -49,7 +49,8 @@ public class EnemyAI : MonoBehaviour
 			}
 		}*/
 		
-		//print (myTransform.position.x);
+		print ("my" + myTransform.position.x);
+		print (player.position.x);
 		
 		if (myTransform.position.x - player.position.x > 0 && !faceLeft)
 		{
@@ -80,6 +81,8 @@ public class EnemyAI : MonoBehaviour
 	public void move(float moveSpeed)
 	{
 		rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);
+
+		print ("In Move");
 
 		Invoke ("stop", 2);
 	}
