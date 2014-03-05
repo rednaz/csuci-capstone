@@ -17,8 +17,11 @@ public class BplayerControllerScript : MonoBehaviour
 	void Start () 
 	{
 		anim = GetComponent<Animator> ();
+<<<<<<< HEAD
 		//health = 100;
 		//healthUI.text = "P1 Health: " + health;
+=======
+>>>>>>> merge-fix
 	}
 	
 	// Update is called once per frame
