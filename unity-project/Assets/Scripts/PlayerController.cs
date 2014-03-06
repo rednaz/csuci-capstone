@@ -113,7 +113,15 @@ public class PlayerController : MonoBehaviour
 	//the heart of all actions-------------------------------------------------------
 	void FixedUpdate () 
 	{
-
+		if (Input.GetButton (LPgrabber) == true) 
+		{
+			LP = true;
+		}
+		else
+		{
+			LP = false;
+		}
+		//Debug.Log (health);
 		anim.SetFloat ( velocityXString, moveX ); //telling the animator what 
 										//horizontal direction the character is
 
@@ -354,7 +362,7 @@ public class PlayerController : MonoBehaviour
 				placeHolder4.ToString() + placeHolder5.ToString() + placeHolder6.ToString() + nextInput;
 			previousInput = nextInput;
 			//Debug.Log ( placeHolder1 + placeHolder3 + placeHolder4 + placeHolder5 + placeHolder6 );
-			Debug.Log (commands);
+			//Debug.Log (commands);
 		}
 
 		else 
@@ -439,11 +447,17 @@ public class PlayerController : MonoBehaviour
 
 
 	//when a hit successfully touches a player
-	void OnTriggerEnter2D (Collider2D other)
+	void OnTriggerStay2D (Collider2D other)
 	{
-		if (other.gameObject.tag == "LowPunchStanding")
+		if ( other.gameObject.tag == "LowPunchStanding" )
 		{
-			minusHealth( instantDamage );
+			//if ( LP == true )
+			if (Input.GetKeyDown("space"))
+			//if ( Input.GetButtonDown (LPgrabber) )
+			{
+				Debug.Log ("ow");
+			}
+
 		}
 	}
 
