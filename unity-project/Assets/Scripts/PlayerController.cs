@@ -3,7 +3,10 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
-	public LPunchScript punch;
+	//public LPunchScript punch;
+
+	//debug string
+	public string debugString;
 
 	//animator declaration
 	public Animator anim;
@@ -113,14 +116,13 @@ public class PlayerController : MonoBehaviour
 	//the heart of all actions-------------------------------------------------------
 	void FixedUpdate () 
 	{
-		if (Input.GetButton (LPgrabber) == true) 
-		{
-			LP = true;
-		}
-		else
-		{
-			LP = false;
-		}
+		//if ( Input.GetButtonDown( LPgrabber ) )
+		//{
+		//	Debug.Log ( debugString + " check" );
+		//}
+		//Debug.Log ( debugString + " " + Input.GetAxis ( moveXgrabber ) );
+
+
 		//Debug.Log (health);
 		anim.SetFloat ( velocityXString, moveX ); //telling the animator what 
 										//horizontal direction the character is
@@ -204,8 +206,8 @@ public class PlayerController : MonoBehaviour
 		//Blocking isn't possible here
 		moveX = Input.GetAxis ( moveXgrabber );
 		moveY = Input.GetAxis ( moveYgrabber );
-		nextInput = buttonListener ();
-		buttonRegister ();
+		//nextInput = buttonListener ();
+		//buttonRegister ();
 
 
 		//Phase 6
@@ -240,7 +242,7 @@ public class PlayerController : MonoBehaviour
 		if (Input.GetKeyDown (KeyCode.Space))
 		{
 			//script = GetComponent<LPunchScript>();
-			punch.DoSomething();
+			//punch.DoSomething();
 		}
 
 
@@ -336,7 +338,7 @@ public class PlayerController : MonoBehaviour
 		{
 			currentInput = "X";
 		}
-		//Debug.Log (currentInput);
+		//Debug.Log (currentInput + " " + debugString);
 		return currentInput;
 	}
 
@@ -446,21 +448,19 @@ public class PlayerController : MonoBehaviour
 	}
 
 
-	//when a hit successfully touches a player
+	//when a hitbox successfully touches a player
 	void OnTriggerStay2D (Collider2D other)
 	{
 		if ( other.gameObject.tag == "LowPunchStanding" )
 		{
-			//if ( LP == true )
-			if (Input.GetKeyDown("space"))
-			//if ( Input.GetButtonDown (LPgrabber) )
+			if( Input.GetButtonDown( LPgrabber ) )
 			{
-				Debug.Log ("ow");
+				Debug.Log ( debugString + " ow" );
 			}
-
 		}
 	}
 
+	
 	/*
 	 * if(Input.GetKeyDown(KeyCode.R))
 		{

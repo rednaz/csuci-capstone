@@ -6,6 +6,9 @@ public class CPlayerController : PlayerController
 	//initializing for BPlayer1
 	void Start () 
 	{
+		//debug string
+		debugString = "Olivia";
+
 		anim = GetComponent<Animator> ();
 		//string animation declarations
 		//this is so the PlayerController can reference to the animator's variables
@@ -44,7 +47,7 @@ public class CPlayerController : PlayerController
 		hyper1Bright = "236236B";
 		hyper1delay = 100;
 		
-		punch = new LPunchScript ();
+		//punch = new LPunchScript ();
 		
 		//GamePad.GetButtonDown(GamePad.Button.A, 1);
 	}

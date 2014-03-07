@@ -6,7 +6,10 @@ public class BPlayerController : PlayerController
 	//initializing for BPlayer1
 	void Start () 
 	{
-		punch = new LPunchScript ();
+		//debug string
+		debugString = "Barrett";
+
+		//punch = new LPunchScript ();
 
 		anim = GetComponent<Animator> ();
 		//string animation declarations
@@ -25,7 +28,7 @@ public class BPlayerController : PlayerController
 		//input declaration
 		moveXgrabber = "Horizontal1";
 		moveYgrabber = "Vertical1";
-		LPgrabber = "LP1";
+		LPgrabber = "LPunch1";
 		HPgrabber = "HP1";
 		LKgrabber = "LK1";
 		HKgrabber = "HK1";
