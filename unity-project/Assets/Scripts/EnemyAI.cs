@@ -30,7 +30,8 @@ public class EnemyAI : PlayerController
 		//frontCheck = transform.Find("frontCheck").transform;
 		
 		player = GameObject.FindGameObjectWithTag("CPlayer2").transform;
-		myTransform = transform;
+		myTransform = transform;		
+		punch = new LPunchScript ();
 	}
 	
 	void FixedUpdate ()
@@ -89,7 +90,7 @@ public class EnemyAI : PlayerController
 
 	public void meleeState()
 	{
-
+		punch.DoSomething ();
 	}
 
 	public void rangeState()
