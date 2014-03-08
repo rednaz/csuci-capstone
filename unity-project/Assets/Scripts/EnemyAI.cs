@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class EnemyAI : MonoBehaviour
+public class EnemyAI : PlayerController
 {
 	public float moveSpeed = 2f;		// The speed the enemy moves at.
 	public int HP = 2;					// How many times the enemy can be hit before it dies.
@@ -11,7 +11,8 @@ public class EnemyAI : MonoBehaviour
 	public GameObject hundredPointsUI;	// A prefab of 100 that appears when the enemy dies.
 	public float deathSpinMin = -100f;			// A value to give the minimum amount of Torque when dying
 	public float deathSpinMax = 100f;			// A value to give the maximum amount of Torque when dying
-	
+
+	public bool waiting = false;
 	
 	private SpriteRenderer ren;			// Reference to the sprite renderer.
 	private Transform frontCheck;		// Reference to the position of the gameobject used for checking if something is in front.
@@ -49,8 +50,8 @@ public class EnemyAI : MonoBehaviour
 			}
 		}*/
 		
-		print ("my" + myTransform.position.x);
-		print (player.position.x);
+		//print ("my" + myTransform.position.x + " " + Random.Range(0,10));
+		//print (player.position.x);
 		
 		if (myTransform.position.x - player.position.x > 0 && !faceLeft)
 		{
@@ -62,8 +63,10 @@ public class EnemyAI : MonoBehaviour
 			Flip2 ();
 			faceLeft = false;
 		}
-
-
+		if (!waiting)
+		{
+			startState ();
+		}
 		
 		// Set the enemy's velocity to moveSpeed in the x direction.
 		//rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);	
@@ -71,20 +74,16 @@ public class EnemyAI : MonoBehaviour
 
 	public void startState()
 	{
-		while (true)
-		{
-			if (Mathf.Abs (myTransform.position.x - player.position.x) > 6)
-			{
-				//if (Random.Range(0,100) > 80) enemy not constantly moving towards player
-				//{
-				//}
+		if (Mathf.Abs (myTransform.position.x - player.position.x) > 6) {
+			//if (Random.Range(0,100) > 80) enemy not constantly moving towards player
+			//{
+			//}
 
-				rangeState ();
-			}
-			else
-			{
-				meleeState ();
-			}
+			rangeState ();
+		} 
+		else
+		{
+			meleeState ();
 		}
 	}
 
@@ -95,7 +94,7 @@ public class EnemyAI : MonoBehaviour
 
 	public void rangeState()
 	{
-
+		move (10f);
 	}
 
 	public void moveState()
@@ -105,16 +104,28 @@ public class EnemyAI : MonoBehaviour
 
 	public void move(float moveSpeed)
 	{
-		rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);
+		print (Random.Range(0,1));
+		if (Random.Range(0, 10) > 4)
+		{
+			rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);
+		}
+		else
+		{
+			rigidbody2D.velocity = new Vector2(transform.localScale.x * -moveSpeed, rigidbody2D.velocity.y);
+		}
 
 		print ("In Move");
 
-		Invoke ("stop", 2);
+		Invoke ("stop", 5);
+
+		waiting = true;
 	}
 
 	public void stop()
 	{
 		rigidbody2D.velocity = new Vector2(0, rigidbody2D.velocity.y);
+
+		waiting = false;
 	}
 	
 	public void Hurt()
