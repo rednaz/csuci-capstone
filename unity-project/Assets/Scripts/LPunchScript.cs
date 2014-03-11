@@ -3,7 +3,7 @@ using System.Collections;
 
 public class LPunchScript : MonoBehaviour 
 {
-	public void DoSomething()
+	public void StandingLP()
 	{
 		
 		//Debug.Log("LPunchScript");
@@ -11,7 +11,7 @@ public class LPunchScript : MonoBehaviour
 	}
 	//public GameObject LPScript = new GameObject[LPunchScript];
 	//static function GameObject (name : String) : GameObject 
-	int fly = 0;
+	//int fly = 0;
 
 	/*
 	void Start()

@@ -14,11 +14,14 @@ public class CPlayerController : PlayerController
 		//this is so the PlayerController can reference to the animator's variables
 		facingLeftstring = "isLeft2";
 		velocityXString = "VelocityX2";
+		blockingString = "blocking2";
+		crouchingString = "crouching2";
 		
 		//the other player declaration
 		OtherPlayer = "BPlayer1"; //this could probably be another call fuction
 		//but this is only a 2 character game
 		OtherWhere = GameObject.FindGameObjectWithTag(OtherPlayer).transform;
+		enemyScript = "BPlayerController";
 		
 		//player declaration
 		maxspeed = 10f;
@@ -47,12 +50,8 @@ public class CPlayerController : PlayerController
 		hyper1Bright = "236236B";
 		hyper1delay = 100;
 		
-		//punch = new LPunchScript ();
+		//attack.beingAttacked ();
 		
 		//GamePad.GetButtonDown(GamePad.Button.A, 1);
 	}
-
-
-
-	
 }

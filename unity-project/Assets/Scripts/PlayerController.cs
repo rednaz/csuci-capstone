@@ -3,8 +3,9 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
-	//public LPunchScript punch;
-
+	public string enemyScript;
+	public PlayerController attack;
+	
 	//debug string
 	public string debugString;
 
@@ -12,6 +13,8 @@ public class PlayerController : MonoBehaviour
 	public Animator anim;
 	public string facingLeftstring;
 	public string velocityXString;
+	public string blockingString;
+	public string crouchingString;
 
 	//damage declaration
 	public int instantDamage  = 1; //the exact damage being done at the exact moment
@@ -28,12 +31,19 @@ public class PlayerController : MonoBehaviour
 	public float enemyX; //grabbing the exact position of the enemy at the exact frame
 
 	//button pushes: only one button can be registered in the system at a time per frame
-	//turns true when the button is being pressed down, false when button is released
+	//turns true when the attack is in range
 	//standard attacks
-	public bool LP = false;		public string LPgrabber;
-	public bool	HP = false;		public string HPgrabber;
-	public bool LK = false;		public string LKgrabber;
-	public bool HK = false;		public string HKgrabber;
+	public bool SLP = false;		public bool ALP = false;		public bool CLP = false;
+	public bool	SHP = false;		public bool AHP = false;		public bool CHP = false;
+	public bool SLK = false;		public bool ALK = false;		public bool CLK = false;
+	public bool SHK = false;		public bool AHK = false;		public bool CHK = false;
+	//note: S = standing, A = air, C = crouching
+
+	//button declarations
+	public string LPgrabber;
+	public string HPgrabber;
+	public string LKgrabber;
+	public string HKgrabber;
 
 	//crouching or not
 	public bool crouchCheck = false;
@@ -116,16 +126,24 @@ public class PlayerController : MonoBehaviour
 	//the heart of all actions-------------------------------------------------------
 	void FixedUpdate () 
 	{
+		//this is nothing but debug code, feel free to uncomment at your pleasure to
+		//see game activity
+		if (Input.GetKeyDown (KeyCode.Space)) 
+		{
+			Debug.Log ( debugString + " health: " + health );
+		}
+		//Debug.Log ( debugString + " " + LP);
 		//if ( Input.GetButtonDown( LPgrabber ) )
 		//{
 		//	Debug.Log ( debugString + " check" );
 		//}
 		//Debug.Log ( debugString + " " + Input.GetAxis ( moveXgrabber ) );
-
-
 		//Debug.Log (health);
+
+		//setting up the animation for the frame
 		anim.SetFloat ( velocityXString, moveX ); //telling the animator what 
-										//horizontal direction the character is
+													//horizontal direction the character is
+
 
 		//Phase 0 
 		//Player is hit and got to 0 health, player falls to ground
@@ -206,10 +224,14 @@ public class PlayerController : MonoBehaviour
 		//Blocking isn't possible here
 		moveX = Input.GetAxis ( moveXgrabber );
 		moveY = Input.GetAxis ( moveYgrabber );
-		//nextInput = buttonListener ();
-		//buttonRegister ();
-
-
+		nextInput = buttonListener ();
+		buttonRegister ();
+		//implemented when jumping is put back in
+		//if ( airLock == false )
+		//{
+		//	airNormal ();
+		//}
+			
 		//Phase 6
 		//Player is on the ground and attacking, left and right control not possible
 		//Super and hyper are possible here
@@ -230,30 +252,51 @@ public class PlayerController : MonoBehaviour
 
 
 		//Phase 9 (crouching)
-
+		anim.SetBool (crouchingString, crouchCheck); //telling the animator if crouching or not
+		if( moveY < -.01f )
+		{
+			crouchCheck = true;
+		}
+		else
+		{
+			crouchCheck = false;
+		}
 
 
 		//Phase 10 (crouching normals)
-
+		if ( crouchCheck == true )
+		{
+			crouchingNormal();
+			return;
+		}
 
 
 		//Phase 11 (normals)
-		//if ( Input.GetButton (LPgrabber) == true )
-		if (Input.GetKeyDown (KeyCode.Space))
-		{
-			//script = GetComponent<LPunchScript>();
-			//punch.DoSomething();
-		}
+		standingNormal();
 
 
 		//Phase 12 (walking and flipping)
 		//Player is ready to take any commands without interruptions
 		//moving left and right
 		anim.SetBool ( facingLeftstring, facingLeft );  //telling the animator if facing left or not
-
-		moveX = Input.GetAxis ( moveXgrabber );
 		rigidbody2D.velocity = new Vector2 ( moveX * maxspeed, rigidbody2D.velocity.y );
 		determineFlip ();
+
+		//Phase 13 (blocking)
+		anim.SetBool ( blockingString, blockCheck );
+		if( enemyX  < transform.position.x && moveX > .01f )
+		{
+			blockCheck = true;
+		}
+		else if( enemyX  > transform.position.x && moveX < -.01f )
+		{
+			blockCheck = true;
+		}
+		else
+		{
+			blockCheck = false;
+		}
+
 
 
 		//Debug.Log ( moveX + ", " + moveY );
@@ -415,7 +458,7 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	//all memory from player control and status is wiped after being hurt and recovering
+	//all memory from player control and status is wiped after being hurt and is recovering
 	void flush()
 	{
 		countDelayHyper = 0;
@@ -449,22 +492,91 @@ public class PlayerController : MonoBehaviour
 
 
 	//when a hitbox successfully touches a player
-	void OnTriggerStay2D (Collider2D other)
+	void OnTriggerStay2D ( Collider2D other )
 	{
 		if ( other.gameObject.tag == "LowPunchStanding" )
 		{
-			if( Input.GetButtonDown( LPgrabber ) )
-			{
-				Debug.Log ( debugString + " ow" );
-			}
+			SLP = true;
+		}
+	}
+	//when a hitbox leaves a player no longer touching
+	void OnTriggerExit2D( Collider2D other )
+	{
+		if ( other.gameObject.tag == "LowPunchStanding" )
+		{
+			SLP = false;
 		}
 	}
 
-	
-	/*
-	 * if(Input.GetKeyDown(KeyCode.R))
+	public void minusOther()
+	{
+		health = health - 1;
+		Debug.Log (health + " " + debugString);
+	}
+
+	public void standingNormal()
+	{
+		if ( currentInput == "A" )
 		{
-			Debug.Log ("dddddddddddddddd");
+			//standing light punch executed
+			attack.minusOther();
 		}
-	*/
+		else if ( currentInput == "B" )
+		{
+			//standing heavy punch executed
+		}
+		else if ( currentInput == "C" )
+		{
+			//standing light kick executed
+		}
+		else if ( currentInput == "D" )
+		{
+			//standing heavy kick executed
+		}
+
+	}
+
+	public void crouchingNormal()
+	{
+		if ( currentInput == "A" )
+		{
+			//crouching light punch executed
+		}
+		else if ( currentInput == "B" )
+		{
+			//crouching heavy punch executed
+		}
+		else if ( currentInput == "C" )
+		{
+			//crouching light kick executed
+		}
+		else if ( currentInput == "D" )
+		{
+			//crouching heavy kick executed
+		}
+	}
+
+	public void airNormal()
+	{
+		if ( currentInput == "A" )
+		{
+			//air light punch executed
+			airLock = true;
+		}
+		else if ( currentInput == "B" )
+		{
+			//air heavy punch executed
+			airLock = true;
+		}
+		else if ( currentInput == "C" )
+		{
+			//air light kick executed
+			airLock = true;
+		}
+		else if ( currentInput == "D" )
+		{
+			//air heavy kick executed
+			airLock = true;
+		}
+	}
 }

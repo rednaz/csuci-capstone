@@ -9,18 +9,19 @@ public class BPlayerController : PlayerController
 		//debug string
 		debugString = "Barrett";
 
-		//punch = new LPunchScript ();
-
 		anim = GetComponent<Animator> ();
 		//string animation declarations
 		//this is so the PlayerController can reference to the animator's variables
 		facingLeftstring = "isLeft1";
 		velocityXString = "VelocityX1";
+		blockingString = "blocking1";
+		crouchingString = "crouching1";
 
 		//the other player declaration
 		OtherPlayer = "CPlayer2"; //this could probably be another call fuction
 		//but this is only a 2 character game
 		OtherWhere = GameObject.FindGameObjectWithTag(OtherPlayer).transform;
+		enemyScript = "CPlayerController";
 		
 		//player declaration
 		maxspeed = 10f;
@@ -28,7 +29,7 @@ public class BPlayerController : PlayerController
 		//input declaration
 		moveXgrabber = "Horizontal1";
 		moveYgrabber = "Vertical1";
-		LPgrabber = "LPunch1";
+		LPgrabber = "LP1";
 		HPgrabber = "HP1";
 		LKgrabber = "LK1";
 		HKgrabber = "HK1";
@@ -48,9 +49,9 @@ public class BPlayerController : PlayerController
 		hyper1Aright = "236236A";
 		hyper1Bright = "236236B";
 		hyper1delay = 100;
+
+		//attack.beingAttacked ();
 		
 		//GamePad.GetButtonDown(GamePad.Button.A, 1);
 	}
-	
-
 }
