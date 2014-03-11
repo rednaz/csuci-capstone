@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
 	public string velocityXString;
 	public string blockingString;
 	public string crouchingString;
+	public string normalFramesString;
 
 	//damage declaration
 	public int instantDamage  = 1; //the exact damage being done at the exact moment
@@ -39,6 +40,29 @@ public class PlayerController : MonoBehaviour
 	public bool SHK = false;		public bool AHK = false;		public bool CHK = false;
 	//note: S = standing, A = air, C = crouching
 
+	//normal frames declaration
+	public int normalFrames = 0; //how many frames total the normal lasts
+	public int startNormal; //when the frame actually starts damage
+	public int finishNormal; //the last frame of damage call
+	public bool atariDesu;  //when active, the finishNormal doesn't matter anymore
+	//note: a normal once landed is called off from anymore calls to
+	//      avoid multiple hits of the same individual normal
+
+	//normal standing frames values
+	public int SLPtotalFrames;		public int SHPtotalFrames;		public int SLKtotalFrames;		public int SHKtotalFrame;
+	public int SLPstartFrame;		public int SHPstartFrame;		public int SLKstartFrame;		public int SHKstartFrame;
+	public int SLPfinishFrame;		public int SHPfinishFrame;		public int SLKfinishFrame;		public int SHKfinishFrame;
+
+	//normal air frames values
+	public int ALPtotalFrames;		public int AHPtotalFrames;		public int ALKtotalFrames;		public int AHKtotalFrame;
+	public int ALPstartFrame;		public int AHPstartFrame;		public int ALKstartFrame;		public int AHKstartFrame;
+	public int ALPfinishFrame;		public int AHPfinishFrame;		public int ALKfinishFrame;		public int AHKfinishFrame;
+
+	//normal crouching frames values
+	public int CLPtotalFrames;		public int CHPtotalFrames;		public int CLKtotalFrames;		public int CHKtotalFrame;
+	public int CLPstartFrame;		public int CHPstartFrame;		public int CLKstartFrame;		public int CHKstartFrame;
+	public int CLPfinishFrame;		public int CHPfinishFrame;		public int CLKfinishFrame;		public int CHKfinishFrame;
+
 	//button declarations
 	public string LPgrabber;
 	public string HPgrabber;
@@ -57,6 +81,7 @@ public class PlayerController : MonoBehaviour
 	//needed because only one attack can be done in the air
 	//player must land before another air attack can be done again
 	public bool airLock = false; 
+	public bool owLock = false;
 
 	//countDown is needed when the player is recovering and getting up
 	//a value of 0 means the player is up and ready for more punishment
@@ -251,8 +276,50 @@ public class PlayerController : MonoBehaviour
 		//super 1 and 2 checked if entered a this moment
 
 
-		//Phase 9 (crouching)
+		//Phase 9 (normals being executed)
+		//normalFramesString
+		anim.SetInteger ( normalFramesString, normalFrames );
+		if( normalFrames > 0 )
+		{
+			if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false )
+			{
+				//send an attack signal
+				//atariDesu = true if bool owLock is returned from the attack reciever
+			}
+			normalFrames--;
+			return;
+		}
+		atariDesu = false;
+
+
+		//Phase 10 (crouching)
 		anim.SetBool (crouchingString, crouchCheck); //telling the animator if crouching or not
+
+
+
+		//Phase 11 (crouching normals)
+		if ( crouchCheck == true )
+		{
+			crouchingNormal();
+		}
+
+
+		//Phase 12 (normals listening)
+		if ( crouchCheck == false )
+		{
+			standingNormal();
+		}
+		if ( normalFrames > 0 )
+		{
+			return;
+		}
+
+
+
+		//Phase 13 (walking and flipping)
+		//Player is ready to take any commands without interruptions
+		//moving left and right
+		anim.SetBool ( facingLeftstring, facingLeft );  //telling the animator if facing left or not
 		if( moveY < -.01f )
 		{
 			crouchCheck = true;
@@ -261,28 +328,13 @@ public class PlayerController : MonoBehaviour
 		{
 			crouchCheck = false;
 		}
-
-
-		//Phase 10 (crouching normals)
-		if ( crouchCheck == true )
+		if( crouchCheck == false ) 
 		{
-			crouchingNormal();
-			return;
+			rigidbody2D.velocity = new Vector2 ( moveX * maxspeed, rigidbody2D.velocity.y );
 		}
-
-
-		//Phase 11 (normals)
-		standingNormal();
-
-
-		//Phase 12 (walking and flipping)
-		//Player is ready to take any commands without interruptions
-		//moving left and right
-		anim.SetBool ( facingLeftstring, facingLeft );  //telling the animator if facing left or not
-		rigidbody2D.velocity = new Vector2 ( moveX * maxspeed, rigidbody2D.velocity.y );
 		determineFlip ();
 
-		//Phase 13 (blocking)
+		//Phase 14 (blocking)
 		anim.SetBool ( blockingString, blockCheck );
 		if( enemyX  < transform.position.x && moveX > .01f )
 		{
@@ -519,19 +571,30 @@ public class PlayerController : MonoBehaviour
 		if ( currentInput == "A" )
 		{
 			//standing light punch executed
-			attack.minusOther();
+			normalFrames = SLPtotalFrames;
+			startNormal = SLPstartFrame;
+			finishNormal = SLPfinishFrame;
 		}
 		else if ( currentInput == "B" )
 		{
 			//standing heavy punch executed
+			//normalFrames = HLPtotalFrames;
+			//startNormal = HLPstartFrame;
+			//finishNormal = HLPfinishFrame;
 		}
 		else if ( currentInput == "C" )
 		{
 			//standing light kick executed
+			//normalFrames = SLPKtotalFrames;
+			//startNormal = SLKstartFrame;
+			//finishNormal = SLKfinishFrame;
 		}
 		else if ( currentInput == "D" )
 		{
 			//standing heavy kick executed
+			//normalFrames = SHKtotalFrames;
+			//startNormal = SHKstartFrame;
+			//finishNormal = SHKfinishFrame;
 		}
 
 	}
