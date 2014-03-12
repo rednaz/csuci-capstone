@@ -6,18 +6,27 @@ public class BPlayerController : PlayerController
 	//initializing for BPlayer1
 	void Start () 
 	{
-		punch = new LPunchScript ();
+		//debug string
+		debugString = "Barrett";
 
 		anim = GetComponent<Animator> ();
 		//string animation declarations
 		//this is so the PlayerController can reference to the animator's variables
 		facingLeftstring = "isLeft1";
 		velocityXString = "VelocityX1";
+		blockingString = "blocking1";
+		crouchingString = "crouching1";
+		normalFramesString = "normals1";
+		LPStringTrigger = "LPtrigger1";
+		HPStringTrigger = "HPtrigger1";
+		LKStringTrigger = "LKtrigger1";
+		HKStringTrigger = "HKtrigger1";
 
 		//the other player declaration
 		OtherPlayer = "CPlayer2"; //this could probably be another call fuction
 		//but this is only a 2 character game
 		OtherWhere = GameObject.FindGameObjectWithTag(OtherPlayer).transform;
+		enemyScript = "CPlayerController";
 		
 		//player declaration
 		maxspeed = 10f;
@@ -45,9 +54,28 @@ public class BPlayerController : PlayerController
 		hyper1Aright = "236236A";
 		hyper1Bright = "236236B";
 		hyper1delay = 100;
+
+		//*****normal data declaration*****
+		//normal standing frames values
+		SLPtotalFrames = 6;		//SHPtotalFrames;		SLKtotalFrames;		SHKtotalFrame;
+		SLPstartFrame = 4;		//SHPstartFrame;		SLKstartFrame;		SHKstartFrame;
+		SLPfinishFrame = 2;		//SHPfinishFrame;		SLKfinishFrame;		SHKfinishFrame;
+		
+		//normal air frames values
+		//ALPtotalFrames;		AHPtotalFrames;		ALKtotalFrames;		AHKtotalFrame;
+		//ALPstartFrame;		AHPstartFrame;		ALKstartFrame;		AHKstartFrame;
+		//ALPfinishFrame;		AHPfinishFrame;		ALKfinishFrame;		AHKfinishFrame;
+		
+		//normal crouching frames values
+		//CLPtotalFrames;		CHPtotalFrames;		CLKtotalFrames;		CHKtotalFrame;
+		//CLPstartFrame;		CHPstartFrame;		CLKstartFrame;		CHKstartFrame;
+		//CLPfinishFrame;		CHPfinishFrame;		CLKfinishFrame;		CHKfinishFrame;
+
+		//note: startFrame is when the attack calls actually start happening in the
+		//      normal attack animation, finishFrame is when the attack calls stop
+		//      happening.  atariDesu is called to stop attack calls once
+		//      the individual normal lands
 		
 		//GamePad.GetButtonDown(GamePad.Button.A, 1);
 	}
-	
-
 }
