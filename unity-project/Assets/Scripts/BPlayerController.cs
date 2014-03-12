@@ -17,6 +17,10 @@ public class BPlayerController : PlayerController
 		blockingString = "blocking1";
 		crouchingString = "crouching1";
 		normalFramesString = "normals1";
+		LPStringTrigger = "LPtrigger1";
+		HPStringTrigger = "HPtrigger1";
+		LKStringTrigger = "LKtrigger1";
+		HKStringTrigger = "HKtrigger1";
 
 		//the other player declaration
 		OtherPlayer = "CPlayer2"; //this could probably be another call fuction

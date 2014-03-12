@@ -16,6 +16,10 @@ public class PlayerController : MonoBehaviour
 	public string blockingString;
 	public string crouchingString;
 	public string normalFramesString;
+	public string LPStringTrigger;
+	public string HPStringTrigger;
+	public string LKStringTrigger;
+	public string HKStringTrigger;
 
 	//damage declaration
 	public int instantDamage  = 1; //the exact damage being done at the exact moment
@@ -63,6 +67,9 @@ public class PlayerController : MonoBehaviour
 	public int CLPstartFrame;		public int CHPstartFrame;		public int CLKstartFrame;		public int CHKstartFrame;
 	public int CLPfinishFrame;		public int CHPfinishFrame;		public int CLKfinishFrame;		public int CHKfinishFrame;
 
+	//normal triggers
+	public bool LPtrigger = false;		public bool HPtrigger = false;		public bool LKtrigger = false;		public bool HKtrigger = false;
+
 	//button declarations
 	public string LPgrabber;
 	public string HPgrabber;
@@ -81,7 +88,6 @@ public class PlayerController : MonoBehaviour
 	//needed because only one attack can be done in the air
 	//player must land before another air attack can be done again
 	public bool airLock = false; 
-	public bool owLock = false;
 
 	//countDown is needed when the player is recovering and getting up
 	//a value of 0 means the player is up and ready for more punishment
@@ -168,6 +174,11 @@ public class PlayerController : MonoBehaviour
 		//setting up the animation for the frame
 		anim.SetFloat ( velocityXString, moveX ); //telling the animator what 
 													//horizontal direction the character is
+		anim.SetInteger ( normalFramesString, normalFrames );
+		anim.SetBool ( LPStringTrigger, LPtrigger );
+		anim.SetBool ( HPStringTrigger, HPtrigger );
+		anim.SetBool ( LKStringTrigger, LKtrigger );
+		anim.SetBool ( HKStringTrigger, HKtrigger );
 
 
 		//Phase 0 
@@ -187,17 +198,18 @@ public class PlayerController : MonoBehaviour
 		//Player is in the air and no control, being hurt
 		//Set countDown from the hit
 
-		if( groundCheck == false && beingHurt == true )
-		{
-			return;
-		}
+		//if( groundCheck == false && beingHurt == true )
+		//{
+		//	return;
+		//}
 
 
 		//Phase 2
 		//Player is on the ground and no control, being hurt
 		//Set countDown from the hit
-		if( groundCheck == true && beingHurt == true )
+		if( beingHurt == true )
 		{
+			rigidbody2D.AddForce (new Vector2 (0, 90000f));  //currently launches into SPAAAAAAAAAAAAACE
 			return;
 		}
 
@@ -278,17 +290,19 @@ public class PlayerController : MonoBehaviour
 
 		//Phase 9 (normals being executed)
 		//normalFramesString
-		anim.SetInteger ( normalFramesString, normalFrames );
+
 		if( normalFrames > 0 )
 		{
 			if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false )
 			{
 				//send an attack signal
 				//atariDesu = true if bool owLock is returned from the attack reciever
+				atariDesu = attack.amIgettingHit();
 			}
 			normalFrames--;
 			return;
 		}
+		normalReset ();
 		atariDesu = false;
 
 
@@ -311,6 +325,7 @@ public class PlayerController : MonoBehaviour
 		}
 		if ( normalFrames > 0 )
 		{
+			LPtrigger = true;
 			return;
 		}
 
@@ -641,5 +656,20 @@ public class PlayerController : MonoBehaviour
 			//air heavy kick executed
 			airLock = true;
 		}
+	}
+
+	public void normalReset()
+	{
+		LPtrigger = false;		HPtrigger = false;		LKtrigger = false;		HKtrigger = false;
+	}
+
+	public bool amIgettingHit()
+	{
+		//light punch connected on call
+		if( SLP == true )
+		{
+			return beingHurt = true;
+		}
+		return false;
 	}
 }
