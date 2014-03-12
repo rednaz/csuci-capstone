@@ -3,11 +3,50 @@ using System.Collections;
 
 public class LPunchScript : MonoBehaviour 
 {
+	public void StandingLP()
+	{
+		
+		//Debug.Log("LPunchScript");
+		//LPScript.SetActive(true);
+	}
+	//public GameObject LPScript = new GameObject[LPunchScript];
+	//static function GameObject (name : String) : GameObject 
+	//int fly = 0;
 
-	public void DoSomething()
+	/*
+	void Start()
+	{
+		LPScript.SetActive(false);
+	}
+
+
+
+
+	void FixedUpdate () 
 	{
 		Debug.Log("LPunchScript");
+
+
+		if ( fly < 20 ) 
+		{
+			//gameObject.collider.enabled = true;
+			//collider.isTrigger = true;
+			fly++;
+		}
+		if ( fly > 19 && fly < 40 ) 
+		{
+			//gameObject.collider.enabled = false;
+			//collider.isTrigger = false;
+			fly++;
+		}
+		if ( fly == 40 ) 
+		{
+			Destroy(gameObject);
+			fly = 0;
+		}
 	}
+	//Trees.SetActive(false);
+*/
 
 	//CPlayerController healthModifier;
 	//public int damageValue = 100;
