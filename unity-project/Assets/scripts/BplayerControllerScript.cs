@@ -12,15 +12,13 @@ public class BplayerControllerScript : MonoBehaviour
 	float groundRadius = 0.1f;
 	public LayerMask whatIsGround;
 	public float jumpForce;
-	private int health;
-	public GUIText healthUI;
 
 	// Use this for initialization
 	void Start () 
 	{
 		anim = GetComponent<Animator> ();
-		health = 100;
-		healthUI.text = "P1 Health: " + health;
+		//health = 100;
+		//healthUI.text = "P1 Health: " + health;
 	}
 	
 	// Update is called once per frame
@@ -49,7 +47,7 @@ public class BplayerControllerScript : MonoBehaviour
 	//Input.GetKeyDown (KeyCode.Space))
 	void Update()
 	{
-		if ( grounded && ( Input.GetAxis("Jump1") < 0 ) ) 
+		if ( grounded && ( Input.GetAxis("Vertical1") < 0 ) ) 
 		{
 			anim.SetBool ("Ground", false);
 			rigidbody2D.AddForce( new Vector2(0,jumpForce));
@@ -62,20 +60,5 @@ public class BplayerControllerScript : MonoBehaviour
 		Vector3 theScale = transform.localScale;
 		theScale.x *= -1;
 		transform.localScale = theScale;
-		modifyHealth (-1);
-	}
-
-	void modifyHealth(int deltaHealth)
-	{
-		if (health > 0)
-		{
-			health += deltaHealth;
-			healthUI.text = "P1 Health: " + health;
-		}
-	}
-
-	int getHealth()
-	{
-		return this.health;
 	}
 }

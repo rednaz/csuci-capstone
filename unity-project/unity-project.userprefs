@@ -1,8 +1,22 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\scripts\GameController.cs">
+<<<<<<< HEAD
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\LPunchScript.cs">
+=======
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PlayerController.cs">
+>>>>>>> development
     <Files>
-      <File FileName="Assets\scripts\GameController.cs" Line="17" Column="35" />
+      <File FileName="Assets\Scripts\EnemyAI.cs" Line="33" Column="27" />
+      <File FileName="Assets\Scripts\BPlayerController.cs" Line="1" Column="1" />
+<<<<<<< HEAD
+      <File FileName="Assets\Scripts\CPlayerController.cs" Line="45" Column="21" />
+      <File FileName="Assets\Scripts\PlayerController.cs" Line="234" Column="44" />
+      <File FileName="Assets\Scripts\LPunchScript.cs" Line="13" Column="33" />
+=======
+      <File FileName="Assets\Scripts\BPlayerController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\CPlayerController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\PlayerController.cs" Line="212" Column="96" />
+>>>>>>> development
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

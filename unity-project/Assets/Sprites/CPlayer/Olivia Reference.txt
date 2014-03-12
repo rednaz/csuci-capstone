@@ -1,0 +1,2 @@
+width: 262 pixels
+height: 640 pixels
