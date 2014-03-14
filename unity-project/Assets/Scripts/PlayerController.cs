@@ -220,16 +220,13 @@ public class PlayerController : MonoBehaviour
 		//Phase 2
 		//Player is on the ground and no control, being hurt
 		//Set countDown from the hit
-		if( beingHurt == true )
-		{
-			rigidbody2D.AddForce (new Vector2 (0, 90000f));  //currently launches into SPAAAAAAAAAAAAACE
-			return;
-		}
+		hurtWhileStanding ();
 
 
 		//Phase 3
 		//Player is on the ground, no control, and recovering from hurt (getting up)
 		//Flush the status here when countDown reaches 0
+		/*
 		if ( countDown > 1 && groundCheck == true ) 
 		{
 			countDown--;
@@ -240,11 +237,13 @@ public class PlayerController : MonoBehaviour
 			countDown--;
 			flush ();
 		}
+		*/
 
 
 		//Phase 4
 		//Player is in the middle of a super/hyper and cannot move till
 		//the move completes, prevents spamming of supers/hypers
+		/*
 		if ( countDelayHyper > 1 ) 
 		{
 			countDelayHyper--;
@@ -265,6 +264,7 @@ public class PlayerController : MonoBehaviour
 			countDelaySuper--;
 			flush ();
 		}
+		*/
 
 
 		//Phase 5
@@ -272,10 +272,8 @@ public class PlayerController : MonoBehaviour
 		//Only one normal air attack in the air is possible
 		//One super and hyper and only one of each are possible if allows
 		//Blocking isn't possible here
-		moveX = Input.GetAxis ( moveXgrabber );
-		moveY = Input.GetAxis ( moveYgrabber );
-		nextInput = buttonListener ();
-		buttonRegister ();
+		buttonRegistration ();
+
 
 		//implemented when jumping is put back in
 		//if ( airLock == false )
@@ -311,13 +309,7 @@ public class PlayerController : MonoBehaviour
 
 		if( normalFrames > 0 )
 		{
-			if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false )
-			{
-				//send an attack signal
-				//atariDesu = true if bool owLock is returned from the attack reciever
-				atariDesu = attack.amIgettingHit();
-			}
-			normalFrames--;
+			normalCalls();
 			return;
 		}
 		normalReset ();
@@ -325,7 +317,7 @@ public class PlayerController : MonoBehaviour
 
 
 		//Phase 10 (crouching)
-		anim.SetBool (crouchingString, crouchCheck); //telling the animator if crouching or not
+
 
 
 
@@ -352,7 +344,7 @@ public class PlayerController : MonoBehaviour
 		//Phase 13 (walking and flipping)
 		//Player is ready to take any commands without interruptions
 		//moving left and right
-		anim.SetBool ( facingLeftstring, facingLeft );  //telling the animator if facing left or not
+
 		if( moveY < -.01f )
 		{
 			crouchCheck = true;
@@ -361,6 +353,8 @@ public class PlayerController : MonoBehaviour
 		{
 			crouchCheck = false;
 		}
+
+		//Phase 14 (walking)
 		if( crouchCheck == false ) 
 		{
 			rigidbody2D.velocity = new Vector2 ( moveX * maxspeed, rigidbody2D.velocity.y );
@@ -369,26 +363,11 @@ public class PlayerController : MonoBehaviour
 
 		//Phase 14 (jumping)
 		//code to jump
-		if ( groundCheck == true && moveY  > 0 ) 
-		{
-			//anim.SetBool ("Ground", false);
-			rigidbody2D.AddForce (new Vector2 (0, jumpForce));
-		}
+		jumpCall ();
 
 		//Phase 14 (blocking)
-		anim.SetBool ( blockingString, blockCheck );
-		if( enemyX  < transform.position.x && moveX > .01f )
-		{
-			blockCheck = true;
-		}
-		else if( enemyX  > transform.position.x && moveX < -.01f )
-		{
-			blockCheck = true;
-		}
-		else
-		{
-			blockCheck = false;
-		}
+		blockInput ();
+
 
 
 
@@ -712,5 +691,61 @@ public class PlayerController : MonoBehaviour
 		anim.SetBool ( LKStringTrigger, LKtrigger );
 		anim.SetBool ( HKStringTrigger, HKtrigger );
 		anim.SetBool ( groundString, groundCheck );
+		anim.SetBool ( blockingString, blockCheck );
+		anim.SetBool ( facingLeftstring, facingLeft );  //telling the animator if facing left or not
+		anim.SetBool ( crouchingString, crouchCheck ); //telling the animator if crouching or not
 	}
+
+	public void buttonRegistration()
+	{
+		moveX = Input.GetAxis ( moveXgrabber );
+		moveY = Input.GetAxis ( moveYgrabber );
+		nextInput = buttonListener ();
+		buttonRegister ();
+	}
+
+	public void hurtWhileStanding()
+	{
+		if( groundCheck == true && beingHurt == true )
+		{
+			rigidbody2D.AddForce (new Vector2 (0, 90000f));  //currently launches into SPAAAAAAAAAAAAACE
+			return;
+		}
+	}
+
+	public void blockInput()
+	{
+		if( enemyX  < transform.position.x && moveX > .01f )
+		{
+			blockCheck = true;
+		}
+		else if( enemyX  > transform.position.x && moveX < -.01f )
+		{
+			blockCheck = true;
+		}
+		else
+		{
+			blockCheck = false;
+		}
+	}
+
+	public void normalCalls()
+	{
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false )
+		{
+			//send an attack signal
+			//atariDesu = true if bool owLock is returned from the attack reciever
+			atariDesu = attack.amIgettingHit();
+		}
+		normalFrames--;
+	}
+
+	public void jumpCall()
+	{
+		if ( groundCheck == true && moveY  > 0 ) 
+		{
+			rigidbody2D.AddForce (new Vector2 (0, jumpForce));
+		}
+	}
+
 }
