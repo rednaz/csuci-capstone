@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
 	public string HPStringTrigger;
 	public string LKStringTrigger;
 	public string HKStringTrigger;
+	public string groundString;
 
 	//damage declaration
 	public int instantDamage  = 1; //the exact damage being done at the exact moment
@@ -89,6 +90,9 @@ public class PlayerController : MonoBehaviour
 	//player must land before another air attack can be done again
 	public bool airLock = false; 
 
+	//declaration of up force for jumping
+	public float jumpForce;
+
 	//countDown is needed when the player is recovering and getting up
 	//a value of 0 means the player is up and ready for more punishment
 	public int countDown = 0;
@@ -157,6 +161,7 @@ public class PlayerController : MonoBehaviour
 	//the heart of all actions-------------------------------------------------------
 	void FixedUpdate () 
 	{
+
 		//this is nothing but debug code, feel free to uncomment at your pleasure to
 		//see game activity
 		if (Input.GetKeyDown (KeyCode.Space)) 
@@ -179,6 +184,7 @@ public class PlayerController : MonoBehaviour
 		anim.SetBool ( HPStringTrigger, HPtrigger );
 		anim.SetBool ( LKStringTrigger, LKtrigger );
 		anim.SetBool ( HKStringTrigger, HKtrigger );
+		anim.SetBool ( groundString, groundCheck );
 
 
 		//Phase 0 

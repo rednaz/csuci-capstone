@@ -21,6 +21,7 @@ public class BPlayerController : PlayerController
 		HPStringTrigger = "HPtrigger1";
 		LKStringTrigger = "LKtrigger1";
 		HKStringTrigger = "HKtrigger1";
+		groundString = "isGrounded1";
 
 		//the other player declaration
 		OtherPlayer = "CPlayer2"; //this could probably be another call fuction
@@ -54,6 +55,9 @@ public class BPlayerController : PlayerController
 		hyper1Aright = "236236A";
 		hyper1Bright = "236236B";
 		hyper1delay = 100;
+
+		//up force
+		jumpForce = 1000f;  
 
 		//*****normal data declaration*****
 		//normal standing frames values
