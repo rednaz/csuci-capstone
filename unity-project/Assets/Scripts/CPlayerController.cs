@@ -22,6 +22,7 @@ public class CPlayerController : PlayerController
 		LKStringTrigger = "LKtrigger2";
 		HKStringTrigger = "HKtrigger2";
 		groundString = "isGrounded2";
+		velocityYString = "VelocityY2";
 		
 		//the other player declaration
 		OtherPlayer = "BPlayer1"; //this could probably be another call fuction

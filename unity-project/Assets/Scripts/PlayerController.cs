@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
 	public string LKStringTrigger;
 	public string HKStringTrigger;
 	public string groundString;
+	public string velocityYString;
 
 	//damage declaration
 	public int instantDamage  = 1; //the exact damage being done at the exact moment
@@ -190,14 +191,7 @@ public class PlayerController : MonoBehaviour
 		//Debug.Log (health);
 
 		//setting up the animation for the frame
-		anim.SetFloat ( velocityXString, moveX ); //telling the animator what 
-													//horizontal direction the character is
-		anim.SetInteger ( normalFramesString, normalFrames );
-		anim.SetBool ( LPStringTrigger, LPtrigger );
-		anim.SetBool ( HPStringTrigger, HPtrigger );
-		anim.SetBool ( LKStringTrigger, LKtrigger );
-		anim.SetBool ( HKStringTrigger, HKtrigger );
-		anim.SetBool ( groundString, groundCheck );
+		animationCalls ();
 
 
 		//Phase 0 
@@ -282,11 +276,16 @@ public class PlayerController : MonoBehaviour
 		moveY = Input.GetAxis ( moveYgrabber );
 		nextInput = buttonListener ();
 		buttonRegister ();
+
 		//implemented when jumping is put back in
 		//if ( airLock == false )
 		//{
 		//	airNormal ();
-		//}
+		if ( groundCheck == false )
+		{
+			return;
+		}
+
 			
 		//Phase 6
 		//Player is on the ground and attacking, left and right control not possible
@@ -698,5 +697,20 @@ public class PlayerController : MonoBehaviour
 			return beingHurt = true;
 		}
 		return false;
+	}
+
+
+	public void animationCalls()
+	{
+		anim.SetFloat ( velocityXString, moveX ); //telling the animator what 
+		//horizontal direction the character is going
+		anim.SetFloat ( velocityYString, rigidbody2D.velocity.y ); //telling the animator what 
+		//vertical direction the character is going
+		anim.SetInteger ( normalFramesString, normalFrames );
+		anim.SetBool ( LPStringTrigger, LPtrigger );
+		anim.SetBool ( HPStringTrigger, HPtrigger );
+		anim.SetBool ( LKStringTrigger, LKtrigger );
+		anim.SetBool ( HKStringTrigger, HKtrigger );
+		anim.SetBool ( groundString, groundCheck );
 	}
 }
