@@ -85,6 +85,9 @@ public class PlayerController : MonoBehaviour
 
 	//checking if player is on the ground
 	public bool groundCheck = false;
+	public LayerMask whatIsGround;
+	public float groundRadius = 0.2f;
+	public Transform daGround;
 		
 	//needed because only one attack can be done in the air
 	//player must land before another air attack can be done again
@@ -105,6 +108,13 @@ public class PlayerController : MonoBehaviour
 	//this prevents the spamming of an attack per frame
 	public int countDelaySuper = 0;
 
+	//declaring hyper variable
+	public int hyperMeter = 300;
+	//100 = level 1
+	//200 = level 2
+	//300 = level 3
+	public int bullets = 6;
+	
 	//checking what direction the player is facing at the time of the frame
 	//note: player can't turn when in the air
 	public bool facingLeft = false;
@@ -161,6 +171,9 @@ public class PlayerController : MonoBehaviour
 	//the heart of all actions-------------------------------------------------------
 	void FixedUpdate () 
 	{
+		//this line checks if the character is on the ground at this frame
+		groundCheck = Physics2D.OverlapCircle (daGround.position, groundRadius, whatIsGround);
+
 
 		//this is nothing but debug code, feel free to uncomment at your pleasure to
 		//see game activity
@@ -354,6 +367,14 @@ public class PlayerController : MonoBehaviour
 			rigidbody2D.velocity = new Vector2 ( moveX * maxspeed, rigidbody2D.velocity.y );
 		}
 		determineFlip ();
+
+		//Phase 14 (jumping)
+		//code to jump
+		if ( groundCheck == true && moveY  > 0 ) 
+		{
+			//anim.SetBool ("Ground", false);
+			rigidbody2D.AddForce (new Vector2 (0, jumpForce));
+		}
 
 		//Phase 14 (blocking)
 		anim.SetBool ( blockingString, blockCheck );

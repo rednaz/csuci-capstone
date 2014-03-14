@@ -57,7 +57,7 @@ public class BPlayerController : PlayerController
 		hyper1delay = 100;
 
 		//up force
-		jumpForce = 1000f;  
+		jumpForce = 1200f;  
 
 		//*****normal data declaration*****
 		//normal standing frames values
