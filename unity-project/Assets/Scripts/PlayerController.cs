@@ -60,6 +60,8 @@ public class PlayerController : MonoBehaviour
 	public int SLPfinishFrame;		public int SHPfinishFrame;		public int SLKfinishFrame;		public int SHKfinishFrame;
 	public int SLPXforce;			public int SHPXforce;			public int SLKXforce;			public int SHKXforce;
 	public int SLPYforce;			public int SHPYforce;			public int SLKYforce;			public int SHKYforce;
+	public int SLPdamage;			public int SHPdamage;			public int SLKdamage;			public int SHKdamage;
+	public bool SLPlow;				public bool SHPlow;				public bool SLKlow;				public bool SHKlow;
 
 	//normal air frames values
 	public int ALPtotalFrames;		public int AHPtotalFrames;		public int ALKtotalFrames;		public int AHKtotalFrame;
@@ -67,6 +69,8 @@ public class PlayerController : MonoBehaviour
 	public int ALPfinishFrame;		public int AHPfinishFrame;		public int ALKfinishFrame;		public int AHKfinishFrame;
 	public int ALPXforce;			public int AHPXforce;			public int ALKXforce;			public int AHKXforce;
 	public int ALPYforce;			public int AHPYforce;			public int ALKYforce;			public int AHKYforce;
+	public int ALPdamage;			public int AHPdamage;			public int ALKdamage;			public int AHKdamage;
+	public bool ALPlow;				public bool AHPlow;				public bool ALKlow;				public bool AHKlow;
 
 	//normal crouching frames values
 	public int CLPtotalFrames;		public int CHPtotalFrames;		public int CLKtotalFrames;		public int CHKtotalFrame;
@@ -74,6 +78,8 @@ public class PlayerController : MonoBehaviour
 	public int CLPfinishFrame;		public int CHPfinishFrame;		public int CLKfinishFrame;		public int CHKfinishFrame;
 	public int CLPXforce;			public int CHPXforce;			public int CLKXforce;			public int CHKXforce;
 	public int CLPYforce;			public int CHPYforce;			public int CLKYforce;			public int CHKYforce;
+	public int CLPdamage;			public int CHPdamage;			public int CLKdamage;			public int CHKdamage;
+	public bool CLPlow;				public bool CHPlow;				public bool CLKlow;				public bool CHKlow;
 
 	//normal triggers
 	public bool LPtrigger = false;		public bool HPtrigger = false;		public bool LKtrigger = false;		public bool HKtrigger = false;
@@ -190,10 +196,18 @@ public class PlayerController : MonoBehaviour
 
 	//player being hurt
 	public bool beingHurt = false;
+	public bool beingHurtLow;
+	public int recieveHurtX;
+	public int recieveHurtY;
+	public int damageAmountRecieved;
+	public bool recievedAttackLow = false;  //true if the attack is low
+	public int chipDamage;
 
 	//hurt launch variables
 	public int hurtX;  //how much force a punch does to you in X direction
 	public int hurtY;  //how much force a punch does to you in Y direction
+	public int currentDamage;
+	public bool hurtLow;
 
 	//called every frame
 	//the heart of all actions-------------------------------------------------------
@@ -261,7 +275,10 @@ public class PlayerController : MonoBehaviour
 		//Phase 2
 		//Player is on the ground and no control, being hurt
 		//Set countDown from the hit
-		hurtWhileStanding ();
+		if( groundCheck == true )
+		{
+			hurtWhileStanding ();
+		}
 		//turn off beingHurt when the player recovers from the previous ground hit
 		if ( beingHurt == true )
 		{
@@ -625,6 +642,10 @@ public class PlayerController : MonoBehaviour
 			normalFrames = SLPtotalFrames;
 			startNormal = SLPstartFrame;
 			finishNormal = SLPfinishFrame;
+			hurtX = SLPXforce;
+			hurtY = SLPYforce;
+			hurtLow = SLPlow;
+			currentDamage = SLPdamage;
 			LPtrigger = true;
 		}
 		else if ( currentInput == "B" )
@@ -641,6 +662,7 @@ public class PlayerController : MonoBehaviour
 			normalFrames = SLKtotalFrames;
 			startNormal = SLKstartFrame;
 			finishNormal = SLKfinishFrame;
+			hurtLow = SLKlow;
 			LKtrigger = true;
 		}
 		else if ( currentInput == "D" )
@@ -703,22 +725,6 @@ public class PlayerController : MonoBehaviour
 		LPtrigger = false;		HPtrigger = false;		LKtrigger = false;		HKtrigger = false;
 	}
 
-	public bool amIgettingHit()
-	{
-		//light punch connected on call
-		if( SLP == true )
-		{
-			return beingHurt = true;
-		}
-		if( SLK == true )
-		{
-			return beingHurt = true;
-		}
-
-		return false;
-
-	}
-
 
 	public void animationCalls()
 	{
@@ -747,10 +753,26 @@ public class PlayerController : MonoBehaviour
 
 	public void hurtWhileStanding()
 	{
-		if( groundCheck == true && beingHurt == true )
+		if( beingHurt == true )
 		{
-			rigidbody2D.AddForce (new Vector2 (0, 90000f));  //currently launches into SPAAAAAAAAAAAAACE
-			return;
+			if( enemyX  < transform.position.x )
+			{
+				rigidbody2D.AddForce ( new Vector2 ( 90000 , 0 ) );
+			}
+			else
+			{
+				rigidbody2D.AddForce ( new Vector2 ( 90000 , 0 ) );//recieveHurtX
+			}
+
+			if( blockCheck == true && crouchCheck == beingHurtLow )
+			{
+				minusHealth( chipDamage );
+			}
+			else //player isn't blocking, recieve amount of damage
+			{
+				minusHealth( damageAmountRecieved );
+			}
+			//rigidbody2D.AddForce (new Vector2 (0, 90000f));  //currently launches into SPAAAAAAAAAAAAACE
 		}
 	}
 
@@ -777,13 +799,12 @@ public class PlayerController : MonoBehaviour
 		{
 			//send an attack signal
 			//atariDesu = true if bool owLock is returned from the attack reciever
-			atariDesu = attack.amIgettingHit();
+			atariDesu = attack.amIgettingHitSLP( hurtX, hurtY, currentDamage, hurtLow );
 		}
 		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false && LKtrigger == true )
 		{
 			//send an attack signal
-			//atariDesu = true if bool owLock is returned from the attack reciever
-			atariDesu = attack.amIgettingHit();
+			atariDesu = attack.amIgettingHitSLK( hurtX, hurtY, currentDamage, hurtLow );
 		}
 		normalFrames--;
 	}
@@ -825,5 +846,40 @@ public class PlayerController : MonoBehaviour
 			SLK = false;
 		}
 	}
+	//end hitboxes---------------------------------------------------------------------------------------------------
+
+
+
+
+	//amIgettingHit calls********************************************************************************************
+	public bool amIgettingHitSLP( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
+	{
+		//light punch connected on call
+		if( SLP == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			beingHurtLow = isHitLow;
+			return beingHurt = true;
+		}
+		return false;
+
+	}
+
+	public bool amIgettingHitSLK( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
+	{
+		//light kick connected on call
+		if( SLK == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			beingHurtLow = isHitLow;
+			return beingHurt = true;
+		}
+		return false;
+	}
+	//amIgettingHit ends********************************************************************************************
 
 }
