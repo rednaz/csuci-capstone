@@ -49,22 +49,39 @@ public class CPlayerController : PlayerController
 		super1Bright = "236B";
 		super1delay = 10;
 		
-		
-		//hyper declaration one
-		hyper1Aleft = "214214A";
-		hyper1Bleft = "214214B";
-		hyper1Aright = "236236A";
-		hyper1Bright = "236236B";
+		//hyper 1 declarations
+		hyper1Aleft = "412364A";
+		hyper1Bleft = "412364B";
+		hyper1Aright = "632146A";
+		hyper1Bright = "632146B";
 		hyper1delay = 100;
+		hyper1eat = 100;
+		
+		//hyper 2 declarations
+		hyper2Aleft = "XOXOXOX";
+		hyper2Bleft = "XOXOXOX";
+		hyper2Aright = "XOXOXOX";
+		hyper2Bright = "XOXOXOX";
+		hyper2delay = 100;
+		
+		//hyper 3 declarations
+		hyper3Aleft = "214214A";
+		hyper3Bleft = "214214B";
+		hyper3Aright = "236234A";
+		hyper3Bright = "236236B";
+		hyper3delay = 100;
+		hyper3eat = 300;
 
 		//up force
 		jumpForce = 1200f;
 		
 		//*****normal data declaration*****
 		//normal standing frames values
-		SLPtotalFrames = 4;		//SHPtotalFrames;		SLKtotalFrames;		SHKtotalFrame;
-		SLPstartFrame = 2;		//SHPstartFrame;		SLKstartFrame;		SHKstartFrame;
-		SLPfinishFrame = 0;		//SHPfinishFrame;		SLKfinishFrame;		SHKfinishFrame;
+		SLPtotalFrames = 4;		SHPtotalFrames = 7;		SLKtotalFrames = 4;		SHKtotalFrame = 7;
+		SLPstartFrame = 2;		SHPstartFrame = 5;		SLKstartFrame = 2;		SHKstartFrame = 5;
+		SLPfinishFrame = 0;		SHPfinishFrame = 3;		SLKfinishFrame = 0;		SHKfinishFrame = 3;
+		SLPXforce = 5;			SHPXforce = 10;			SLKXforce = 5;			SHKXforce = 10;
+		SLPYforce = 200;		SHPYforce = 300;		SLKYforce = 200;		SHKYforce = 300;
 		
 		//normal air frames values
 		//ALPtotalFrames;		AHPtotalFrames;		ALKtotalFrames;		AHKtotalFrame;

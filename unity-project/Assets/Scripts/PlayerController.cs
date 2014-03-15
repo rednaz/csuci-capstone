@@ -58,16 +58,22 @@ public class PlayerController : MonoBehaviour
 	public int SLPtotalFrames;		public int SHPtotalFrames;		public int SLKtotalFrames;		public int SHKtotalFrame;
 	public int SLPstartFrame;		public int SHPstartFrame;		public int SLKstartFrame;		public int SHKstartFrame;
 	public int SLPfinishFrame;		public int SHPfinishFrame;		public int SLKfinishFrame;		public int SHKfinishFrame;
+	public int SLPXforce;			public int SHPXforce;			public int SLKXforce;			public int SHKXforce;
+	public int SLPYforce;			public int SHPYforce;			public int SLKYforce;			public int SHKYforce;
 
 	//normal air frames values
 	public int ALPtotalFrames;		public int AHPtotalFrames;		public int ALKtotalFrames;		public int AHKtotalFrame;
 	public int ALPstartFrame;		public int AHPstartFrame;		public int ALKstartFrame;		public int AHKstartFrame;
 	public int ALPfinishFrame;		public int AHPfinishFrame;		public int ALKfinishFrame;		public int AHKfinishFrame;
+	public int ALPXforce;			public int AHPXforce;			public int ALKXforce;			public int AHKXforce;
+	public int ALPYforce;			public int AHPYforce;			public int ALKYforce;			public int AHKYforce;
 
 	//normal crouching frames values
 	public int CLPtotalFrames;		public int CHPtotalFrames;		public int CLKtotalFrames;		public int CHKtotalFrame;
 	public int CLPstartFrame;		public int CHPstartFrame;		public int CLKstartFrame;		public int CHKstartFrame;
 	public int CLPfinishFrame;		public int CHPfinishFrame;		public int CLKfinishFrame;		public int CHKfinishFrame;
+	public int CLPXforce;			public int CHPXforce;			public int CLKXforce;			public int CHKXforce;
+	public int CLPYforce;			public int CHPYforce;			public int CLKYforce;			public int CHKYforce;
 
 	//normal triggers
 	public bool LPtrigger = false;		public bool HPtrigger = false;		public bool LKtrigger = false;		public bool HKtrigger = false;
@@ -148,12 +154,29 @@ public class PlayerController : MonoBehaviour
 
 	public string super2;
 
-	//hyper declarations
-	public string hyper1Aleft;
-	public string hyper1Bleft;
-	public string hyper1Aright;
-	public string hyper1Bright;
-	public int hyper1delay;
+	//hyper 1 declarations
+	public string hyper1Aleft;   //these
+	public string hyper1Bleft;   //recognize
+	public string hyper1Aright;  //input
+	public string hyper1Bright;  //patterns
+	public int hyper1delay;	 //how many frames the hyper takes to execute
+	public int hyper1eat; //how much meter the hyper takes
+
+	//hyper 2 declarations
+	public string hyper2Aleft;	 //these
+	public string hyper2Bleft;   //recognize
+	public string hyper2Aright;  //input
+	public string hyper2Bright;  //patterns
+	public int hyper2delay;	//how many frames the hyper takes to execute
+	public int hyper2eat; //how much meter the hyper takes
+
+	//hyper 3 declarations
+	public string hyper3Aleft;  //these
+	public string hyper3Bleft;  //recognize
+	public string hyper3Aright; //input
+	public string hyper3Bright; //patterns
+	public int hyper3delay; //how many frames the hyper takes to execute
+	public int hyper3eat; //how much meter the hyper takes
 
 	//combo declaration
 	int beingComboed = 0;
@@ -167,6 +190,10 @@ public class PlayerController : MonoBehaviour
 
 	//player being hurt
 	public bool beingHurt = false;
+
+	//hurt launch variables
+	public int hurtX;  //how much force a punch does to you in X direction
+	public int hurtY;  //how much force a punch does to you in Y direction
 
 	//called every frame
 	//the heart of all actions-------------------------------------------------------
@@ -208,6 +235,20 @@ public class PlayerController : MonoBehaviour
 
 
 		//Phase 1
+		//Player is on the ground, no control, and recovering from hurt (getting up)
+		//Flush the status here when countDown reaches 0
+		if ( countDown > 1 && groundCheck == true ) 
+		{
+			countDown--;
+			return;
+		} 
+		else if ( countDown == 1 )
+		{
+			countDown--;
+			flush ();
+		}
+
+
 		//Player is in the air and no control, being hurt
 		//Set countDown from the hit
 
@@ -221,6 +262,11 @@ public class PlayerController : MonoBehaviour
 		//Player is on the ground and no control, being hurt
 		//Set countDown from the hit
 		hurtWhileStanding ();
+		//turn off beingHurt when the player recovers from the previous ground hit
+		if ( beingHurt == true )
+		{
+			return;
+		}
 
 
 		//Phase 3
@@ -271,7 +317,8 @@ public class PlayerController : MonoBehaviour
 		//Player is in the air, left and right control not possible
 		//Only one normal air attack in the air is possible
 		//One super and hyper and only one of each are possible if allows
-		//Blocking isn't possible here
+		//Blocking isn't possible in the air
+		//This the starting Phase where player can put input into the system to be registered
 		buttonRegistration ();
 
 
@@ -295,7 +342,7 @@ public class PlayerController : MonoBehaviour
 		//Phase 7
 		//player successfully implemented a hyper, game executes hyper
 		//hyper 1, 2, and 3 checked if entered at this moment
-		hyper1Check ();
+		//hyper1Check ();
 
 
 
@@ -307,7 +354,7 @@ public class PlayerController : MonoBehaviour
 		//Phase 9 (normals being executed)
 		//normalFramesString
 
-		if( normalFrames > 0 )
+		if( normalFrames > 0 && groundCheck == true )
 		{
 			normalCalls();
 			return;
@@ -335,7 +382,6 @@ public class PlayerController : MonoBehaviour
 		}
 		if ( normalFrames > 0 )
 		{
-			LPtrigger = true;
 			return;
 		}
 
@@ -563,22 +609,7 @@ public class PlayerController : MonoBehaviour
 	}
 
 
-	//when a hitbox successfully touches a player
-	void OnTriggerStay2D ( Collider2D other )
-	{
-		if ( other.gameObject.tag == "LowPunchStanding" )
-		{
-			SLP = true;
-		}
-	}
-	//when a hitbox leaves a player no longer touching
-	void OnTriggerExit2D( Collider2D other )
-	{
-		if ( other.gameObject.tag == "LowPunchStanding" )
-		{
-			SLP = false;
-		}
-	}
+
 
 	public void minusOther()
 	{
@@ -594,6 +625,7 @@ public class PlayerController : MonoBehaviour
 			normalFrames = SLPtotalFrames;
 			startNormal = SLPstartFrame;
 			finishNormal = SLPfinishFrame;
+			LPtrigger = true;
 		}
 		else if ( currentInput == "B" )
 		{
@@ -601,13 +633,15 @@ public class PlayerController : MonoBehaviour
 			//normalFrames = HLPtotalFrames;
 			//startNormal = HLPstartFrame;
 			//finishNormal = HLPfinishFrame;
+			HPtrigger = true;
 		}
 		else if ( currentInput == "C" )
 		{
 			//standing light kick executed
-			//normalFrames = SLPKtotalFrames;
-			//startNormal = SLKstartFrame;
-			//finishNormal = SLKfinishFrame;
+			normalFrames = SLKtotalFrames;
+			startNormal = SLKstartFrame;
+			finishNormal = SLKfinishFrame;
+			LKtrigger = true;
 		}
 		else if ( currentInput == "D" )
 		{
@@ -615,6 +649,7 @@ public class PlayerController : MonoBehaviour
 			//normalFrames = SHKtotalFrames;
 			//startNormal = SHKstartFrame;
 			//finishNormal = SHKfinishFrame;
+			HKtrigger = true;
 		}
 
 	}
@@ -675,7 +710,13 @@ public class PlayerController : MonoBehaviour
 		{
 			return beingHurt = true;
 		}
+		if( SLK == true )
+		{
+			return beingHurt = true;
+		}
+
 		return false;
+
 	}
 
 
@@ -731,7 +772,14 @@ public class PlayerController : MonoBehaviour
 
 	public void normalCalls()
 	{
-		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false )
+		//standingLPcalls
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false && LPtrigger == true )
+		{
+			//send an attack signal
+			//atariDesu = true if bool owLock is returned from the attack reciever
+			atariDesu = attack.amIgettingHit();
+		}
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false && LKtrigger == true )
 		{
 			//send an attack signal
 			//atariDesu = true if bool owLock is returned from the attack reciever
@@ -745,6 +793,36 @@ public class PlayerController : MonoBehaviour
 		if ( groundCheck == true && moveY  > 0 ) 
 		{
 			rigidbody2D.AddForce (new Vector2 (0, jumpForce));
+		}
+	}
+
+
+
+
+	//hitboxes--------------------------------------------------------------------------------------------------------
+	//when a hitbox successfully touches a player
+	void OnTriggerStay2D ( Collider2D other )
+	{
+		if ( other.gameObject.tag == "LowPunchStanding" )
+		{
+			SLP = true;
+		}
+		if ( other.gameObject.tag == "LowKickStanding" )
+		{
+			SLK = true;
+		}
+	}
+
+	//when a hitbox leaves a player no longer touching
+	void OnTriggerExit2D( Collider2D other )
+	{
+		if ( other.gameObject.tag == "LowPunchStanding" )
+		{
+			SLP = false;
+		}
+		if ( other.gameObject.tag == "LowKickStanding" )
+		{
+			SLK = false;
 		}
 	}
 

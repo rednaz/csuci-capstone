@@ -30,7 +30,7 @@ public class BPlayerController : PlayerController
 		OtherWhere = GameObject.FindGameObjectWithTag(OtherPlayer).transform;
 		enemyScript = "CPlayerController";
 		
-		//player declaration
+		//player speed declaration
 		maxspeed = 10f;
 		
 		//input declaration
@@ -50,21 +50,39 @@ public class BPlayerController : PlayerController
 		super1delay = 10;
 		
 		
-		//hyper declaration one
-		hyper1Aleft = "214214A";
-		hyper1Bleft = "214214B";
-		hyper1Aright = "236236A";
-		hyper1Bright = "236236B";
+		//hyper 1 declarations
+		hyper1Aleft = "412364A";
+		hyper1Bleft = "412364B";
+		hyper1Aright = "632146A";
+		hyper1Bright = "632146B";
 		hyper1delay = 100;
+		hyper1eat = 100;
+
+		//hyper 2 declarations
+		hyper2Aleft = "XOXOXOX";
+		hyper2Bleft = "XOXOXOX";
+		hyper2Aright = "XOXOXOX";
+		hyper2Bright = "XOXOXOX";
+		hyper2delay = 100;
+		
+		//hyper 3 declarations
+		hyper3Aleft = "214214A";
+		hyper3Bleft = "214214B";
+		hyper3Aright = "236234A";
+		hyper3Bright = "236236B";
+		hyper3delay = 100;
+		hyper3eat = 300;
 
 		//up force
 		jumpForce = 1200f;  
 
 		//*****normal data declaration*****
 		//normal standing frames values
-		SLPtotalFrames = 6;		//SHPtotalFrames;		SLKtotalFrames;		SHKtotalFrame;
-		SLPstartFrame = 4;		//SHPstartFrame;		SLKstartFrame;		SHKstartFrame;
-		SLPfinishFrame = 2;		//SHPfinishFrame;		SLKfinishFrame;		SHKfinishFrame;
+		SLPtotalFrames = 6;		SHPtotalFrames = 10;		SLKtotalFrames = 6;		SHKtotalFrame = 12;
+		SLPstartFrame = 4;		SHPstartFrame = 7;			SLKstartFrame = 4;		SHKstartFrame = 9;
+		SLPfinishFrame = 2;		SHPfinishFrame = 4;			SLKfinishFrame = 2;		SHKfinishFrame = 6;
+		SLPXforce = 5;			SHPXforce = 10;				SLKXforce = 5;			SHKXforce = 10;
+		SLPYforce = 200;		SHPYforce = 300;			SLKYforce = 200;		SHKYforce = 300;
 		
 		//normal air frames values
 		//ALPtotalFrames;		AHPtotalFrames;		ALKtotalFrames;		AHKtotalFrame;
@@ -80,7 +98,6 @@ public class BPlayerController : PlayerController
 		//      normal attack animation, finishFrame is when the attack calls stop
 		//      happening.  atariDesu is called to stop attack calls once
 		//      the individual normal lands
-		
-		//GamePad.GetButtonDown(GamePad.Button.A, 1);
+
 	}
 }
