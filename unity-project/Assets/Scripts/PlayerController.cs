@@ -22,13 +22,13 @@ public class PlayerController : MonoBehaviour
 	public string HKStringTrigger;
 	public string groundString;
 	public string velocityYString;
+	public string hurtLockStringLight;
+	public string hurtLockStringHeavy;
+	public string hitFramesString;
+	public string blockLockStandingString;
+	public string blockLockCrouchingString;
 
-	//damage declaration
-	public int instantDamage  = 1; //the exact damage being done at the exact moment
-
-	//creators of the punch hit boxes
-	//public LPunchScript LPunch;
-
+	
 	//maxSpeed declaration
 	public float maxspeed;
 
@@ -208,6 +208,14 @@ public class PlayerController : MonoBehaviour
 	public int hurtY;  //how much force a punch does to you in Y direction
 	public int currentDamage;
 	public bool hurtLow;
+	public int damageThreshold; //determines if the hit recieved is soft or hard hit
+	public int lightHitFrames;  //stun lasts this long when ground damage is equal or less than damageThreshold
+	public int heavyHitFrames;  //stun lasts this long when ground damage is greater than damageThreshold
+	public int hitFrames;       //hitFrames grabs from lightHitFrames/heavyHitFrames depending on damageThreshold
+	public bool hurtLockLight = false;
+	public bool hurtLockHeavy = false;
+	public bool blockStandingLock = false;
+	public bool blockCrouchingLock= false;
 
 	//called every frame
 	//the heart of all actions-------------------------------------------------------
@@ -418,10 +426,7 @@ public class PlayerController : MonoBehaviour
 		}
 
 		//Phase 14 (walking)
-		if( crouchCheck == false ) 
-		{
-			rigidbody2D.velocity = new Vector2 ( moveX * maxspeed, rigidbody2D.velocity.y );
-		}
+		walking ();
 		determineFlip ();
 
 		//Phase 14 (jumping)
@@ -726,22 +731,7 @@ public class PlayerController : MonoBehaviour
 	}
 
 
-	public void animationCalls()
-	{
-		anim.SetFloat ( velocityXString, moveX ); //telling the animator what 
-		//horizontal direction the character is going
-		anim.SetFloat ( velocityYString, rigidbody2D.velocity.y ); //telling the animator what 
-		//vertical direction the character is going
-		anim.SetInteger ( normalFramesString, normalFrames );
-		anim.SetBool ( LPStringTrigger, LPtrigger );
-		anim.SetBool ( HPStringTrigger, HPtrigger );
-		anim.SetBool ( LKStringTrigger, LKtrigger );
-		anim.SetBool ( HKStringTrigger, HKtrigger );
-		anim.SetBool ( groundString, groundCheck );
-		anim.SetBool ( blockingString, blockCheck );
-		anim.SetBool ( facingLeftstring, facingLeft );  //telling the animator if facing left or not
-		anim.SetBool ( crouchingString, crouchCheck ); //telling the animator if crouching or not
-	}
+
 
 	public void buttonRegistration()
 	{
@@ -757,11 +747,11 @@ public class PlayerController : MonoBehaviour
 		{
 			if( enemyX  < transform.position.x )
 			{
-				rigidbody2D.AddForce ( new Vector2 ( 90000 , 0 ) );
+				rigidbody2D.AddForce ( new Vector2 ( recieveHurtX , 0 ) );
 			}
 			else
 			{
-				rigidbody2D.AddForce ( new Vector2 ( 90000 , 0 ) );//recieveHurtX
+				rigidbody2D.AddForce ( new Vector2 ( -recieveHurtX , 0 ) );//recieveHurtX
 			}
 
 			if( blockCheck == true && crouchCheck == beingHurtLow )
@@ -798,9 +788,9 @@ public class PlayerController : MonoBehaviour
 		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false && LPtrigger == true )
 		{
 			//send an attack signal
-			//atariDesu = true if bool owLock is returned from the attack reciever
 			atariDesu = attack.amIgettingHitSLP( hurtX, hurtY, currentDamage, hurtLow );
 		}
+		//standingLKcalls
 		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false && LKtrigger == true )
 		{
 			//send an attack signal
@@ -817,7 +807,13 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-
+	public void walking()
+	{
+		if( crouchCheck == false ) 
+		{
+			rigidbody2D.velocity = new Vector2 ( moveX * maxspeed, rigidbody2D.velocity.y );
+		}
+	}
 
 
 	//hitboxes--------------------------------------------------------------------------------------------------------
@@ -882,4 +878,28 @@ public class PlayerController : MonoBehaviour
 	}
 	//amIgettingHit ends********************************************************************************************
 
+
+	//animationCalls &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+	public void animationCalls()
+	{
+		anim.SetFloat ( velocityXString, moveX ); //telling the animator what 
+		//horizontal direction the character is going
+		anim.SetFloat ( velocityYString, rigidbody2D.velocity.y ); //telling the animator what 
+		//vertical direction the character is going
+		anim.SetInteger ( normalFramesString, normalFrames );
+		anim.SetBool ( LPStringTrigger, LPtrigger );
+		anim.SetBool ( HPStringTrigger, HPtrigger );
+		anim.SetBool ( LKStringTrigger, LKtrigger );
+		anim.SetBool ( HKStringTrigger, HKtrigger );
+		anim.SetBool ( groundString, groundCheck );
+		anim.SetBool ( blockingString, blockCheck );
+		anim.SetBool ( facingLeftstring, facingLeft );  //telling the animator if facing left or not
+		anim.SetBool ( crouchingString, crouchCheck ); //telling the animator if crouching or not
+		anim.SetBool ( hurtLockStringLight, hurtLockLight );
+		anim.SetBool ( hurtLockStringHeavy, hurtLockHeavy );
+		anim.SetInteger ( hitFramesString, hitFrames );
+		anim.SetBool ( blockLockStandingString, blockStandingLock );
+		anim.SetBool ( blockLockCrouchingString, blockCrouchingLock );
+	}
+	//animationCalls ends &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 }
