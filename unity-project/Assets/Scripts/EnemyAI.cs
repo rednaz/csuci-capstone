@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class EnemyAI : PlayerController
+public class EnemyAI : MonoBehaviour
 {
 	public float moveSpeed = 2f;		// The speed the enemy moves at.
 	public int HP = 2;					// How many times the enemy can be hit before it dies.
@@ -13,6 +13,8 @@ public class EnemyAI : PlayerController
 	public float deathSpinMax = 100f;			// A value to give the maximum amount of Torque when dying
 
 	public bool waiting = false;
+
+	public bool isAnAI;
 	
 	private SpriteRenderer ren;			// Reference to the sprite renderer.
 	private Transform frontCheck;		// Reference to the position of the gameobject used for checking if something is in front.
@@ -21,7 +23,8 @@ public class EnemyAI : PlayerController
 	private Transform player;		// Reference to the player.
 	private Transform myTransform;
 	private bool faceLeft = false;
-	
+
+	public PlayerController phases;
 	
 	void Awake()
 	{
@@ -29,12 +32,9 @@ public class EnemyAI : PlayerController
 		//ren = transform.Find("body").GetComponent<SpriteRenderer>();
 		//frontCheck = transform.Find("frontCheck").transform;
 		
-		player = GameObject.FindGameObjectWithTag("CPlayer2").transform;
-		myTransform = transform;		
-<<<<<<< HEAD
-		//punch = new LPunchScript ();
-=======
->>>>>>> zan-dev-test
+		player = GameObject.FindGameObjectWithTag("BPlayer1").transform;
+		myTransform = transform;	
+		phases = gameObject.GetComponent<PlayerController>();
 	}
 	
 	void FixedUpdate ()
@@ -54,7 +54,7 @@ public class EnemyAI : PlayerController
 			}
 		}*/
 		
-		//print ("my" + myTransform.position.x + " " + Random.Range(0,10));
+		print ("my" + myTransform.position.x + " " + Random.Range(0,10));
 		//print (player.position.x);
 		
 		if (myTransform.position.x - player.position.x > 0 && !faceLeft)
@@ -76,27 +76,31 @@ public class EnemyAI : PlayerController
 		//rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);	
 	}
 
+	public void isAI()
+	{
+		print ("I'm an AI");
+	}
+
 	public void startState()
 	{
-		if (Mathf.Abs (myTransform.position.x - player.position.x) > 6) {
+		if (Mathf.Abs (myTransform.position.x - player.position.x) > 0) {
 			//if (Random.Range(0,100) > 80) enemy not constantly moving towards player
 			//{
 			//}
 
 			rangeState ();
+			print ("ranged");
 		} 
 		else
 		{
+			print ("melee");
 			meleeState ();
 		}
 	}
 
 	public void meleeState()
 	{
-<<<<<<< HEAD
-		//punch.DoSomething ();
-=======
->>>>>>> zan-dev-test
+
 	}
 
 	public void rangeState()
