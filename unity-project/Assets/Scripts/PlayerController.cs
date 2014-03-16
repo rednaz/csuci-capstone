@@ -280,7 +280,22 @@ public class PlayerController : MonoBehaviour
 		//}
 
 
-		//Phase 2
+		//Phase 2 (hurt standing stun)
+		//Player is on the ground and no control, stun from the previous hit
+		if ( hitFrames > 1 )
+		{
+			hitFrames--;
+			return;
+		}
+		else if ( hitFrames == 1 )
+		{
+			hitFrames--;
+			hurtLockLight = false;
+			hurtLockHeavy = false;
+		}
+
+
+		//Phase 3
 		//Player is on the ground and no control, being hurt
 		//Set countDown from the hit
 		if( groundCheck == true )
@@ -290,11 +305,12 @@ public class PlayerController : MonoBehaviour
 		//turn off beingHurt when the player recovers from the previous ground hit
 		if ( beingHurt == true )
 		{
+			beingHurt = false;
 			return;
 		}
 
 
-		//Phase 3
+		//Phase 4
 		//Player is on the ground, no control, and recovering from hurt (getting up)
 		//Flush the status here when countDown reaches 0
 		/*
@@ -311,7 +327,7 @@ public class PlayerController : MonoBehaviour
 		*/
 
 
-		//Phase 4
+		//Phase 5
 		//Player is in the middle of a super/hyper and cannot move till
 		//the move completes, prevents spamming of supers/hypers
 		/*
@@ -338,7 +354,7 @@ public class PlayerController : MonoBehaviour
 		*/
 
 
-		//Phase 5
+		//Phase 6
 		//Player is in the air, left and right control not possible
 		//Only one normal air attack in the air is possible
 		//One super and hyper and only one of each are possible if allows
@@ -357,26 +373,26 @@ public class PlayerController : MonoBehaviour
 		}
 
 			
-		//Phase 6
+		//Phase 7
 		//Player is on the ground and attacking, left and right control not possible
 		//Super and hyper are possible here
 		//Jumping is not possible
 		//Blocking isn't possible here
 
 
-		//Phase 7
+		//Phase 8
 		//player successfully implemented a hyper, game executes hyper
 		//hyper 1, 2, and 3 checked if entered at this moment
 		//hyper1Check ();
 
 
 
-		//Phase 8
+		//Phase 9
 		//player successfully implemented a super, game executes super
 		//super 1 and 2 checked if entered a this moment
 
 
-		//Phase 9 (normals being executed)
+		//Phase 10 (normals being executed)
 		//normalFramesString
 
 		if( normalFrames > 0 && groundCheck == true )
@@ -388,19 +404,19 @@ public class PlayerController : MonoBehaviour
 		atariDesu = false;
 
 
-		//Phase 10 (crouching)
+		//Phase 11 (crouching)
 
 
 
 
-		//Phase 11 (crouching normals)
+		//Phase 12 (crouching normals)
 		if ( crouchCheck == true )
 		{
 			crouchingNormal();
 		}
 
 
-		//Phase 12 (normals listening)
+		//Phase 13 (normals listening)
 		if ( crouchCheck == false )
 		{
 			standingNormal();
@@ -412,7 +428,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-		//Phase 13 (walking and flipping)
+		//Phase 14 (walking and flipping)
 		//Player is ready to take any commands without interruptions
 		//moving left and right
 
@@ -425,15 +441,15 @@ public class PlayerController : MonoBehaviour
 			crouchCheck = false;
 		}
 
-		//Phase 14 (walking)
+		//Phase 15 (walking)
 		walking ();
 		determineFlip ();
 
-		//Phase 14 (jumping)
+		//Phase 16 (jumping)
 		//code to jump
 		jumpCall ();
 
-		//Phase 14 (blocking)
+		//Phase 17 (blocking)
 		blockInput ();
 
 
@@ -743,24 +759,61 @@ public class PlayerController : MonoBehaviour
 
 	public void hurtWhileStanding()
 	{
+		//currentDamage;
+		//public int damageThreshold;
+		//public int lightHitFrames;
+		//public int heavyHitFrames;
 		if( beingHurt == true )
 		{
-			if( enemyX  < transform.position.x )
+			if( crouchCheck == true && beingHurtLow == true || crouchCheck == false && beingHurtLow == false 
+			   || crouchCheck == false && beingHurtLow == true )
+				//the only one that passes this undetected is if the attack is high and the player is crouching
+				//obviously the attacking player would be attacking over the opposing player's head result in a miss
+				//the exception is an attack from the air, will be coded in later
 			{
-				rigidbody2D.AddForce ( new Vector2 ( recieveHurtX , 0 ) );
-			}
-			else
-			{
-				rigidbody2D.AddForce ( new Vector2 ( -recieveHurtX , 0 ) );//recieveHurtX
-			}
+				if( enemyX  < transform.position.x )
+				{
+					rigidbody2D.AddForce ( new Vector2 ( recieveHurtX , 0 ) );
+				}
+				else
+				{
+					rigidbody2D.AddForce ( new Vector2 ( -recieveHurtX , 0 ) );//recieveHurtX
+				}
 
-			if( blockCheck == true && crouchCheck == beingHurtLow )
-			{
-				minusHealth( chipDamage );
-			}
-			else //player isn't blocking, recieve amount of damage
-			{
-				minusHealth( damageAmountRecieved );
+				if( blockCheck == true && crouchCheck == beingHurtLow ) //blocked the attack successfully
+				{
+					minusHealth( chipDamage );
+					if( crouchCheck == true )
+					{
+						blockCrouchingLock = true; //sends animation signal to showcase crouch blocking
+						if ( damageAmountRecieved <= damageThreshold )  //how long is the player in block lock
+						{
+							hitFrames = lightHitFrames;
+						}
+						else
+						{
+							hitFrames = heavyHitFrames;
+						}
+					}
+					else //crouchCheck is false
+					{
+						blockStandingLock = true; //sends animation signal to showcase standing blocking
+					}
+				}
+				else //player isn't blocking, recieve amount of damage
+				{
+					minusHealth( damageAmountRecieved );
+					if ( damageAmountRecieved <= damageThreshold ) //how long the player is in hit stun
+					{
+						hurtLockLight = true;
+						hitFrames = lightHitFrames;
+					}
+					else
+					{
+						hurtLockHeavy = true;
+						hitFrames = heavyHitFrames;
+					}
+				}
 			}
 			//rigidbody2D.AddForce (new Vector2 (0, 90000f));  //currently launches into SPAAAAAAAAAAAAACE
 		}
