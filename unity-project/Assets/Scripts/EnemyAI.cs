@@ -52,8 +52,12 @@ public class EnemyAI : MonoBehaviour
 	{
 		if (isAnAI && phases.canAct)
 		{
-			phases.currentInput = "A";
-			print (phases.currentInput);
+			rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);
+
+			if (myTransform.position.x - player.position.x < 1)
+			{
+				phases.currentInput = "A";
+			}
 		}
 
 		// Create an array of all the colliders in front of the enemy.

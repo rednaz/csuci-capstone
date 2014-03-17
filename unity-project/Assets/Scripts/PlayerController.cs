@@ -518,7 +518,7 @@ public class PlayerController : MonoBehaviour
 		{
 			currentInput = "6";
 		}
-		else //no input
+		else if (gameObject.GetComponent<EnemyAI>() == null) //no input && no AI
 		{
 			currentInput = "X";
 		}
@@ -755,8 +755,7 @@ public class PlayerController : MonoBehaviour
 	{
 		moveX = Input.GetAxis ( moveXgrabber );
 		moveY = Input.GetAxis ( moveYgrabber );
-		//nextInput = buttonListener ();
-		print ("in player" + currentInput);
+		nextInput = buttonListener ();
 		buttonRegister ();
 	}
 
