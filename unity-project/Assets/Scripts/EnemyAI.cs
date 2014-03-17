@@ -13,8 +13,6 @@ public class EnemyAI : MonoBehaviour
 	public float deathSpinMax = 100f;			// A value to give the maximum amount of Torque when dying
 
 	public bool waiting = false;
-
-	public bool isAnAI;
 	
 	private SpriteRenderer ren;			// Reference to the sprite renderer.
 	private Transform frontCheck;		// Reference to the position of the gameobject used for checking if something is in front.
@@ -24,7 +22,20 @@ public class EnemyAI : MonoBehaviour
 	private Transform myTransform;
 	private bool faceLeft = false;
 
+
+	// to gain access to Phase functions
 	public PlayerController phases;
+
+	/***************************************************
+	 * determines if AI is turned on
+	 * NOTE: isAnAI check is only there to simulate 
+	 * 	game menu selection to Single Player mode 
+	 * 	If that feature is implemented, isAnAI would 
+	 * 	be removed along with EnemyAI component from 
+	 * 	the character object and would be added 
+	 * 	through the menu selection ONLY.
+	 ***************************************************/
+	public bool isAnAI;
 	
 	void Awake()
 	{
@@ -32,13 +43,18 @@ public class EnemyAI : MonoBehaviour
 		//ren = transform.Find("body").GetComponent<SpriteRenderer>();
 		//frontCheck = transform.Find("frontCheck").transform;
 		
-		player = GameObject.FindGameObjectWithTag("BPlayer1").transform;
-		myTransform = transform;	
 		phases = gameObject.GetComponent<PlayerController>();
+		player = phases.attack;
+		myTransform = transform;	
 	}
 	
 	void FixedUpdate ()
 	{
+		if (isAnAI && phases.canAct)
+		{
+			
+		}
+
 		// Create an array of all the colliders in front of the enemy.
 		//Collider2D[] frontHits = Physics2D.OverlapPointAll(frontCheck.position, 1);
 		

@@ -209,6 +209,12 @@ public class PlayerController : MonoBehaviour
 	public int currentDamage;
 	public bool hurtLow;
 
+
+	// variable for AI code to interact with
+	// variable is set to true after reaching PHASE 13
+	// variable is set to false if not allowed to act
+	public bool canAct = false;
+
 	//called every frame
 	//the heart of all actions-------------------------------------------------------
 	void FixedUpdate () 
