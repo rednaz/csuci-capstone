@@ -44,7 +44,7 @@ public class EnemyAI : MonoBehaviour
 		//frontCheck = transform.Find("frontCheck").transform;
 		
 		phases = gameObject.GetComponent<PlayerController>();
-		player = phases.attack;
+		player = phases.attack.transform;
 		myTransform = transform;	
 	}
 	
@@ -52,7 +52,7 @@ public class EnemyAI : MonoBehaviour
 	{
 		if (isAnAI && phases.canAct)
 		{
-			
+			phases.nextInput = "A";
 		}
 
 		// Create an array of all the colliders in front of the enemy.
@@ -70,7 +70,7 @@ public class EnemyAI : MonoBehaviour
 			}
 		}*/
 		
-		print ("my" + myTransform.position.x + " " + Random.Range(0,10));
+		/*print ("my" + myTransform.position.x + " " + Random.Range(0,10));
 		//print (player.position.x);
 		
 		if (myTransform.position.x - player.position.x > 0 && !faceLeft)
@@ -89,7 +89,7 @@ public class EnemyAI : MonoBehaviour
 		}
 		
 		// Set the enemy's velocity to moveSpeed in the x direction.
-		//rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);	
+		//rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);*/	
 	}
 
 	public void isAI()
