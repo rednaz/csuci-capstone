@@ -52,7 +52,8 @@ public class EnemyAI : MonoBehaviour
 	{
 		if (isAnAI && phases.canAct)
 		{
-			phases.nextInput = "A";
+			phases.currentInput = "A";
+			print (phases.currentInput);
 		}
 
 		// Create an array of all the colliders in front of the enemy.

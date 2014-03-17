@@ -213,7 +213,7 @@ public class PlayerController : MonoBehaviour
 	// variable for AI code to interact with
 	// variable is set to true after reaching PHASE 13
 	// variable is set to false if not allowed to act
-	public bool canAct = false;
+	public bool canAct = true;
 
 	//called every frame
 	//the heart of all actions-------------------------------------------------------
@@ -558,6 +558,8 @@ public class PlayerController : MonoBehaviour
 			previousInput = nextInput;
 			//Debug.Log (commands);
 		}
+
+		print ("Command" + commands);
 	}
 
 
@@ -753,7 +755,8 @@ public class PlayerController : MonoBehaviour
 	{
 		moveX = Input.GetAxis ( moveXgrabber );
 		moveY = Input.GetAxis ( moveYgrabber );
-		nextInput = buttonListener ();
+		//nextInput = buttonListener ();
+		print ("in player" + currentInput);
 		buttonRegister ();
 	}
 
