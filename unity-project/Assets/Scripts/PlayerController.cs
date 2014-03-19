@@ -230,6 +230,7 @@ public class PlayerController : MonoBehaviour
 		//this line checks if the character is on the ground at this frame
 		groundCheck = Physics2D.OverlapCircle (daGround.position, groundRadius, whatIsGround);
 
+		print ("In PlayerController" + rigidbody2D.velocity);
 
 		//this is nothing but debug code, feel free to uncomment at your pleasure to
 		//see game activity
@@ -255,6 +256,7 @@ public class PlayerController : MonoBehaviour
 		if ( health < 1 )
 		{
 			KO = true;
+			canAct = false;
 		}
 		if ( KO == true ) 
 		{
@@ -268,6 +270,7 @@ public class PlayerController : MonoBehaviour
 		if ( countDown > 1 && groundCheck == true ) 
 		{
 			countDown--;
+			canAct = false;
 			return;
 		} 
 		else if ( countDown == 1 )
@@ -291,6 +294,7 @@ public class PlayerController : MonoBehaviour
 		if ( hitFrames > 1 )
 		{
 			hitFrames--;
+			canAct = false;
 			return;
 		}
 		else if ( hitFrames == 1 )
@@ -306,6 +310,7 @@ public class PlayerController : MonoBehaviour
 		//Set countDown from the hit
 		if( groundCheck == true )
 		{
+			canAct = false;
 			hurtWhileStanding ();
 		}
 		//turn off beingHurt when the player recovers from the previous ground hit
@@ -375,6 +380,7 @@ public class PlayerController : MonoBehaviour
 		//	airNormal ();
 		if ( groundCheck == false )
 		{
+			canAct = false;
 			return;
 		}
 
@@ -403,6 +409,7 @@ public class PlayerController : MonoBehaviour
 
 		if( normalFrames > 0 && groundCheck == true )
 		{
+			canAct = false;
 			normalCalls();
 			return;
 		}
@@ -418,6 +425,7 @@ public class PlayerController : MonoBehaviour
 		//Phase 12 (crouching normals)
 		if ( crouchCheck == true )
 		{
+			canAct = false;
 			crouchingNormal();
 		}
 
@@ -425,6 +433,7 @@ public class PlayerController : MonoBehaviour
 		//Phase 13 (normals listening)
 		if ( crouchCheck == false )
 		{
+			canAct = false;
 			standingNormal();
 		}
 		if ( normalFrames > 0 )
@@ -432,7 +441,7 @@ public class PlayerController : MonoBehaviour
 			return;
 		}
 
-
+		canAct = true;
 
 		//Phase 14 (walking and flipping)
 		//Player is ready to take any commands without interruptions
@@ -759,8 +768,11 @@ public class PlayerController : MonoBehaviour
 
 	public void buttonRegistration()
 	{
-		moveX = Input.GetAxis ( moveXgrabber );
-		moveY = Input.GetAxis ( moveYgrabber );
+		if (gameObject.GetComponent<EnemyAI>() == null)
+		{
+			moveX = Input.GetAxis ( moveXgrabber );
+			moveY = Input.GetAxis ( moveYgrabber );
+		}
 		nextInput = buttonListener ();
 		buttonRegister ();
 	}

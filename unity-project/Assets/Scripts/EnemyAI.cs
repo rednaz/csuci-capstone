@@ -52,7 +52,7 @@ public class EnemyAI : MonoBehaviour
 	{
 		if (isAnAI && phases.canAct)
 		{
-			rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);
+			phases.moveX = 2;
 
 			if (myTransform.position.x - player.position.x < 1)
 			{
