@@ -23,6 +23,11 @@ public class CPlayerController : PlayerController
 		HKStringTrigger = "HKtrigger2";
 		groundString = "isGrounded2";
 		velocityYString = "VelocityY2";
+		hurtLockStringLight = "hurtLockLight2";
+		hurtLockStringHeavy = "hurtLockHeavy2";
+		hitFramesString = "hitFrames2";
+		blockLockStandingString = "blockLockStanding2";
+		blockLockCrouchingString = "blockLockCrouching2";
 		
 		//the other player declaration
 		OtherPlayer = "BPlayer1"; //this could probably be another call fuction
@@ -105,6 +110,10 @@ public class CPlayerController : PlayerController
 		//CLPYforce = 200;		CHPYforce = 300;	CLKYforce = 200;	CHKYforce = 300;
 		//CLPdamage = 10;		CHPdamage = 20;		CLKdamage = 10;		CHKdamage = 20;
 		//CLPlow = false;		CHPlow = false;		CLKlow = true;		CHKlow = true;
+
+		damageThreshold = 10; //determines if the hit recieved is soft or hard hit
+		lightHitFrames = 15;  //stun lasts this long when ground damage is equal or less than damageThreshold
+		heavyHitFrames = 25;  //stun lasts this long when ground damage is greater than damageThreshold
 		
 		//note: startFrame is when the attack calls actually start happening in the
 		//      normal attack animation, finishFrame is when the attack calls stop

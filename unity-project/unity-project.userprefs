@@ -1,5 +1,6 @@
 ﻿<Properties>
 <<<<<<< HEAD
+<<<<<<< HEAD
   <MonoDevelop.Ide.Workspace />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PlayerController.cs">
     <Files>
@@ -15,6 +16,14 @@
       <File FileName="Assets\Scripts\BplayerControllerScript.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\PlayerController.cs" Line="379" Column="36" />
 >>>>>>> zan-dev-test
+=======
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PlayerController.cs">
+    <Files>
+      <File FileName="Assets\Scripts\PlayerController.cs" Line="440" Column="4" />
+      <File FileName="Assets\Scripts\BPlayerController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\CPlayerController.cs" Line="1" Column="1" />
+>>>>>>> chico-dev
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

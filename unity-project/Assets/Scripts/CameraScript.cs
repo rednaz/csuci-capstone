@@ -18,7 +18,7 @@ public class CameraScript : MonoBehaviour
 	
 	// Update is called once per frame
 	void FixedUpdate () 
-	{
+	{//farleft -14.81057f			farright 23.75795f
 		//getting Bplayer position
 		Bpos = Bgrab.position.x;
 
@@ -26,8 +26,9 @@ public class CameraScript : MonoBehaviour
 		Cpos = Cgrab.position.x;
 		//Debug.Log (Bpos + " " + Cpos);
 		//doing math to determine new middle between the players
-		newX = (Bpos + Cpos) / 2;
 
+
+			newX = (Bpos + Cpos) / 2;
 		transform.position = new Vector3( newX, 6.26934f, 0 );
 	}
 }
