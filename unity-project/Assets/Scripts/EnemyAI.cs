@@ -26,6 +26,8 @@ public class EnemyAI : MonoBehaviour
 	// to gain access to Phase functions
 	public PlayerController phases;
 
+	public bool hasInterrupt = false;
+
 	/***************************************************
 	 * determines if AI is turned on
 	 * NOTE: isAnAI check is only there to simulate 
@@ -50,8 +52,13 @@ public class EnemyAI : MonoBehaviour
 	
 	void FixedUpdate ()
 	{
-		if (isAnAI && phases.canAct)
+		//PHASE 0
+		// if not an AI or can't act
+		// exit loop
+		if (!isAnAI || !phases.canAct)
 		{
+			return;
+
 			phases.moveX = 2;
 
 			if (myTransform.position.x - player.position.x < 1)
@@ -59,6 +66,27 @@ public class EnemyAI : MonoBehaviour
 				phases.currentInput = "A";
 			}
 		}
+
+		//PHASE 1
+		// if an interupt needs to be handled
+		if (hasInterrupt)
+		{
+
+		}
+
+		//PHASE 2
+		// decide if AI wants to block
+
+		//PHASE 3
+		// decide if AI can and will use a melee attack
+
+		//PHASE 4
+		// decide if AI will use ranged attack
+
+		//PHASE 5
+		// decide if AI will move
+
+
 
 		// Create an array of all the colliders in front of the enemy.
 		//Collider2D[] frontHits = Physics2D.OverlapPointAll(frontCheck.position, 1);
