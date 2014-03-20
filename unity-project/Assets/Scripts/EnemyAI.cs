@@ -38,6 +38,9 @@ public class EnemyAI : MonoBehaviour
 	 * 	through the menu selection ONLY.
 	 ***************************************************/
 	public bool isAnAI;
+
+	// frames to run
+	public int running;
 	
 	void Awake()
 	{
@@ -59,8 +62,6 @@ public class EnemyAI : MonoBehaviour
 		{
 			return;
 
-			phases.moveX = 2;
-
 			if (myTransform.position.x - player.position.x < 1)
 			{
 				phases.currentInput = "A";
@@ -75,16 +76,28 @@ public class EnemyAI : MonoBehaviour
 		}
 
 		//PHASE 2
-		// decide if AI wants to block
+		if (running > 0)
+		{
+			running--;
+			return;
+		}
+		else
+		{
+			phases.moveX = 0;
+		}
 
 		//PHASE 3
-		// decide if AI can and will use a melee attack
+		// decide if AI wants to block
 
 		//PHASE 4
-		// decide if AI will use ranged attack
+		// decide if AI can and will use a melee attack
 
 		//PHASE 5
+		// decide if AI will use ranged attack
+
+		//PHASE 6
 		// decide if AI will move
+		move ();
 
 
 
@@ -154,7 +167,7 @@ public class EnemyAI : MonoBehaviour
 
 	public void rangeState()
 	{
-		move (10f);
+		move ();
 	}
 
 	public void moveState()
@@ -162,23 +175,26 @@ public class EnemyAI : MonoBehaviour
 
 	}
 
-	public void move(float moveSpeed)
+	public void move()
 	{
-		print (Random.Range(0,1));
-		if (Random.Range(0, 10) > 4)
+		int direction = Random.Range (0, 10);
+		print (direction);
+
+		if (direction < 3)
 		{
-			rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);
+			running = (Random.Range (0,2) + 1) * 10;
+			return;
+		}
+		else if (direction < 5)
+		{
+			phases.moveX = -1;
 		}
 		else
 		{
-			rigidbody2D.velocity = new Vector2(transform.localScale.x * -moveSpeed, rigidbody2D.velocity.y);
+			phases.moveX = 1;
 		}
 
-		print ("In Move");
-
-		Invoke ("stop", 5);
-
-		waiting = true;
+		running = (Random.Range (0,3) + 1) * 10;
 	}
 
 	public void stop()

@@ -230,8 +230,6 @@ public class PlayerController : MonoBehaviour
 		//this line checks if the character is on the ground at this frame
 		groundCheck = Physics2D.OverlapCircle (daGround.position, groundRadius, whatIsGround);
 
-		print ("In PlayerController" + rigidbody2D.velocity);
-
 		//this is nothing but debug code, feel free to uncomment at your pleasure to
 		//see game activity
 		if (Input.GetKeyDown (KeyCode.Space)) 
@@ -588,8 +586,6 @@ public class PlayerController : MonoBehaviour
 			previousInput = nextInput;
 			//Debug.Log (commands);
 		}
-
-		print ("Command" + commands);
 	}
 
 
