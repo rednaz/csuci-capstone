@@ -43,7 +43,10 @@ public class EnemyAI : MonoBehaviour
 	public int running;
 	// used for entering PHASE 3
 	public bool incAttack;
-	
+	// AI is doing combo
+	// public currentCombo;
+	public int comboPos = 0;
+
 	void Awake()
 	{
 		// Setting up the references.
@@ -65,6 +68,7 @@ public class EnemyAI : MonoBehaviour
 		if (!phases.canAct)
 		{
 			phases.currentInput = "X";
+			comboPos = 0;
 			return;
 		}
 
@@ -160,14 +164,28 @@ public class EnemyAI : MonoBehaviour
 	{
 		if (Mathf.Abs (myTransform.position.x - player.position.x) < 1)
 		{
-			int attack = Random.Range (0, 10);
+			if (comboPos > 0)
+			{
+				phases.currentInput = phases.hyper1Aright[comboPos].ToString();
+				comboPos++;
+			}
 
-			if (attack < 8)
-				return false;
+			else
+			{
+				int attack = Random.Range (0, 10);
+				
+				if (attack < 5)
+					return false;
 
-			phases.currentInput = "A";
-
-			print (phases.currentInput);
+				attack = Random.Range (0, 10);
+				if (attack < 8)
+				{
+					phases.currentInput = phases.hyper1Aright[comboPos].ToString();
+					comboPos++;
+				}
+				else
+					phases.currentInput = "A";
+			}
 
 			return true;
 		}
@@ -183,7 +201,6 @@ public class EnemyAI : MonoBehaviour
 	public bool move()
 	{
 		int direction = Random.Range (0, 10);
-		print (direction);
 		
 		if (direction < 3)
 		{
