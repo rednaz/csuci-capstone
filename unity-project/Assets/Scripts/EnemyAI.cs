@@ -41,6 +41,8 @@ public class EnemyAI : MonoBehaviour
 
 	// frames to run
 	public int running;
+	// used for entering PHASE 3
+	public bool incAttack;
 	
 	void Awake()
 	{
@@ -58,21 +60,20 @@ public class EnemyAI : MonoBehaviour
 		//PHASE 0
 		// if not an AI or can't act
 		// exit loop
-		if (!isAnAI || !phases.canAct)
-		{
+		if (!isAnAI)
 			return;
-
-			if (myTransform.position.x - player.position.x < 1)
-			{
-				phases.currentInput = "A";
-			}
+		if (!phases.canAct)
+		{
+			phases.currentInput = "X";
+			return;
 		}
+
 
 		//PHASE 1
 		// if an interupt needs to be handled
 		if (hasInterrupt)
 		{
-
+			handleInterrupt ();
 		}
 
 		//PHASE 2
@@ -88,16 +89,23 @@ public class EnemyAI : MonoBehaviour
 
 		//PHASE 3
 		// decide if AI wants to block
+		if (incAttack && block ())
+			return;
 
 		//PHASE 4
 		// decide if AI can and will use a melee attack
+		if (melee ())
+			return;
 
 		//PHASE 5
 		// decide if AI will use ranged attack
+		if (ranged ())
+			return;
 
 		//PHASE 6
 		// decide if AI will move
-		move ();
+		if (move ())
+			return;
 
 
 
@@ -138,6 +146,64 @@ public class EnemyAI : MonoBehaviour
 		//rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);*/	
 	}
 
+	public void handleInterrupt ()
+	{
+		running = 0;
+	}
+
+	public bool block ()
+	{
+		return false;
+	}
+
+	public bool melee ()
+	{
+		if (Mathf.Abs (myTransform.position.x - player.position.x) < 1)
+		{
+			int attack = Random.Range (0, 10);
+
+			if (attack < 8)
+				return false;
+
+			phases.currentInput = "A";
+
+			print (phases.currentInput);
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public bool ranged ()
+	{
+		return false;
+	}
+	
+	public bool move()
+	{
+		int direction = Random.Range (0, 10);
+		print (direction);
+		
+		if (direction < 3)
+		{
+			running = (Random.Range (0,2) + 1) * 10;
+			return true;
+		}
+		else if (direction < 5)
+		{
+			phases.moveX = -1;
+		}
+		else
+		{
+			phases.moveX = 1;
+		}
+		
+		running = (Random.Range (0,3) + 1) * 10;
+
+		return true;
+	}
+
 	public void isAI()
 	{
 		print ("I'm an AI");
@@ -173,28 +239,6 @@ public class EnemyAI : MonoBehaviour
 	public void moveState()
 	{
 
-	}
-
-	public void move()
-	{
-		int direction = Random.Range (0, 10);
-		print (direction);
-
-		if (direction < 3)
-		{
-			running = (Random.Range (0,2) + 1) * 10;
-			return;
-		}
-		else if (direction < 5)
-		{
-			phases.moveX = -1;
-		}
-		else
-		{
-			phases.moveX = 1;
-		}
-
-		running = (Random.Range (0,3) + 1) * 10;
 	}
 
 	public void stop()
