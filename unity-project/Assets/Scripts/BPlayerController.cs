@@ -112,6 +112,33 @@ public class BPlayerController : PlayerController
 		//CLPdamage = 10;		CHPdamage = 20;		CLKdamage = 10;		CHKdamage = 20;
 		//CLPlow = false;		CHPlow = false;		CLKlow = true;		CHKlow = true;
 
+		//normal standing frames values
+		//lightPunch				heavyPunch					lightKick					heavyKick
+		attackValues[ 0, 0 ] = 6; 	attackValues[ 0, 1 ] = 6;	attackValues[ 0, 2 ] = 6;	attackValues[ 0, 3 ] = 6;   
+		attackValues[ 1, 0 ] = 6; 	attackValues[ 1, 1 ] = 6;	attackValues[ 1, 2 ] = 6;	attackValues[ 1, 3 ] = 6;
+		attackValues[ 2, 0 ] = 6; 	attackValues[ 2, 1 ] = 6;	attackValues[ 2, 2 ] = 6;	attackValues[ 2, 3 ] = 6;
+		attackValues[ 3, 0 ] = 6; 	attackValues[ 3, 1 ] = 6;	attackValues[ 3, 2 ] = 6;	attackValues[ 3, 3 ] = 6;
+		attackValues[ 4, 0 ] = 6; 	attackValues[ 4, 1 ] = 6;	attackValues[ 4, 2 ] = 6;	attackValues[ 4, 3 ] = 6;
+		attackValues[ 5, 0 ] = 6; 	attackValues[ 5, 1 ] = 6;	attackValues[ 5, 2 ] = 6;	attackValues[ 5, 3 ] = 6;
+
+		//normal air frame values
+		//lightPunch				heavyPunch					lightKick					heavyKick
+		attackValues[ 0, 4 ] = 6; 	attackValues[ 0, 5 ] = 6;	attackValues[ 0, 6 ] = 6;	attackValues[ 0, 7 ] = 6;   
+		attackValues[ 1, 4 ] = 6; 	attackValues[ 1, 5 ] = 6;	attackValues[ 1, 6 ] = 6;	attackValues[ 1, 7 ] = 6;
+		attackValues[ 2, 4 ] = 6; 	attackValues[ 2, 5 ] = 6;	attackValues[ 2, 6 ] = 6;	attackValues[ 2, 7 ] = 6;
+		attackValues[ 3, 4 ] = 6; 	attackValues[ 3, 5 ] = 6;	attackValues[ 3, 6 ] = 6;	attackValues[ 3, 7 ] = 6;
+		attackValues[ 4, 4 ] = 6; 	attackValues[ 4, 5 ] = 6;	attackValues[ 4, 6 ] = 6;	attackValues[ 4, 7 ] = 6;
+		attackValues[ 5, 4 ] = 6; 	attackValues[ 5, 5 ] = 6;	attackValues[ 5, 6 ] = 6;	attackValues[ 5, 7 ] = 6;
+
+		//normal crouching frame values
+		//lightPunch				heavyPunch					lightKick					heavyKick
+		attackValues[ 0, 8 ] = 6; 	attackValues[ 0, 9 ] = 6;	attackValues[ 0, 10 ] = 6;	attackValues[ 0, 11 ] = 6;   
+		attackValues[ 1, 8 ] = 6; 	attackValues[ 1, 9 ] = 6;	attackValues[ 1, 10 ] = 6;	attackValues[ 1, 11 ] = 6;
+		attackValues[ 2, 8 ] = 6; 	attackValues[ 2, 9 ] = 6;	attackValues[ 2, 10 ] = 6;	attackValues[ 2, 11 ] = 6;
+		attackValues[ 3, 8 ] = 6; 	attackValues[ 3, 9 ] = 6;	attackValues[ 3, 10 ] = 6;	attackValues[ 3, 11 ] = 6;
+		attackValues[ 4, 8 ] = 6; 	attackValues[ 4, 9 ] = 6;	attackValues[ 4, 10 ] = 6;	attackValues[ 4, 11 ] = 6;
+		attackValues[ 5, 8 ] = 6; 	attackValues[ 5, 9 ] = 6;	attackValues[ 5, 10 ] = 6;	attackValues[ 5, 11 ] = 6;
+
 		damageThreshold = 10; //determines if the hit recieved is soft or hard hit
 		lightHitFrames = 15;  //stun lasts this long when ground damage is equal or less than damageThreshold
 		heavyHitFrames = 25;  //stun lasts this long when ground damage is greater than damageThreshold

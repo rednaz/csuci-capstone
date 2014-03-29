@@ -81,6 +81,12 @@ public class PlayerController : MonoBehaviour
 	public int CLPdamage;			public int CHPdamage;			public int CLKdamage;			public int CHKdamage;
 	public bool CLPlow;				public bool CHPlow;				public bool CLKlow;				public bool CHKlow;
 
+	//int array
+	public int[ , ]attackValues = new int[ 6, 12 ];
+	//Rows:	0: totalFrames		3: Xforce				Columns: 	00 - 03: standing values
+	//		1: startFrame		4: Yforce							04 - 07: air values
+	//		2: finishFrame		5: damageAmount						08 - 11: crouching values
+
 	//normal triggers
 	public bool LPtrigger = false;		public bool HPtrigger = false;		public bool LKtrigger = false;		public bool HKtrigger = false;
 
@@ -873,6 +879,7 @@ public class PlayerController : MonoBehaviour
 	//when a hitbox successfully touches a player
 	void OnTriggerStay2D ( Collider2D other )
 	{
+		//standing values
 		if ( other.gameObject.tag == "LowPunchStanding" )
 		{
 			SLP = true;
@@ -881,11 +888,57 @@ public class PlayerController : MonoBehaviour
 		{
 			SLK = true;
 		}
+		if ( other.gameObject.tag == "HardPunchStanding" )
+		{
+			SHP = true;
+		}
+		if ( other.gameObject.tag == "HardKickStanding" )
+		{
+			SHK = true;
+		}
+
+		//crouching values
+		if ( other.gameObject.tag == "LowPunchCrouch" )
+		{
+			CLP = true;
+		}
+		if ( other.gameObject.tag == "LowKickCrouch" )
+		{
+			CLK = true;
+		}
+		if ( other.gameObject.tag == "HardPunchCrouch" )
+		{
+			CHP = true;
+		}
+		if ( other.gameObject.tag == "HardKickCrouch" )
+		{
+			CHK = true;
+		}
+
+		//air values
+		if ( other.gameObject.tag == "LowPunchAir" )
+		{
+			ALP = true;
+		}
+		if ( other.gameObject.tag == "LowKickAir" )
+		{
+			ALK = true;
+		}
+		if ( other.gameObject.tag == "HardPunchAir" )
+		{
+			AHP = true;
+		}
+		if ( other.gameObject.tag == "HardKickAir" )
+		{
+			AHK = true;
+		}
+
 	}
 
 	//when a hitbox leaves a player no longer touching
 	void OnTriggerExit2D( Collider2D other )
 	{
+		//standing values
 		if ( other.gameObject.tag == "LowPunchStanding" )
 		{
 			SLP = false;
@@ -893,6 +946,50 @@ public class PlayerController : MonoBehaviour
 		if ( other.gameObject.tag == "LowKickStanding" )
 		{
 			SLK = false;
+		}
+		if ( other.gameObject.tag == "HardPunchStanding" )
+		{
+			SHP = false;
+		}
+		if ( other.gameObject.tag == "HardKickStanding" )
+		{
+			SHK = false;
+		}
+
+		//crouching values
+		if ( other.gameObject.tag == "LowPunchCrouch" )
+		{
+			CLP = false;
+		}
+		if ( other.gameObject.tag == "LowKickCrouch" )
+		{
+			CLK = false;
+		}
+		if ( other.gameObject.tag == "HardPunchCrouch" )
+		{
+			CHP = false;
+		}
+		if ( other.gameObject.tag == "HardKickCrouch" )
+		{
+			CHK = false;
+		}
+		
+		//air values
+		if ( other.gameObject.tag == "LowPunchAir" )
+		{
+			ALP = false;
+		}
+		if ( other.gameObject.tag == "LowKickAir" )
+		{
+			ALK = false;
+		}
+		if ( other.gameObject.tag == "HardPunchAir" )
+		{
+			AHP = false;
+		}
+		if ( other.gameObject.tag == "HardKickAir" )
+		{
+			AHK = false;
 		}
 	}
 	//end hitboxes---------------------------------------------------------------------------------------------------
