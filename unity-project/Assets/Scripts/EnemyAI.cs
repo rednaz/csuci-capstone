@@ -177,20 +177,40 @@ public class EnemyAI : MonoBehaviour
 				if (attack < 5)
 					return false;
 
-				attack = Random.Range (0, 10);
-				if (attack < 8)
-				{
-					phases.currentInput = phases.hyper1Aright[comboPos].ToString();
-					comboPos++;
-				}
+				else if (attack < 7)
+					kick();
+
 				else
-					phases.currentInput = "A";
+					punch();
 			}
 
 			return true;
 		}
 
 		return false;
+	}
+
+	public void kick ()
+	{
+		int attack = Random.Range (0, 10);
+		if (attack < 8)
+		{
+
+		}
+		else
+			phases.currentInput = "C";
+	}
+
+	public void punch ()
+	{
+		int attack = Random.Range (0, 10);
+		if (attack < 8)
+		{
+			phases.currentInput = phases.hyper1Aright[comboPos].ToString();
+			comboPos++;
+		}
+		else
+			phases.currentInput = "A";
 	}
 
 	public bool ranged ()
