@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-public class UIFightScript : MonoBehaviour
+public class UIController : MonoBehaviour
 {	
 	private float currentResX, currentResY;
 	private float bHealth, bMaxHealth, cHealth, cMaxHealth;
