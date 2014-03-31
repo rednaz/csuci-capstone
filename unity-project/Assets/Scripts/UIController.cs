@@ -105,8 +105,8 @@ public class UIController : MonoBehaviour
 		}
 	
 		// Draw the health bars
-		drawBHealthBar (500f, bMaxHealth, bHealthBarPos.x, bHealthBarPos.y, healthBarSize.x, healthBarSize.y);
-		drawCHealthBar (500f, cMaxHealth, cHealthBarPos.x, cHealthBarPos.y, healthBarSize.x, healthBarSize.y);
+		drawHealthBar (500f, bMaxHealth, bHealthBarPos.x, bHealthBarPos.y, healthBarSize.x, healthBarSize.y, false);
+		drawHealthBar (500f, cMaxHealth, cHealthBarPos.x, cHealthBarPos.y, healthBarSize.x, healthBarSize.y, true);
 
 		// Draw the super/hyper bars
 
@@ -147,28 +147,18 @@ public class UIController : MonoBehaviour
 	}
 
 	// Draws player B health bar
-	void drawBHealthBar(float curHealth, float maxHealth, float posX, float posY, float sizeX, float sizeY)
+	void drawHealthBar(float curHealth, float maxHealth, float posX, float posY, float sizeX, float sizeY, bool anchorRight)
 	{
 		GUI.BeginGroup (new Rect (posX, posY, sizeX, sizeY));
 		GUI.Box (new Rect (0,0, sizeX, sizeY),progressBarEmpty);
-		
+		float offsetX = 0;
 		// draw the filled-in part:
-		GUI.BeginGroup (new Rect (0, 0, sizeX * (curHealth / maxHealth), sizeY));
-		GUI.Box (new Rect (0,0, sizeX, sizeY),progressBarFull);
-		
-		GUI.EndGroup ();
-		GUI.EndGroup ();
-	}
-	
-	// Draws player C health bar, using offsets so the health gets "anchored" from the right
-	void drawCHealthBar(float curHealth, float maxHealth, float posX, float posY, float sizeX, float sizeY)
-	{
-		GUI.BeginGroup (new Rect (posX, posY, sizeX, sizeY));
-		GUI.Box (new Rect (0,0, sizeX, sizeY),progressBarEmpty);
-		
-		// draw the filled-in part:
-		GUI.BeginGroup (new Rect (0, 0, sizeX * (curHealth / maxHealth), sizeY));
-		GUI.Box (new Rect (0,0, sizeX, sizeY),progressBarFull);
+		// if anchorRight is true, then the health bar gets "anchored" from the right side
+		if (anchorRight == true)
+			offsetX = sizeX * (1 - (curHealth / maxHealth));
+
+		GUI.BeginGroup (new Rect (offsetX, 0, sizeX * (curHealth / maxHealth), sizeY));
+		GUI.Box (new Rect (0, 0, sizeX, sizeY),progressBarFull);
 		
 		GUI.EndGroup ();
 		GUI.EndGroup ();
