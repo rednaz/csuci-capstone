@@ -26,6 +26,7 @@ public class UIController : MonoBehaviour
 	// Timer UI
 	private float timeLeft;
 	private Vector2 timerSize, timerPos;
+	private GUIStyle timerStyle;
 
 
 	// Temporary or testing variables
@@ -110,6 +111,7 @@ public class UIController : MonoBehaviour
 		// Draw the super/hyper bars
 
 		// Draw the timer
+		timerStyle = GUI.skin.GetStyle ("Box");
 		drawTimerGUI (timer, timerPos.x, timerPos.y, timerSize.x, timerSize.y);
 	} 
 
@@ -183,8 +185,10 @@ public class UIController : MonoBehaviour
 
 	void drawTimerGUI(float timeLeft, float posX, float posY, float sizeX, float sizeY)
 	{
+		timerStyle.alignment = TextAnchor.MiddleCenter;
+		timerStyle.fontSize = (int) sizeX / 2;
 		GUI.BeginGroup (new Rect (posX, posY, sizeX, sizeY));
-		GUI.Box (new Rect (0, 0, sizeX, sizeY), timeLeft.ToString("00"));
+		GUI.Box (new Rect (0, 0, sizeX, sizeY), timeLeft.ToString("00"), timerStyle);
 		GUI.EndGroup ();
 	}
 
