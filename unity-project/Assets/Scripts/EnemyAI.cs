@@ -31,10 +31,6 @@ public class EnemyAI : PlayerController
 		
 		player = GameObject.FindGameObjectWithTag("CPlayer2").transform;
 		myTransform = transform;		
-<<<<<<< HEAD
-		//punch = new LPunchScript ();
-=======
->>>>>>> zan-dev-test
 	}
 	
 	void FixedUpdate ()
@@ -93,10 +89,7 @@ public class EnemyAI : PlayerController
 
 	public void meleeState()
 	{
-<<<<<<< HEAD
-		//punch.DoSomething ();
-=======
->>>>>>> zan-dev-test
+
 	}
 
 	public void rangeState()

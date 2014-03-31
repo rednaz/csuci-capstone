@@ -3,6 +3,9 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
+	//random number generator for sounds
+	private System.Random rand = new System.Random();
+
 	public string enemyScript;
 	public PlayerController attack;
 	
@@ -80,6 +83,12 @@ public class PlayerController : MonoBehaviour
 	public int CLPYforce;			public int CHPYforce;			public int CLKYforce;			public int CHKYforce;
 	public int CLPdamage;			public int CHPdamage;			public int CLKdamage;			public int CHKdamage;
 	public bool CLPlow;				public bool CHPlow;				public bool CLKlow;				public bool CHKlow;
+
+	//int array
+	public int[ , ]attackValues = new int[ 6, 12 ];
+	//Rows:	0: totalFrames		3: Xforce				Columns: 	00 - 03: standing values
+	//		1: startFrame		4: Yforce							04 - 07: air values
+	//		2: finishFrame		5: damageAmount						08 - 11: crouching values
 
 	//normal triggers
 	public bool LPtrigger = false;		public bool HPtrigger = false;		public bool LKtrigger = false;		public bool HKtrigger = false;
@@ -221,6 +230,9 @@ public class PlayerController : MonoBehaviour
 	//the heart of all actions-------------------------------------------------------
 	void FixedUpdate () 
 	{
+		//int randomNum = rand.Next(0,100);
+		//Debug.Log ( randomNum );
+
 		//this line checks if the character is on the ground at this frame
 		groundCheck = Physics2D.OverlapCircle (daGround.position, groundRadius, whatIsGround);
 
@@ -284,6 +296,8 @@ public class PlayerController : MonoBehaviour
 		//Player is on the ground and no control, stun from the previous hit
 		if ( hitFrames > 1 )
 		{
+			blockCrouchingLock = false;
+			blockStandingLock = false;
 			hitFrames--;
 			return;
 		}
@@ -683,7 +697,10 @@ public class PlayerController : MonoBehaviour
 			normalFrames = SLKtotalFrames;
 			startNormal = SLKstartFrame;
 			finishNormal = SLKfinishFrame;
+			hurtX = SLKXforce;
+			hurtY = SLKYforce;
 			hurtLow = SLKlow;
+			currentDamage = SLKdamage;
 			LKtrigger = true;
 		}
 		else if ( currentInput == "D" )
@@ -768,7 +785,7 @@ public class PlayerController : MonoBehaviour
 			if( crouchCheck == true && beingHurtLow == true || crouchCheck == false && beingHurtLow == false 
 			   || crouchCheck == false && beingHurtLow == true )
 				//the only one that passes this undetected is if the attack is high and the player is crouching
-				//obviously the attacking player would be attacking over the opposing player's head result in a miss
+				//obviously the attacking player would be attacking over the opposing player's head resulting in a miss
 				//the exception is an attack from the air, will be coded in later
 			{
 				if( enemyX  < transform.position.x )
@@ -792,12 +809,20 @@ public class PlayerController : MonoBehaviour
 						}
 						else
 						{
-							hitFrames = heavyHitFrames;
+							hitFrames = heavyHitFrames; 
 						}
 					}
 					else //crouchCheck is false
 					{
 						blockStandingLock = true; //sends animation signal to showcase standing blocking
+						if ( damageAmountRecieved <= damageThreshold )  //how long is the player in block lock
+						{
+							hitFrames = lightHitFrames;
+						}
+						else
+						{
+							hitFrames = heavyHitFrames; 
+						}
 					}
 				}
 				else //player isn't blocking, recieve amount of damage
@@ -873,6 +898,7 @@ public class PlayerController : MonoBehaviour
 	//when a hitbox successfully touches a player
 	void OnTriggerStay2D ( Collider2D other )
 	{
+		//standing values
 		if ( other.gameObject.tag == "LowPunchStanding" )
 		{
 			SLP = true;
@@ -881,11 +907,57 @@ public class PlayerController : MonoBehaviour
 		{
 			SLK = true;
 		}
+		if ( other.gameObject.tag == "HardPunchStanding" )
+		{
+			SHP = true;
+		}
+		if ( other.gameObject.tag == "HardKickStanding" )
+		{
+			SHK = true;
+		}
+
+		//crouching values
+		if ( other.gameObject.tag == "LowPunchCrouch" )
+		{
+			CLP = true;
+		}
+		if ( other.gameObject.tag == "LowKickCrouch" )
+		{
+			CLK = true;
+		}
+		if ( other.gameObject.tag == "HardPunchCrouch" )
+		{
+			CHP = true;
+		}
+		if ( other.gameObject.tag == "HardKickCrouch" )
+		{
+			CHK = true;
+		}
+
+		//air values
+		if ( other.gameObject.tag == "LowPunchAir" )
+		{
+			ALP = true;
+		}
+		if ( other.gameObject.tag == "LowKickAir" )
+		{
+			ALK = true;
+		}
+		if ( other.gameObject.tag == "HardPunchAir" )
+		{
+			AHP = true;
+		}
+		if ( other.gameObject.tag == "HardKickAir" )
+		{
+			AHK = true;
+		}
+
 	}
 
 	//when a hitbox leaves a player no longer touching
 	void OnTriggerExit2D( Collider2D other )
 	{
+		//standing values
 		if ( other.gameObject.tag == "LowPunchStanding" )
 		{
 			SLP = false;
@@ -893,6 +965,50 @@ public class PlayerController : MonoBehaviour
 		if ( other.gameObject.tag == "LowKickStanding" )
 		{
 			SLK = false;
+		}
+		if ( other.gameObject.tag == "HardPunchStanding" )
+		{
+			SHP = false;
+		}
+		if ( other.gameObject.tag == "HardKickStanding" )
+		{
+			SHK = false;
+		}
+
+		//crouching values
+		if ( other.gameObject.tag == "LowPunchCrouch" )
+		{
+			CLP = false;
+		}
+		if ( other.gameObject.tag == "LowKickCrouch" )
+		{
+			CLK = false;
+		}
+		if ( other.gameObject.tag == "HardPunchCrouch" )
+		{
+			CHP = false;
+		}
+		if ( other.gameObject.tag == "HardKickCrouch" )
+		{
+			CHK = false;
+		}
+		
+		//air values
+		if ( other.gameObject.tag == "LowPunchAir" )
+		{
+			ALP = false;
+		}
+		if ( other.gameObject.tag == "LowKickAir" )
+		{
+			ALK = false;
+		}
+		if ( other.gameObject.tag == "HardPunchAir" )
+		{
+			AHP = false;
+		}
+		if ( other.gameObject.tag == "HardKickAir" )
+		{
+			AHK = false;
 		}
 	}
 	//end hitboxes---------------------------------------------------------------------------------------------------
