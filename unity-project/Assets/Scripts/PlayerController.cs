@@ -3,6 +3,9 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
+	//random number generator for sounds
+	private System.Random rand = new System.Random();
+
 	public string enemyScript;
 	public PlayerController attack;
 	
@@ -227,6 +230,9 @@ public class PlayerController : MonoBehaviour
 	//the heart of all actions-------------------------------------------------------
 	void FixedUpdate () 
 	{
+		//int randomNum = rand.Next(0,100);
+		//Debug.Log ( randomNum );
+
 		//this line checks if the character is on the ground at this frame
 		groundCheck = Physics2D.OverlapCircle (daGround.position, groundRadius, whatIsGround);
 
@@ -290,6 +296,8 @@ public class PlayerController : MonoBehaviour
 		//Player is on the ground and no control, stun from the previous hit
 		if ( hitFrames > 1 )
 		{
+			blockCrouchingLock = false;
+			blockStandingLock = false;
 			hitFrames--;
 			return;
 		}
@@ -689,7 +697,10 @@ public class PlayerController : MonoBehaviour
 			normalFrames = SLKtotalFrames;
 			startNormal = SLKstartFrame;
 			finishNormal = SLKfinishFrame;
+			hurtX = SLKXforce;
+			hurtY = SLKYforce;
 			hurtLow = SLKlow;
+			currentDamage = SLKdamage;
 			LKtrigger = true;
 		}
 		else if ( currentInput == "D" )
@@ -774,7 +785,7 @@ public class PlayerController : MonoBehaviour
 			if( crouchCheck == true && beingHurtLow == true || crouchCheck == false && beingHurtLow == false 
 			   || crouchCheck == false && beingHurtLow == true )
 				//the only one that passes this undetected is if the attack is high and the player is crouching
-				//obviously the attacking player would be attacking over the opposing player's head result in a miss
+				//obviously the attacking player would be attacking over the opposing player's head resulting in a miss
 				//the exception is an attack from the air, will be coded in later
 			{
 				if( enemyX  < transform.position.x )
@@ -798,12 +809,20 @@ public class PlayerController : MonoBehaviour
 						}
 						else
 						{
-							hitFrames = heavyHitFrames;
+							hitFrames = heavyHitFrames; 
 						}
 					}
 					else //crouchCheck is false
 					{
 						blockStandingLock = true; //sends animation signal to showcase standing blocking
+						if ( damageAmountRecieved <= damageThreshold )  //how long is the player in block lock
+						{
+							hitFrames = lightHitFrames;
+						}
+						else
+						{
+							hitFrames = heavyHitFrames; 
+						}
 					}
 				}
 				else //player isn't blocking, recieve amount of damage

@@ -88,7 +88,7 @@ public class CPlayerController : PlayerController
 		SLPtotalFrames = 4;		SHPtotalFrames = 7;		SLKtotalFrames = 4;		SHKtotalFrame = 7;
 		SLPstartFrame = 2;		SHPstartFrame = 5;		SLKstartFrame = 2;		SHKstartFrame = 5;
 		SLPfinishFrame = 0;		SHPfinishFrame = 3;		SLKfinishFrame = 0;		SHKfinishFrame = 3;
-		SLPXforce = 5;			SHPXforce = 10;			SLKXforce = 5;			SHKXforce = 10;
+		SLPXforce = 500;		SHPXforce = 10;			SLKXforce = 500;		SHKXforce = 10;
 		SLPYforce = 200;		SHPYforce = 300;		SLKYforce = 200;		SHKYforce = 300;
 		SLPdamage = 10;			SHPdamage = 20;			SLKdamage = 10;			SHKdamage = 20;
 		SLPlow = false;			SHPlow = false;			SLKlow = true;			SHKlow = false;
