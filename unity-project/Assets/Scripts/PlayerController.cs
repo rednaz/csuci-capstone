@@ -298,14 +298,14 @@ public class PlayerController : MonoBehaviour
 		{
 			blockCrouchingLock = false;
 			blockStandingLock = false;
+			hurtLockLight = false;
+			hurtLockHeavy = false;
 			hitFrames--;
 			return;
 		}
 		else if ( hitFrames == 1 )
 		{
 			hitFrames--;
-			hurtLockLight = false;
-			hurtLockHeavy = false;
 		}
 
 
@@ -686,9 +686,13 @@ public class PlayerController : MonoBehaviour
 		else if ( currentInput == "B" )
 		{
 			//standing heavy punch executed
-			//normalFrames = HLPtotalFrames;
-			//startNormal = HLPstartFrame;
-			//finishNormal = HLPfinishFrame;
+			normalFrames = SHPtotalFrames;
+			startNormal = SHPstartFrame;
+			finishNormal = SHPfinishFrame;
+			hurtX = SHPXforce;
+			hurtY = SHPYforce;
+			hurtLow = SHPlow;
+			currentDamage = SHPdamage;
 			HPtrigger = true;
 		}
 		else if ( currentInput == "C" )
@@ -706,9 +710,13 @@ public class PlayerController : MonoBehaviour
 		else if ( currentInput == "D" )
 		{
 			//standing heavy kick executed
-			//normalFrames = SHKtotalFrames;
-			//startNormal = SHKstartFrame;
-			//finishNormal = SHKfinishFrame;
+			normalFrames = SHKtotalFrame;
+			startNormal = SHKstartFrame;
+			finishNormal = SHKfinishFrame;
+			hurtX = SHKXforce;
+			hurtY = SHKYforce;
+			hurtLow = SHKlow;
+			currentDamage = SHKdamage;
 			HKtrigger = true;
 		}
 
@@ -825,12 +833,12 @@ public class PlayerController : MonoBehaviour
 						}
 					}
 				}
-				else //player isn't blocking, recieve amount of damage
+				else //player isn't blocking the attack successfully, recieve amount of damage
 				{
 					minusHealth( damageAmountRecieved );
 					if ( damageAmountRecieved <= damageThreshold ) //how long the player is in hit stun
 					{
-						hurtLockLight = true;
+						hurtLockLight = true; 
 						hitFrames = lightHitFrames;
 					}
 					else
@@ -863,16 +871,32 @@ public class PlayerController : MonoBehaviour
 	public void normalCalls()
 	{
 		//standingLPcalls
-		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false && LPtrigger == true )
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
+		   && LPtrigger == true && groundCheck == true && crouchCheck == false )
 		{
 			//send an attack signal
 			atariDesu = attack.amIgettingHitSLP( hurtX, hurtY, currentDamage, hurtLow );
 		}
+		//standingHPcalls
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
+		   && HPtrigger == true && groundCheck == true && crouchCheck == false )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitSHP( hurtX, hurtY, currentDamage, hurtLow );
+		}
 		//standingLKcalls
-		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false && LKtrigger == true )
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
+		   && LKtrigger == true && groundCheck == true && crouchCheck == false )
 		{
 			//send an attack signal
 			atariDesu = attack.amIgettingHitSLK( hurtX, hurtY, currentDamage, hurtLow );
+		}
+		//standingHKcalls
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
+		   && HKtrigger == true && groundCheck == true && crouchCheck == false )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitSHK( hurtX, hurtY, currentDamage, hurtLow );
 		}
 		normalFrames--;
 	}
@@ -1032,10 +1056,38 @@ public class PlayerController : MonoBehaviour
 
 	}
 
+	public bool amIgettingHitSHP( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
+	{
+		//light punch connected on call
+		if( SHP == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			beingHurtLow = isHitLow;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
 	public bool amIgettingHitSLK( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
 	{
 		//light kick connected on call
 		if( SLK == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			beingHurtLow = isHitLow;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
+	public bool amIgettingHitSHK( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
+	{
+		//light kick connected on call
+		if( SHK == true )
 		{
 			recieveHurtX = sendingHurtX;
 			recieveHurtY = sendingHurtY;

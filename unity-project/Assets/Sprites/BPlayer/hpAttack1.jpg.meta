@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d1d84fdbd0f639d408ce77e17a082b24
+guid: 775e3214a01f56346b41f73ef19041d9
 TextureImporter:
   serializedVersion: 2
   mipmaps:
@@ -45,7 +45,7 @@ TextureImporter:
     compressionQuality: 50
   spriteSheet:
     sprites:
-    - name: standingBeingHurtSmall2_0
+    - name: hpAttack1_0
       rect:
         serializedVersion: 2
         x: 0
@@ -54,10 +54,19 @@ TextureImporter:
         height: 640
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: standingBeingHurtSmall2_1
+    - name: hpAttack1_1
       rect:
         serializedVersion: 2
         x: 262
+        y: 0
+        width: 262
+        height: 640
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: hpAttack1_2
+      rect:
+        serializedVersion: 2
+        x: 524
         y: 0
         width: 262
         height: 640

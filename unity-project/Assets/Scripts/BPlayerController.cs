@@ -89,8 +89,8 @@ public class BPlayerController : PlayerController
 		SLPtotalFrames = 6;		SHPtotalFrames = 10;		SLKtotalFrames = 6;		SHKtotalFrame = 12;
 		SLPstartFrame = 4;		SHPstartFrame = 7;			SLKstartFrame = 4;		SHKstartFrame = 9;
 		SLPfinishFrame = 2;		SHPfinishFrame = 4;			SLKfinishFrame = 2;		SHKfinishFrame = 6;
-		SLPXforce = 500;			SHPXforce = 10;			SLKXforce = 500;		SHKXforce = 10;
-		SLPYforce = 500;		SHPYforce = 300;			SLKYforce = 200;		SHKYforce = 300;
+		SLPXforce = 500;		SHPXforce = 500;			SLKXforce = 500;		SHKXforce = 500;
+		SLPYforce = 200;		SHPYforce = 600;			SLKYforce = 300;		SHKYforce = 600;
 		SLPdamage = 10;			SHPdamage = 20;				SLKdamage = 10;			SHKdamage = 20;
 		SLPlow = false;			SHPlow = false;				SLKlow = true;			SHKlow = false;
 		
