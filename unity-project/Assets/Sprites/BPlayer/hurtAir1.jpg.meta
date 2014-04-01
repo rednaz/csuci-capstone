@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d5e685cce47f9b841b9892e9eb847f76
+guid: 8165218de8f39a3409be0e5b458d39f2
 TextureImporter:
   serializedVersion: 2
   mipmaps:
@@ -45,7 +45,34 @@ TextureImporter:
     compressionQuality: 50
   spriteSheet:
     sprites:
-    - name: standingBeingHurtLarge1_0
+    - name: hurtAir1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 640
+        width: 262
+        height: 640
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: hurtAir1_1
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 640
+        width: 262
+        height: 640
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: hurtAir1_2
+      rect:
+        serializedVersion: 2
+        x: 524
+        y: 640
+        width: 262
+        height: 640
+      alignment: 0
+      pivot: {x: 0, y: 0}
+    - name: hurtAir1_3
       rect:
         serializedVersion: 2
         x: 0
@@ -54,7 +81,7 @@ TextureImporter:
         height: 640
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: standingBeingHurtLarge1_1
+    - name: hurtAir1_4
       rect:
         serializedVersion: 2
         x: 262
@@ -63,7 +90,7 @@ TextureImporter:
         height: 640
       alignment: 0
       pivot: {x: 0, y: 0}
-    - name: standingBeingHurtLarge1_2
+    - name: hurtAir1_5
       rect:
         serializedVersion: 2
         x: 524
