@@ -201,7 +201,7 @@ public class PlayerController : MonoBehaviour
 
 	//player health declaration
 	public int health;
-	public GUIText healthUI;
+	public int maxHealth;
 
 	//player being hurt
 	public bool beingHurt = false;
@@ -657,13 +657,17 @@ public class PlayerController : MonoBehaviour
 		if (health > 0)
 		{
 			health += deltaHealth;
-			healthUI.text = "P1 Health: " + health;
 		}
 	}
 	
 	int getHealth()
 	{
 		return this.health;
+	}
+
+	int getMaxHealth()
+	{
+		return this.maxHealth;
 	}
 
 

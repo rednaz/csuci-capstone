@@ -51,13 +51,11 @@ public class UIController : MonoBehaviour
 
 
 		// Initialize player controller objects
-		GameObject bPlayerObject = GameObject.FindWithTag ("BPlayer1");
-		GameObject cPlayerObject = GameObject.FindWithTag ("CPlayer2");
-		Debug.Log ("bPlayerObject value is '" + bPlayerObject + "'");
-		Debug.Log ("cPlayerObject value is '" + cPlayerObject + "'");
-
 
 		// Attempt to get B Player
+		GameObject bPlayerObject = GameObject.FindWithTag ("BPlayer1");
+		//Debug.Log ("bPlayerObject value is '" + bPlayerObject + "'");
+
 		if (bPlayerObject != null)
 		{
 			bPlayer = bPlayerObject.GetComponent <BPlayerController>();
@@ -67,7 +65,11 @@ public class UIController : MonoBehaviour
 			Debug.Log ("Cannot find 'BPlayerController' script");
 		}
 
+
 		// Attempt to get C Player
+		GameObject cPlayerObject = GameObject.FindWithTag ("CPlayer2");
+		//Debug.Log ("cPlayerObject value is '" + cPlayerObject + "'");
+
 		if (cPlayerObject != null)
 		{
 			cPlayer = cPlayerObject.GetComponent <CPlayerController>();
@@ -78,12 +80,12 @@ public class UIController : MonoBehaviour
 		}
 
 
-		// Set b and c player max health
-		bMaxHealth = 1000;
-		cMaxHealth = 1000;
+		// Set b and c player max health (debugging)
+		bMaxHealth = bPlayer.maxHealth;
+		cMaxHealth = cPlayer.maxHealth;
 
-		Debug.Log ("B Player - Max Health set to " + bMaxHealth );
-		Debug.Log ("C Player - Max Health set to " + cMaxHealth );
+		Debug.Log ("B Player - Max Health is " + bMaxHealth);
+		Debug.Log ("C Player - Max Health is " + cMaxHealth );
 
 
 		// Temporary actions to be implemented properly later (THIS SHOULD BE EMPTY UPON COMPLETION OF THE PROJECT)
@@ -105,8 +107,11 @@ public class UIController : MonoBehaviour
 		}
 	
 		// Draw the health bars
-		drawHealthBar (500f, bMaxHealth, bHealthBarPos.x, bHealthBarPos.y, healthBarSize.x, healthBarSize.y, false);
-		drawHealthBar (500f, cMaxHealth, cHealthBarPos.x, cHealthBarPos.y, healthBarSize.x, healthBarSize.y, true);
+
+		// B Player
+		drawHealthBar (bPlayer.health, bMaxHealth, bHealthBarPos.x, bHealthBarPos.y, healthBarSize.x, healthBarSize.y, false);
+		// C Player
+		drawHealthBar (cPlayer.health, bMaxHealth, cHealthBarPos.x, cHealthBarPos.y, healthBarSize.x, healthBarSize.y, true);
 
 		// Draw the super/hyper bars
 

@@ -45,7 +45,8 @@ public class CPlayerController : PlayerController
 		HPgrabber = "HP2";
 		LKgrabber = "LK2";
 		HKgrabber = "HK2";
-		health = 1000;
+		maxHealth = 1000;
+		health = maxHealth;
 		
 		//super 1 declarations
 		super1Aleft = "214A";
