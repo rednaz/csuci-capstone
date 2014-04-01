@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
 
 	public string enemyScript;
 	public PlayerController attack;
+	public FreezeCode freeze;
 	
 	//debug string
 	public string debugString;
@@ -241,7 +242,8 @@ public class PlayerController : MonoBehaviour
 		//see game activity
 		if (Input.GetKeyDown (KeyCode.Space)) 
 		{
-			Debug.Log ( debugString + " health: " + health );
+			//Debug.Log ( debugString + " health: " + health );
+			freeze.tempFreeze();
 		}
 		//Debug.Log ( debugString + " " + LP);
 		//if ( Input.GetButtonDown( LPgrabber ) )
