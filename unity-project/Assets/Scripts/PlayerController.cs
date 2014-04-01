@@ -306,6 +306,7 @@ public class PlayerController : MonoBehaviour
 		else if ( hitFrames == 1 )
 		{
 			hitFrames--;
+			flush ();
 		}
 
 
@@ -407,8 +408,6 @@ public class PlayerController : MonoBehaviour
 
 
 		//Phase 10 (normals being executed)
-		//normalFramesString
-
 		if( normalFrames > 0 && groundCheck == true )
 		{
 			normalCalls();
@@ -633,10 +632,12 @@ public class PlayerController : MonoBehaviour
 	{
 		countDelayHyper = 0;
 		countDelaySuper = 0;
+
 		commands = "XXXXXXX";
 		previousInput = "";
 		nextInput = "";
 		beingHurt = false;
+		normalFrames = 0;
 	}
 
 	void modifyHealth(int deltaHealth)
@@ -731,6 +732,15 @@ public class PlayerController : MonoBehaviour
 		else if ( currentInput == "B" )
 		{
 			//crouching heavy punch executed
+			//standing heavy punch executed
+			normalFrames = CHPtotalFrames;
+			startNormal = CHPstartFrame;
+			finishNormal = CHPfinishFrame;
+			hurtX = CHPXforce;
+			hurtY = CHPYforce;
+			hurtLow = CHPlow;
+			currentDamage = CHPdamage;
+			HPtrigger = true;
 		}
 		else if ( currentInput == "C" )
 		{
@@ -897,6 +907,13 @@ public class PlayerController : MonoBehaviour
 		{
 			//send an attack signal
 			atariDesu = attack.amIgettingHitSHK( hurtX, hurtY, currentDamage, hurtLow );
+		}
+		//crouchingHPcalls
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
+		   && HPtrigger == true && groundCheck == true && crouchCheck == true )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitCHP( hurtX, hurtY, currentDamage, hurtLow );
 		}
 		normalFrames--;
 	}
@@ -1097,6 +1114,21 @@ public class PlayerController : MonoBehaviour
 		}
 		return false;
 	}
+
+	public bool amIgettingHitCHP( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
+	{
+		//light kick connected on call
+		if( SHK == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			beingHurtLow = isHitLow;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
 	//amIgettingHit ends********************************************************************************************
 
 
