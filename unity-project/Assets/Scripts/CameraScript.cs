@@ -26,9 +26,20 @@ public class CameraScript : MonoBehaviour
 		Cpos = Cgrab.position.x;
 		//Debug.Log (Bpos + " " + Cpos);
 		//doing math to determine new middle between the players
+		newX = (Bpos + Cpos) / 2;
+		if( newX < -14.81057f)
+		{
+			newX = -14.81057f;
+		}
+		else if( newX > 23.75795f )
+		{
+			newX = 23.75795f;
+		}
+		else
+		{
+			newX = newX;
+		}
 
-
-			newX = (Bpos + Cpos) / 2;
 		transform.position = new Vector3( newX, 6.26934f, 0 );
 	}
 }
