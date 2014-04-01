@@ -52,15 +52,10 @@ public class EnemyAI : MonoBehaviour
 		// Setting up the references.
 		//ren = transform.Find("body").GetComponent<SpriteRenderer>();
 		//frontCheck = transform.Find("frontCheck").transform;
-		
-<<<<<<< HEAD
+
 		phases = gameObject.GetComponent<PlayerController>();
 		player = phases.attack.transform;
-		myTransform = transform;	
-=======
-		player = GameObject.FindGameObjectWithTag("CPlayer2").transform;
 		myTransform = transform;		
->>>>>>> development
 	}
 	
 	void FixedUpdate ()
