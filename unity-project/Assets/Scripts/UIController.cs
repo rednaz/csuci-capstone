@@ -17,11 +17,10 @@ public class UIController : MonoBehaviour
 	private Texture2D progressBarEmpty, progressBarFull; // These are placeholders for now
 
 	// Health Bar UI
-	private float bHealth, bMaxHealth, cHealth, cMaxHealth;
 	private Vector2 healthBarSize, bHealthBarPos, cHealthBarPos;
 
 	// Super/Hyper UI
-
+	// IMPLEMENT THIS
 
 	// Timer UI
 	private float timeLeft;
@@ -29,8 +28,15 @@ public class UIController : MonoBehaviour
 	private GUIStyle timerStyle;
 
 
-	// Temporary or testing variables
+	// Fight Finish UI (knockout or time over)
+	private Vector2 finishSize, finishPos;
+	private GUIStyle finishStyle;
+
+	// Miscellaneous UI
+	private bool koOver;
 	private bool timeOver;
+
+	// Temporary or testing variables
 	private float timer, nextTime;
 	public float timeRate;
 
@@ -64,6 +70,8 @@ public class UIController : MonoBehaviour
 		{
 			Debug.Log ("Cannot find 'BPlayerController' script");
 		}
+		Debug.Log ("B Player initialized with " + bPlayer.health + " / " + bPlayer.maxHealth + " health" );
+
 
 
 		// Attempt to get C Player
@@ -78,20 +86,16 @@ public class UIController : MonoBehaviour
 		{
 			Debug.Log ("Cannot find 'CPlayerController' script");
 		}
+		Debug.Log ("C Player initialized with " + cPlayer.health + " / " + cPlayer.maxHealth + " health" );
 
 
-		// Set b and c player max health (debugging)
-		bMaxHealth = bPlayer.maxHealth;
-		cMaxHealth = cPlayer.maxHealth;
-
-		Debug.Log ("B Player - Max Health is " + bMaxHealth);
-		Debug.Log ("C Player - Max Health is " + cMaxHealth );
-
+		// Miscellaneous actions taken here (if not dependent on above actions)
+		timeOver = false;
+		koOver = false;
 
 		// Temporary actions to be implemented properly later (THIS SHOULD BE EMPTY UPON COMPLETION OF THE PROJECT)
 		timer = 100.0f;
 		nextTime = Time.time + timeRate;
-		timeOver = false;
 	}
 
 
@@ -108,24 +112,41 @@ public class UIController : MonoBehaviour
 	
 		// Draw the health bars
 
-		// B Player
-		drawHealthBar (bPlayer.health, bMaxHealth, bHealthBarPos.x, bHealthBarPos.y, healthBarSize.x, healthBarSize.y, false);
-		// C Player
-		drawHealthBar (cPlayer.health, bMaxHealth, cHealthBarPos.x, cHealthBarPos.y, healthBarSize.x, healthBarSize.y, true);
+		// B Player health bar
+		drawHealthBar (bPlayer.health, bPlayer.maxHealth, bHealthBarPos.x, bHealthBarPos.y, healthBarSize.x, healthBarSize.y, false);
+		// C Player health bar
+		drawHealthBar (cPlayer.health, cPlayer.maxHealth, cHealthBarPos.x, cHealthBarPos.y, healthBarSize.x, healthBarSize.y, true);
 
 		// Draw the super/hyper bars
 
 		// Draw the timer
 		timerStyle = GUI.skin.GetStyle ("Box");
 		drawTimerGUI (timer, timerPos.x, timerPos.y, timerSize.x, timerSize.y);
+
+		// Draw KO/time over UI depending on which flag gets set
+		if (koOver || timeOver)
+		{
+			finishStyle = GUI.skin.GetStyle ("Label");
+			setFinishGUI (currentResX, currentResY);
+
+			if (koOver)
+				drawFinishGUI ("K.O.", finishPos.x, finishPos.y, finishSize.x, finishSize.y);
+
+			else
+				drawFinishGUI ("Time Over", finishPos.x, finishPos.y, finishSize.x, finishSize.y);
+		}
 	} 
 
 
 	void Update ()
 	{
+		//Debug.Log ("UI:\nB Player: " + bPlayer.health + " / " + bPlayer.maxHealth + ", C Player: " + cPlayer.health + " / " + cPlayer.maxHealth);
 		// Temporary actions go here
-		if (!timeOver)
+		if (!timeOver && !koOver)
 			DecrementTime ();
+
+		if ((bPlayer.health < 1 || cPlayer.health < 1) && !timeOver)
+			koOver = true;
 	}
 
 
@@ -187,6 +208,23 @@ public class UIController : MonoBehaviour
 		GUI.EndGroup ();
 	}
 
+
+
+	void setFinishGUI(float newWidth, float newHeight)
+	{
+		finishSize = new Vector2 ((float)Math.Round (newWidth / 4.0 * 3.0), (float)Math.Round (newHeight / 4.0 * 3.0));
+		finishPos = new Vector2 ((newWidth / 2) - (finishSize.x / 2), (newHeight / 2) - (finishSize.y / 2));
+	}
+
+
+	void drawFinishGUI(string message, float posX, float posY, float sizeX, float sizeY)
+	{
+		finishStyle.alignment = TextAnchor.MiddleCenter;
+		finishStyle.fontSize = (int) sizeY;
+		GUI.BeginGroup (new Rect (posX, posY, sizeX, sizeY));
+		GUI.Label (new Rect (0, 0, sizeX, sizeY), message, timerStyle);
+		GUI.EndGroup ();
+	}
 
 	// Temporary functions go here, SHOULD BE EMPTY UPON PROJECT COMPLETION
 	void DecrementTime ()

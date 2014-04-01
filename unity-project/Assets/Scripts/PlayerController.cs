@@ -246,7 +246,7 @@ public class PlayerController : MonoBehaviour
 		//see game activity
 		if (Input.GetKeyDown (KeyCode.Space)) 
 		{
-			Debug.Log ( debugString + " health: " + health );
+			Debug.Log ( debugString + " health: " + health + " / " + maxHealth );
 		}
 		//Debug.Log ( debugString + " " + LP);
 		//if ( Input.GetButtonDown( LPgrabber ) )
