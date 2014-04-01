@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class EnemyAI : PlayerController
+public class EnemyAI : MonoBehaviour
 {
 	public float moveSpeed = 2f;		// The speed the enemy moves at.
 	public int HP = 2;					// How many times the enemy can be hit before it dies.
@@ -21,20 +21,103 @@ public class EnemyAI : PlayerController
 	private Transform player;		// Reference to the player.
 	private Transform myTransform;
 	private bool faceLeft = false;
-	
-	
+
+
+	// to gain access to Phase functions
+	public PlayerController phases;
+
+	public bool hasInterrupt = false;
+
+	/***************************************************
+	 * determines if AI is turned on
+	 * NOTE: isAnAI check is only there to simulate 
+	 * 	game menu selection to Single Player mode 
+	 * 	If that feature is implemented, isAnAI would 
+	 * 	be removed along with EnemyAI component from 
+	 * 	the character object and would be added 
+	 * 	through the menu selection ONLY.
+	 ***************************************************/
+	public bool isAnAI;
+
+	// frames to run
+	public int running;
+	// used for entering PHASE 3
+	public bool incAttack;
+	// AI is doing combo
+	// public currentCombo;
+	public int comboPos = 0;
+
 	void Awake()
 	{
 		// Setting up the references.
 		//ren = transform.Find("body").GetComponent<SpriteRenderer>();
 		//frontCheck = transform.Find("frontCheck").transform;
 		
+<<<<<<< HEAD
+		phases = gameObject.GetComponent<PlayerController>();
+		player = phases.attack.transform;
+		myTransform = transform;	
+=======
 		player = GameObject.FindGameObjectWithTag("CPlayer2").transform;
 		myTransform = transform;		
+>>>>>>> development
 	}
 	
 	void FixedUpdate ()
 	{
+		//PHASE 0
+		// if not an AI or can't act
+		// exit loop
+		if (!isAnAI)
+			return;
+		if (!phases.canAct)
+		{
+			phases.currentInput = "X";
+			comboPos = 0;
+			return;
+		}
+
+
+		//PHASE 1
+		// if an interupt needs to be handled
+		if (hasInterrupt)
+		{
+			handleInterrupt ();
+		}
+
+		//PHASE 2
+		if (running > 0)
+		{
+			running--;
+			return;
+		}
+		else
+		{
+			phases.moveX = 0;
+		}
+
+		//PHASE 3
+		// decide if AI wants to block
+		if (incAttack && block ())
+			return;
+
+		//PHASE 4
+		// decide if AI can and will use a melee attack
+		if (melee ())
+			return;
+
+		//PHASE 5
+		// decide if AI will use ranged attack
+		if (ranged ())
+			return;
+
+		//PHASE 6
+		// decide if AI will move
+		if (move ())
+			return;
+
+
+
 		// Create an array of all the colliders in front of the enemy.
 		//Collider2D[] frontHits = Physics2D.OverlapPointAll(frontCheck.position, 1);
 		
@@ -50,7 +133,7 @@ public class EnemyAI : PlayerController
 			}
 		}*/
 		
-		//print ("my" + myTransform.position.x + " " + Random.Range(0,10));
+		/*print ("my" + myTransform.position.x + " " + Random.Range(0,10));
 		//print (player.position.x);
 		
 		if (myTransform.position.x - player.position.x > 0 && !faceLeft)
@@ -69,20 +152,118 @@ public class EnemyAI : PlayerController
 		}
 		
 		// Set the enemy's velocity to moveSpeed in the x direction.
-		//rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);	
+		//rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);*/	
+	}
+
+	public void handleInterrupt ()
+	{
+		running = 0;
+	}
+
+	public bool block ()
+	{
+		return false;
+	}
+
+	public bool melee ()
+	{
+		if (Mathf.Abs (myTransform.position.x - player.position.x) < 1)
+		{
+			if (comboPos > 0)
+			{
+				phases.currentInput = phases.hyper1Aright[comboPos].ToString();
+				comboPos++;
+			}
+
+			else
+			{
+				int attack = Random.Range (0, 10);
+				
+				if (attack < 5)
+					return false;
+
+				else if (attack < 7)
+					kick();
+
+				else
+					punch();
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public void kick ()
+	{
+		int attack = Random.Range (0, 10);
+		if (attack < 8)
+		{
+
+		}
+		else
+			phases.currentInput = "C";
+	}
+
+	public void punch ()
+	{
+		int attack = Random.Range (0, 10);
+		if (attack < 8)
+		{
+			phases.currentInput = phases.hyper1Aright[comboPos].ToString();
+			comboPos++;
+		}
+		else
+			phases.currentInput = "A";
+	}
+
+	public bool ranged ()
+	{
+		return false;
+	}
+	
+	public bool move()
+	{
+		int direction = Random.Range (0, 10);
+		
+		if (direction < 3)
+		{
+			running = (Random.Range (0,2) + 1) * 10;
+			return true;
+		}
+		else if (direction < 5)
+		{
+			phases.moveX = -1;
+		}
+		else
+		{
+			phases.moveX = 1;
+		}
+		
+		running = (Random.Range (0,3) + 1) * 10;
+
+		return true;
+	}
+
+	public void isAI()
+	{
+		print ("I'm an AI");
 	}
 
 	public void startState()
 	{
-		if (Mathf.Abs (myTransform.position.x - player.position.x) > 6) {
+		if (Mathf.Abs (myTransform.position.x - player.position.x) > 0) {
 			//if (Random.Range(0,100) > 80) enemy not constantly moving towards player
 			//{
 			//}
 
 			rangeState ();
+			print ("ranged");
 		} 
 		else
 		{
+			print ("melee");
 			meleeState ();
 		}
 	}
@@ -94,31 +275,12 @@ public class EnemyAI : PlayerController
 
 	public void rangeState()
 	{
-		move (10f);
+		move ();
 	}
 
 	public void moveState()
 	{
 
-	}
-
-	public void move(float moveSpeed)
-	{
-		print (Random.Range(0,1));
-		if (Random.Range(0, 10) > 4)
-		{
-			rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);
-		}
-		else
-		{
-			rigidbody2D.velocity = new Vector2(transform.localScale.x * -moveSpeed, rigidbody2D.velocity.y);
-		}
-
-		print ("In Move");
-
-		Invoke ("stop", 5);
-
-		waiting = true;
 	}
 
 	public void stop()

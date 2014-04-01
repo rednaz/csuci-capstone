@@ -52,10 +52,10 @@
      <Compile Include="Assets\Scripts\CPlayerController.cs" />
      <Compile Include="Assets\Scripts\CameraScript.cs" />
      <Compile Include="Assets\Scripts\CplayerControllerScript.cs" />
+     <Compile Include="Assets\Scripts\EasyAI.cs" />
      <Compile Include="Assets\Scripts\EnemyAI.cs" />
      <Compile Include="Assets\Scripts\FreezeCode.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
-     <Compile Include="Assets\Scripts\LPunchScript.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
      <Compile Include="Assets\Scripts\UIController.cs" />
      <None Include="Assets\Standard Assets\Projectors\Guidelines.txt" />
