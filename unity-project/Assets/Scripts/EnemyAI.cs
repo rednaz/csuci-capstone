@@ -17,8 +17,9 @@ public class EnemyAI : MonoBehaviour
 	private SpriteRenderer ren;			// Reference to the sprite renderer.
 	private Transform frontCheck;		// Reference to the position of the gameobject used for checking if something is in front.
 	private bool dead = false;			// Whether or not the enemy is dead.
-	
-	private Transform player;		// Reference to the player.
+
+	private PlayerController player;
+	private Transform playerTransform;		// Reference to the playerTransform.
 	private Transform myTransform;
 	private bool faceLeft = false;
 
@@ -31,7 +32,7 @@ public class EnemyAI : MonoBehaviour
 	/***************************************************
 	 * determines if AI is turned on
 	 * NOTE: isAnAI check is only there to simulate 
-	 * 	game menu selection to Single Player mode 
+	 * 	game menu selection to Single playerTransform mode 
 	 * 	If that feature is implemented, isAnAI would 
 	 * 	be removed along with EnemyAI component from 
 	 * 	the character object and would be added 
@@ -54,7 +55,8 @@ public class EnemyAI : MonoBehaviour
 		//frontCheck = transform.Find("frontCheck").transform;
 
 		phases = gameObject.GetComponent<PlayerController>();
-		player = phases.attack.transform;
+		player = phases.attack;
+		playerTransform = player.transform;
 		myTransform = transform;		
 	}
 	
@@ -71,15 +73,14 @@ public class EnemyAI : MonoBehaviour
 			comboPos = 0;
 			return;
 		}
-
+		print (phases.health);
+		print (phases.blockCheck);
 
 		//PHASE 1
 		// if an interupt needs to be handled
-		if (hasInterrupt)
+		if (handleInterrupt ())
 		{
-			handleInterrupt ();
 		}
-
 		//PHASE 2
 		if (running > 0)
 		{
@@ -129,14 +130,14 @@ public class EnemyAI : MonoBehaviour
 		}*/
 		
 		/*print ("my" + myTransform.position.x + " " + Random.Range(0,10));
-		//print (player.position.x);
+		//print (playerTransform.position.x);
 		
-		if (myTransform.position.x - player.position.x > 0 && !faceLeft)
+		if (myTransform.position.x - playerTransform.position.x > 0 && !faceLeft)
 		{
 			Flip2 ();
 			faceLeft = true;
 		}
-		else if (myTransform.position.x - player.position.x < 0 && faceLeft)
+		else if (myTransform.position.x - playerTransform.position.x < 0 && faceLeft)
 		{
 			Flip2 ();
 			faceLeft = false;
@@ -150,19 +151,36 @@ public class EnemyAI : MonoBehaviour
 		//rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);*/	
 	}
 
-	public void handleInterrupt ()
+	public bool handleInterrupt ()
 	{
-		running = 0;
+		if (player.normalFrames > 0)
+		{
+			incAttack = true;
+
+			return true;
+		}
+		else
+			incAttack = false;
+
+		return false;
 	}
 
 	public bool block ()
 	{
+		print ("In Blocking");
+		if (Random.Range (0, 10) < 5)
+		{
+			phases.moveX = -1;
+			running = 2;
+			return true;
+		}
+
 		return false;
 	}
 
 	public bool melee ()
 	{
-		if (Mathf.Abs (myTransform.position.x - player.position.x) < 1)
+		if (Mathf.Abs (myTransform.position.x - playerTransform.position.x) < 1)
 		{
 			if (comboPos > 0)
 			{
@@ -248,8 +266,8 @@ public class EnemyAI : MonoBehaviour
 
 	public void startState()
 	{
-		if (Mathf.Abs (myTransform.position.x - player.position.x) > 0) {
-			//if (Random.Range(0,100) > 80) enemy not constantly moving towards player
+		if (Mathf.Abs (myTransform.position.x - playerTransform.position.x) > 0) {
+			//if (Random.Range(0,100) > 80) enemy not constantly moving towards playerTransform
 			//{
 			//}
 
