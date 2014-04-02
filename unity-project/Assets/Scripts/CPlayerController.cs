@@ -89,8 +89,8 @@ public class CPlayerController : PlayerController
 		SLPtotalFrames = 4;		SHPtotalFrames = 7;		SLKtotalFrames = 4;		SHKtotalFrame = 7;
 		SLPstartFrame = 2;		SHPstartFrame = 5;		SLKstartFrame = 2;		SHKstartFrame = 5;
 		SLPfinishFrame = 0;		SHPfinishFrame = 3;		SLKfinishFrame = 0;		SHKfinishFrame = 3;
-		SLPXforce = 500;		SHPXforce = 10;			SLKXforce = 500;		SHKXforce = 10;
-		SLPYforce = 200;		SHPYforce = 300;		SLKYforce = 200;		SHKYforce = 300;
+		SLPXforce = 500;		SHPXforce = 500;		SLKXforce = 500;		SHKXforce = 500;
+		SLPYforce = 300;		SHPYforce = 600;		SLKYforce = 300;		SHKYforce = 600;
 		SLPdamage = 10;			SHPdamage = 20;			SLKdamage = 10;			SHKdamage = 20;
 		SLPlow = false;			SHPlow = false;			SLKlow = true;			SHKlow = false;
 		
@@ -104,13 +104,13 @@ public class CPlayerController : PlayerController
 		//ALPlow = true;		AHPlow = true;		ALKlow = true;		AHKlow = true;
 		
 		//normal crouching frames values
-		//CLPtotalFrames;		CHPtotalFrames;		CLKtotalFrames;		CHKtotalFrame;
-		//CLPstartFrame;		CHPstartFrame;		CLKstartFrame;		CHKstartFrame;
-		//CLPfinishFrame;		CHPfinishFrame;		CLKfinishFrame;		CHKfinishFrame;
-		//CLPXforce = 5;		CHPXforce = 10;		CLKXforce = 5;		CHKXforce = 10;
-		//CLPYforce = 200;		CHPYforce = 300;	CLKYforce = 200;	CHKYforce = 300;
-		//CLPdamage = 10;		CHPdamage = 20;		CLKdamage = 10;		CHKdamage = 20;
-		//CLPlow = false;		CHPlow = false;		CLKlow = true;		CHKlow = true;
+		CLPtotalFrames = 8;		CHPtotalFrames = 10;		CLKtotalFrames = 6;		CHKtotalFrame = 12;
+		CLPstartFrame = 6;		CHPstartFrame = 8;			CLKstartFrame = 4;		CHKstartFrame = 9;
+		CLPfinishFrame = 4;		CHPfinishFrame = 4;			CLKfinishFrame = 2;		CHKfinishFrame = 6;
+		CLPXforce = 200;		CHPXforce = 300;			CLKXforce = 100;		CHKXforce = 0;
+		CLPYforce = 100;		CHPYforce = 300;			CLKYforce = 0;			CHKYforce = 0;
+		CLPdamage = 4;			CHPdamage = 20;				CLKdamage = 8;			CHKdamage = 20;
+		CLPlow = false;			CHPlow = false;				CLKlow = true;			CHKlow = true;
 
 		//normal standing frames values
 		//lightPunch				heavyPunch					lightKick					heavyKick
