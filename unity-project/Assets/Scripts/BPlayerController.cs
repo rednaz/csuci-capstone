@@ -45,7 +45,8 @@ public class BPlayerController : PlayerController
 		HPgrabber = "HP1";
 		LKgrabber = "LK1";
 		HKgrabber = "HK1";
-		health = 1000;
+		maxHealth = 30;
+		health = maxHealth;
 		
 		//super 1 declarations
 		super1Aleft = "214A";
@@ -89,11 +90,11 @@ public class BPlayerController : PlayerController
 		SLPtotalFrames = 6;		SHPtotalFrames = 10;		SLKtotalFrames = 6;		SHKtotalFrame = 12;
 		SLPstartFrame = 4;		SHPstartFrame = 7;			SLKstartFrame = 4;		SHKstartFrame = 9;
 		SLPfinishFrame = 2;		SHPfinishFrame = 4;			SLKfinishFrame = 2;		SHKfinishFrame = 6;
-		SLPXforce = 500;			SHPXforce = 10;			SLKXforce = 500;		SHKXforce = 10;
-		SLPYforce = 500;		SHPYforce = 300;			SLKYforce = 200;		SHKYforce = 300;
+		SLPXforce = 500;		SHPXforce = 500;			SLKXforce = 500;		SHKXforce = 500;
+		SLPYforce = 200;		SHPYforce = 600;			SLKYforce = 300;		SHKYforce = 600;
 		SLPdamage = 10;			SHPdamage = 20;				SLKdamage = 10;			SHKdamage = 20;
 		SLPlow = false;			SHPlow = false;				SLKlow = true;			SHKlow = false;
-		
+
 		//normal air frames values
 		//ALPtotalFrames;		AHPtotalFrames;		ALKtotalFrames;		AHKtotalFrame;
 		//ALPstartFrame;		AHPstartFrame;		ALKstartFrame;		AHKstartFrame;
@@ -104,23 +105,23 @@ public class BPlayerController : PlayerController
 		//ALPlow = true;		AHPlow = true;		ALKlow = true;		AHKlow = true;
 		
 		//normal crouching frames values
-		//CLPtotalFrames;		CHPtotalFrames;		CLKtotalFrames;		CHKtotalFrame;
-		//CLPstartFrame;		CHPstartFrame;		CLKstartFrame;		CHKstartFrame;
-		//CLPfinishFrame;		CHPfinishFrame;		CLKfinishFrame;		CHKfinishFrame;
-		//CLPXforce = 5;		CHPXforce = 10;		CLKXforce = 5;		CHKXforce = 10;
-		//CLPYforce = 200;		CHPYforce = 300;	CLKYforce = 200;	CHKYforce = 300;
-		//CLPdamage = 10;		CHPdamage = 20;		CLKdamage = 10;		CHKdamage = 20;
-		//CLPlow = false;		CHPlow = false;		CLKlow = true;		CHKlow = true;
+		CLPtotalFrames = 8;		CHPtotalFrames = 10;		CLKtotalFrames = 6;		CHKtotalFrame = 12;
+		CLPstartFrame = 6;		CHPstartFrame = 8;			CLKstartFrame = 4;		CHKstartFrame = 9;
+		CLPfinishFrame = 4;		CHPfinishFrame = 4;			CLKfinishFrame = 2;		CHKfinishFrame = 6;
+		CLPXforce = 200;		CHPXforce = 300;			CLKXforce = 100;		CHKXforce = 0;
+		CLPYforce = 100;		CHPYforce = 300;			CLKYforce = 0;			CHKYforce = 0;
+		CLPdamage = 4;			CHPdamage = 20;				CLKdamage = 8;			CHKdamage = 20;
+		CLPlow = false;			CHPlow = false;				CLKlow = true;			CHKlow = true;
 
 		//normal standing frames values
 		//lightPunch				heavyPunch					lightKick					heavyKick
-		attackValues[ 0, 0 ] = 6; 	attackValues[ 0, 1 ] = 6;	attackValues[ 0, 2 ] = 6;	attackValues[ 0, 3 ] = 6;   
-		attackValues[ 1, 0 ] = 6; 	attackValues[ 1, 1 ] = 6;	attackValues[ 1, 2 ] = 6;	attackValues[ 1, 3 ] = 6;
-		attackValues[ 2, 0 ] = 6; 	attackValues[ 2, 1 ] = 6;	attackValues[ 2, 2 ] = 6;	attackValues[ 2, 3 ] = 6;
-		attackValues[ 3, 0 ] = 6; 	attackValues[ 3, 1 ] = 6;	attackValues[ 3, 2 ] = 6;	attackValues[ 3, 3 ] = 6;
-		attackValues[ 4, 0 ] = 6; 	attackValues[ 4, 1 ] = 6;	attackValues[ 4, 2 ] = 6;	attackValues[ 4, 3 ] = 6;
-		attackValues[ 5, 0 ] = 6; 	attackValues[ 5, 1 ] = 6;	attackValues[ 5, 2 ] = 6;	attackValues[ 5, 3 ] = 6;
-
+		attackValues[ 0, 0 ] = 6; 	attackValues[ 0, 1 ] = 6;	attackValues[ 0, 2 ] = 6;	attackValues[ 0, 3 ] = 6;   //totalFrames
+		attackValues[ 1, 0 ] = 6; 	attackValues[ 1, 1 ] = 6;	attackValues[ 1, 2 ] = 6;	attackValues[ 1, 3 ] = 6;	//startFrame
+		attackValues[ 2, 0 ] = 6; 	attackValues[ 2, 1 ] = 6;	attackValues[ 2, 2 ] = 6;	attackValues[ 2, 3 ] = 6;	//finishFrame
+		attackValues[ 3, 0 ] = 6; 	attackValues[ 3, 1 ] = 6;	attackValues[ 3, 2 ] = 6;	attackValues[ 3, 3 ] = 6;	//Xforce
+		attackValues[ 4, 0 ] = 6; 	attackValues[ 4, 1 ] = 6;	attackValues[ 4, 2 ] = 6;	attackValues[ 4, 3 ] = 6;	//Yforce
+		attackValues[ 5, 0 ] = 6; 	attackValues[ 5, 1 ] = 6;	attackValues[ 5, 2 ] = 6;	attackValues[ 5, 3 ] = 6;	//damage
+		//beingHurtLow
 		//normal air frame values
 		//lightPunch				heavyPunch					lightKick					heavyKick
 		attackValues[ 0, 4 ] = 6; 	attackValues[ 0, 5 ] = 6;	attackValues[ 0, 6 ] = 6;	attackValues[ 0, 7 ] = 6;   
