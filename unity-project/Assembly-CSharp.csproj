@@ -50,7 +50,6 @@
      <Compile Include="Assets\Scripts\BPlayerController.cs" />
      <Compile Include="Assets\Scripts\CPlayerController.cs" />
      <Compile Include="Assets\Scripts\CameraScript.cs" />
-     <Compile Include="Assets\Scripts\CplayerControllerScript.cs" />
      <Compile Include="Assets\Scripts\EasyAI.cs" />
      <Compile Include="Assets\Scripts\EnemyAI.cs" />
      <Compile Include="Assets\Scripts\FreezeCode.cs" />
