@@ -86,10 +86,17 @@ public class PlayerController : MonoBehaviour
 	public bool CLPlow;				public bool CHPlow;				public bool CLKlow;				public bool CHKlow;
 
 	//int array
-	public int[ , ]attackValues = new int[ 6, 12 ];
-	//Rows:	0: totalFrames		3: Xforce				Columns: 	00 - 03: standing values
-	//		1: startFrame		4: Yforce							04 - 07: air values
-	//		2: finishFrame		5: damageAmount						08 - 11: crouching values
+	public int[ , ]attackValues = new int[ 7, 12 ];
+	//Rows:	0: totalFrames		3: Xforce			6: hitType			Columns: 	00 - 03: standing values
+	//		1: startFrame		4: Yforce											04 - 07: air values
+	//		2: finishFrame		5: damageAmount										08 - 11: crouching values
+
+	//key for hitType
+	//0 = hurts upper body only, crouching opponent means it completely misses
+	//1 = hurts lower body only, crouch blocking only successful
+	//2 = hurts either upper or lower, any blocking will do
+	//3 = hurts overhead, only standing blocking will work
+	//4 = unblockable
 
 	//normal triggers
 	public bool LPtrigger = false;		public bool HPtrigger = false;		public bool LKtrigger = false;		public bool HKtrigger = false;
@@ -783,9 +790,6 @@ public class PlayerController : MonoBehaviour
 		LPtrigger = false;		HPtrigger = false;		LKtrigger = false;		HKtrigger = false;
 	}
 
-
-
-
 	public void buttonRegistration()
 	{
 		moveX = Input.GetAxis ( moveXgrabber );
@@ -796,10 +800,6 @@ public class PlayerController : MonoBehaviour
 
 	public void hurtWhileStanding()
 	{
-		//currentDamage;
-		//public int damageThreshold;
-		//public int lightHitFrames;
-		//public int heavyHitFrames;
 		if( beingHurt == true )
 		{
 			if( crouchCheck == true && beingHurtLow == true || crouchCheck == false && beingHurtLow == false 
