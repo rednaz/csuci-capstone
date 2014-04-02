@@ -209,7 +209,7 @@ public class PlayerController : MonoBehaviour
 
 	//player health declaration
 	public int health;
-	public GUIText healthUI;
+	public int maxHealth;
 
 	//player being hurt
 	public bool beingHurt = false;
@@ -254,7 +254,7 @@ public class PlayerController : MonoBehaviour
 		//see game activity
 		if (Input.GetKeyDown (KeyCode.Space)) 
 		{
-			//Debug.Log ( debugString + " health: " + health );
+			Debug.Log ( debugString + " health: " + health + " / " + maxHealth );
 			freeze.tempFreeze();
 		}
 		//Debug.Log ( debugString + " " + LP);
@@ -667,13 +667,17 @@ public class PlayerController : MonoBehaviour
 		if (health > 0)
 		{
 			health += deltaHealth;
-			healthUI.text = "P1 Health: " + health;
 		}
 	}
 	
 	int getHealth()
 	{
 		return this.health;
+	}
+
+	int getMaxHealth()
+	{
+		return this.maxHealth;
 	}
 
 
