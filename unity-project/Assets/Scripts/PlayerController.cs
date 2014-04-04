@@ -97,6 +97,7 @@ public class PlayerController : MonoBehaviour
 	//2 = hurts either upper or lower, any blocking will do
 	//3 = hurts overhead, only standing blocking will work
 	//4 = unblockable
+	//5 = trip, hurts lower body only, crouch blocking only successful
 
 	//normal triggers
 	public bool LPtrigger = false;		public bool HPtrigger = false;		public bool LKtrigger = false;		public bool HKtrigger = false;
@@ -254,7 +255,7 @@ public class PlayerController : MonoBehaviour
 		//see game activity
 		if (Input.GetKeyDown (KeyCode.Space)) 
 		{
-			Debug.Log ( debugString + " health: " + health + " / " + maxHealth );
+			//Debug.Log ( debugString + " health: " + health + " / " + maxHealth );
 			freeze.tempFreeze();
 		}
 		//Debug.Log ( debugString + " " + LP);
