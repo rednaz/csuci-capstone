@@ -114,13 +114,13 @@ public class CPlayerController : PlayerController
 		attackValues[ 6, 0 ] = 0; 		attackValues[ 6, 1 ] = 0;		attackValues[ 6, 2 ] = 1;		attackValues[ 6, 3 ] = 0;		//damageType
 		
 		//normal air frame values
-		//lightPunch				heavyPunch					lightKick					heavyKick
-		attackValues[ 0, 4 ] = 6; 	attackValues[ 0, 5 ] = 6;	attackValues[ 0, 6 ] = 6;	attackValues[ 0, 7 ] = 6;   	//totalFrames
-		attackValues[ 1, 4 ] = 6; 	attackValues[ 1, 5 ] = 6;	attackValues[ 1, 6 ] = 6;	attackValues[ 1, 7 ] = 6;		//startFrame
-		attackValues[ 2, 4 ] = 6; 	attackValues[ 2, 5 ] = 6;	attackValues[ 2, 6 ] = 6;	attackValues[ 2, 7 ] = 6;		//finishFrame
-		attackValues[ 3, 4 ] = 6; 	attackValues[ 3, 5 ] = 6;	attackValues[ 3, 6 ] = 6;	attackValues[ 3, 7 ] = 6;		//Xforce
-		attackValues[ 4, 4 ] = 6; 	attackValues[ 4, 5 ] = 6;	attackValues[ 4, 6 ] = 6;	attackValues[ 4, 7 ] = 6;		//Yforce
-		attackValues[ 5, 4 ] = 6; 	attackValues[ 5, 5 ] = 6;	attackValues[ 5, 6 ] = 6;	attackValues[ 5, 7 ] = 6;		//damageAmount
+		//lightPunch					heavyPunch						lightKick						heavyKick
+		attackValues[ 0, 4 ] = 6; 		attackValues[ 0, 5 ] = 10;		attackValues[ 0, 6 ] = 6;		attackValues[ 0, 7 ] = 12;   	//totalFrames
+		attackValues[ 1, 4 ] = 4; 		attackValues[ 1, 5 ] = 7;		attackValues[ 1, 6 ] = 4;		attackValues[ 1, 7 ] = 8;		//startFrame
+		attackValues[ 2, 4 ] = 2; 		attackValues[ 2, 5 ] = 4;		attackValues[ 2, 6 ] = 2;		attackValues[ 2, 7 ] = 4;		//finishFrame
+		attackValues[ 3, 4 ] = 500;		attackValues[ 3, 5 ] = 600;		attackValues[ 3, 6 ] = 500;		attackValues[ 3, 7 ] = 700;		//Xforce
+		attackValues[ 4, 4 ] = 300;		attackValues[ 4, 5 ] = 400;		attackValues[ 4, 6 ] = 300;		attackValues[ 4, 7 ] = 500;		//Yforce
+		attackValues[ 5, 4 ] = 10; 		attackValues[ 5, 5 ] = 20;		attackValues[ 5, 6 ] = 6;		attackValues[ 5, 7 ] = 25;		//damageAmount
 		attackValues[ 6, 4 ] = 3; 		attackValues[ 6, 5 ] = 3;		attackValues[ 6, 6 ] = 3;		attackValues[ 6, 7 ] = 3;		//damageType
 		
 		//normal crouching frame values

@@ -705,52 +705,51 @@ public class PlayerController : MonoBehaviour
 		if ( currentInput == "A" )
 		{
 			//standing light punch executed
-			normalFrames = SLPtotalFrames;
-			startNormal = SLPstartFrame;
-			finishNormal = SLPfinishFrame;
-			hurtX = SLPXforce;
-			hurtY = SLPYforce;
+			normalFrames = attackValues[ 0, 0 ];
+			startNormal = attackValues[ 1, 0 ];
+			finishNormal = attackValues[ 2, 0 ];
+			hurtX = attackValues[ 3, 0 ];
+			hurtY = attackValues[ 4, 0 ];
+			currentDamage = attackValues[ 5, 0 ];
 			hurtLow = SLPlow;
-			currentDamage = SLPdamage;
 			LPtrigger = true;
 		}
 		else if ( currentInput == "B" )
 		{
 			//standing heavy punch executed
-			normalFrames = SHPtotalFrames;
-			startNormal = SHPstartFrame;
-			finishNormal = SHPfinishFrame;
-			hurtX = SHPXforce;
-			hurtY = SHPYforce;
+			normalFrames = attackValues[ 0, 1 ];
+			startNormal = attackValues[ 1, 1 ];
+			finishNormal = attackValues[ 2, 1 ];
+			hurtX = attackValues[ 3, 1 ];
+			hurtY = attackValues[ 4, 1 ];
+			currentDamage = attackValues[ 5, 1 ];
 			hurtLow = SHPlow;
-			currentDamage = SHPdamage;
 			HPtrigger = true;
 		}
 		else if ( currentInput == "C" )
 		{
 			//standing light kick executed
-			normalFrames = SLKtotalFrames;
-			startNormal = SLKstartFrame;
-			finishNormal = SLKfinishFrame;
-			hurtX = SLKXforce;
-			hurtY = SLKYforce;
+			normalFrames = attackValues[ 0, 2 ];
+			startNormal = attackValues[ 1, 2 ];
+			finishNormal = attackValues[ 2, 2 ];
+			hurtX = attackValues[ 3, 2 ];
+			hurtY = attackValues[ 4, 2 ];
+			currentDamage = attackValues[ 5, 2 ];
 			hurtLow = SLKlow;
-			currentDamage = SLKdamage;
 			LKtrigger = true;
 		}
 		else if ( currentInput == "D" )
 		{
 			//standing heavy kick executed
-			normalFrames = SHKtotalFrame;
-			startNormal = SHKstartFrame;
-			finishNormal = SHKfinishFrame;
-			hurtX = SHKXforce;
-			hurtY = SHKYforce;
+			normalFrames = attackValues[ 0, 3 ];
+			startNormal = attackValues[ 1, 3 ];
+			finishNormal = attackValues[ 2, 3 ];
+			hurtX = attackValues[ 3, 3 ];
+			hurtY = attackValues[ 4, 3 ];
+			currentDamage = attackValues[ 5, 3 ];
 			hurtLow = SHKlow;
-			currentDamage = SHKdamage;
 			HKtrigger = true;
 		}
-
 	}
 
 	public void crouchingNormal()
@@ -758,27 +757,50 @@ public class PlayerController : MonoBehaviour
 		if ( currentInput == "A" )
 		{
 			//crouching light punch executed
+			normalFrames = attackValues[ 0, 8 ];
+			startNormal = attackValues[ 1, 8 ];
+			finishNormal = attackValues[ 2, 8 ];
+			hurtX = attackValues[ 3, 8 ];
+			hurtY = attackValues[ 4, 8 ];
+			currentDamage = attackValues[ 5, 8 ];
+			hurtLow = CLPlow;
+			LPtrigger = true;
 		}
 		else if ( currentInput == "B" )
 		{
 			//crouching heavy punch executed
-			//standing heavy punch executed
-			normalFrames = CHPtotalFrames;
-			startNormal = CHPstartFrame;
-			finishNormal = CHPfinishFrame;
-			hurtX = CHPXforce;
-			hurtY = CHPYforce;
+			normalFrames = attackValues[ 0, 9 ];
+			startNormal = attackValues[ 1, 9 ];
+			finishNormal = attackValues[ 2, 9 ];
+			hurtX = attackValues[ 3, 9 ];
+			hurtY = attackValues[ 4, 9 ];
+			currentDamage = attackValues[ 5, 9 ];
 			hurtLow = CHPlow;
-			currentDamage = CHPdamage;
 			HPtrigger = true;
 		}
 		else if ( currentInput == "C" )
 		{
 			//crouching light kick executed
+			normalFrames = attackValues[ 0, 10 ];
+			startNormal = attackValues[ 1, 10 ];
+			finishNormal = attackValues[ 2, 10 ];
+			hurtX = attackValues[ 3, 10 ];
+			hurtY = attackValues[ 4, 10 ];
+			currentDamage = attackValues[ 5, 10 ];
+			hurtLow = CLKlow;
+			LKtrigger = true;
 		}
 		else if ( currentInput == "D" )
 		{
 			//crouching heavy kick executed
+			normalFrames = attackValues[ 0, 11 ];
+			startNormal = attackValues[ 1, 11 ];
+			finishNormal = attackValues[ 2, 11 ];
+			hurtX = attackValues[ 3, 11 ];
+			hurtY = attackValues[ 4, 11 ];
+			currentDamage = attackValues[ 5, 11 ];
+			hurtLow = CHKlow;
+			HKtrigger = true;
 		}
 	}
 
@@ -787,21 +809,53 @@ public class PlayerController : MonoBehaviour
 		if ( currentInput == "A" )
 		{
 			//air light punch executed
+			normalFrames = attackValues[ 0, 4 ];
+			startNormal = attackValues[ 1, 4 ];
+			finishNormal = attackValues[ 2, 4 ];
+			hurtX = attackValues[ 3, 4 ];
+			hurtY = attackValues[ 4, 4 ];
+			currentDamage = attackValues[ 5, 4 ];
+			//
+			LPtrigger = true;
 			airLock = true;
 		}
 		else if ( currentInput == "B" )
 		{
 			//air heavy punch executed
+			normalFrames = attackValues[ 0, 5 ];
+			startNormal = attackValues[ 1, 5 ];
+			finishNormal = attackValues[ 2, 5 ];
+			hurtX = attackValues[ 3, 5 ];
+			hurtY = attackValues[ 4, 5 ];
+			currentDamage = attackValues[ 5, 5 ];
+			//
+			HPtrigger = true;
 			airLock = true;
 		}
 		else if ( currentInput == "C" )
 		{
 			//air light kick executed
+			normalFrames = attackValues[ 0, 6 ];
+			startNormal = attackValues[ 1, 6 ];
+			finishNormal = attackValues[ 2, 6 ];
+			hurtX = attackValues[ 3, 6 ];
+			hurtY = attackValues[ 4, 6 ];
+			currentDamage = attackValues[ 5, 6 ];
+			//
+			LKtrigger = true;
 			airLock = true;
 		}
 		else if ( currentInput == "D" )
 		{
 			//air heavy kick executed
+			normalFrames = attackValues[ 0, 7 ];
+			startNormal = attackValues[ 1, 7 ];
+			finishNormal = attackValues[ 2, 7 ];
+			hurtX = attackValues[ 3, 7 ];
+			hurtY = attackValues[ 4, 7 ];
+			currentDamage = attackValues[ 5, 7 ];
+			//
+			HKtrigger = true;
 			airLock = true;
 		}
 	}
