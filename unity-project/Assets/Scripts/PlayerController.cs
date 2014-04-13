@@ -1036,6 +1036,13 @@ public class PlayerController : MonoBehaviour
 			//send an attack signal
 			atariDesu = attack.amIgettingHitCHP( hurtX, hurtY, currentDamage, damageType );
 		}
+		//crouchingHPcalls
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
+		   && LKtrigger == true && groundCheck == true && crouchCheck == true )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitCLK( hurtX, hurtY, currentDamage, damageType );
+		}
 		normalFrames--;
 	}
 
@@ -1181,7 +1188,7 @@ public class PlayerController : MonoBehaviour
 	//amIgettingHit calls********************************************************************************************
 	public bool amIgettingHitSLP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
-		//light punch connected on call
+		//standing light punch connected on call
 		if( SLP == true )
 		{
 			recieveHurtX = sendingHurtX;
@@ -1196,7 +1203,7 @@ public class PlayerController : MonoBehaviour
 
 	public bool amIgettingHitSHP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
-		//light punch connected on call
+		//standing heavy punch connected on call
 		if( SHP == true )
 		{
 			recieveHurtX = sendingHurtX;
@@ -1210,7 +1217,7 @@ public class PlayerController : MonoBehaviour
 
 	public bool amIgettingHitSLK( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
-		//light kick connected on call
+		//standing light kick connected on call
 		if( SLK == true )
 		{
 			recieveHurtX = sendingHurtX;
@@ -1224,7 +1231,7 @@ public class PlayerController : MonoBehaviour
 
 	public bool amIgettingHitSHK( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
-		//light kick connected on call
+		//standing heavy kick connected on call
 		if( SHK == true )
 		{
 			recieveHurtX = sendingHurtX;
@@ -1238,8 +1245,8 @@ public class PlayerController : MonoBehaviour
 
 	public bool amIgettingHitCLP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
-		//light kick connected on call
-		if( SLK == true )
+		//crouching light punch connected on call
+		if( CLP == true )
 		{
 			recieveHurtX = sendingHurtX;
 			recieveHurtY = sendingHurtY;
@@ -1252,8 +1259,22 @@ public class PlayerController : MonoBehaviour
 
 	public bool amIgettingHitCHP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
-		//light kick connected on call
-		if( SHK == true )
+		//crouching heavy punch connected on call
+		if( CHP == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
+	public bool amIgettingHitCLK( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		//crouching light kick connected on call
+		if( CLK == true )
 		{
 			recieveHurtX = sendingHurtX;
 			recieveHurtY = sendingHurtY;
