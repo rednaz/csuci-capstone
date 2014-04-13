@@ -28,6 +28,9 @@ public class BPlayerController : PlayerController
 		hitFramesString = "hitFrames1";
 		blockLockStandingString = "blockLockStanding1";
 		blockLockCrouchingString = "blockLockCrouching1";
+		gettingUpString = "gettingUp1";
+		gettingTrippedString = "gettingTripped1";
+
 
 		//the other player declaration
 		OtherPlayer = "CPlayer2"; //this could probably be another call fuction

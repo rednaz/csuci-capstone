@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour
 	public string hitFramesString;
 	public string blockLockStandingString;
 	public string blockLockCrouchingString;
+	public string gettingUpString;
+	public string gettingTrippedString;
 
 	
 	//maxSpeed declaration
@@ -291,11 +293,9 @@ public class PlayerController : MonoBehaviour
 			countDown = countDownSetter;
 			return;
 		}
-		
 		if( beingTripped == true )
 		{
 			canAct = false;
-			trippedCountdown = trippedAmount;
 			beingTripped = false;
 			return;
 		}
@@ -327,6 +327,10 @@ public class PlayerController : MonoBehaviour
 		if ( beingHurt == true )
 		{
 			beingHurt = false;
+			return;
+		}
+		if ( trippedCountdown > 1 )
+		{
 			return;
 		}
 		if ( hitFrames > 1 )
@@ -893,10 +897,26 @@ public class PlayerController : MonoBehaviour
 		//5 = trip, hurts lower body only, crouch blocking only successful
 		if( beingHurt == true )
 		{
+			//triping
 			if( damageTypeRecieved == 5 )
 			{
-				//trip animation
-				//haven't coded this yet
+				if( blockCheck == true && crouchCheck == true )
+				{
+					//blocked
+					blockCrouchingLock = true;
+					minusHealth( chipDamage );
+					normalForce();
+					frameSetting();
+				}
+				//damaged and tripped
+				else
+				{
+					normalForce();
+					trippedCountdown = trippedAmount;
+					minusHealth( damageAmountRecieved );
+					beingTripped = true;
+					beingComboed++;
+				}
 			}
 			//unblockable
 			else if( damageTypeRecieved == 4 )
@@ -1357,6 +1377,8 @@ public class PlayerController : MonoBehaviour
 		anim.SetInteger ( hitFramesString, hitFrames );
 		anim.SetBool ( blockLockStandingString, blockStandingLock );
 		anim.SetBool ( blockLockCrouchingString, blockCrouchingLock );
+		anim.SetInteger ( gettingUpString, countDown );
+		anim.SetInteger ( gettingTrippedString, trippedCountdown );
 	}
 	//animationCalls ends &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
