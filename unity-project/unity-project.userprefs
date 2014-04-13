@@ -1,11 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\PlayerController.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\CPlayerController.cs">
     <Files>
-      <File FileName="Assets\Scripts\BPlayerController.cs" Line="119" Column="3" />
-      <File FileName="Assets\Scripts\CPlayerController.cs" Line="117" Column="24" />
+      <File FileName="Assets\Scripts\BPlayerController.cs" Line="97" Column="114" />
+      <File FileName="Assets\Scripts\CPlayerController.cs" Line="110" Column="42" />
       <File FileName="Assets\Scripts\FreezeCode.cs" Line="45" Column="1" />
-      <File FileName="Assets\Scripts\PlayerController.cs" Line="860" Column="4" />
+      <File FileName="Assets\Scripts\PlayerController.cs" Line="316" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

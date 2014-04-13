@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour
 	public float enemyX; //grabbing the exact position of the enemy at the exact frame
 
 	//button pushes: only one button can be registered in the system at a time per frame
-	//turns true when the attack is in range
+	//turns true when the attack is in range (hitboxes use this)
 	//standard attacks
 	public bool SLP = false;		public bool ALP = false;		public bool CLP = false;
 	public bool	SHP = false;		public bool AHP = false;		public bool CHP = false;
@@ -59,30 +59,12 @@ public class PlayerController : MonoBehaviour
 	//      avoid multiple hits of the same individual normal
 
 	//normal standing frames values
-	public int SLPtotalFrames;		public int SHPtotalFrames;		public int SLKtotalFrames;		public int SHKtotalFrame;
-	public int SLPstartFrame;		public int SHPstartFrame;		public int SLKstartFrame;		public int SHKstartFrame;
-	public int SLPfinishFrame;		public int SHPfinishFrame;		public int SLKfinishFrame;		public int SHKfinishFrame;
-	public int SLPXforce;			public int SHPXforce;			public int SLKXforce;			public int SHKXforce;
-	public int SLPYforce;			public int SHPYforce;			public int SLKYforce;			public int SHKYforce;
-	public int SLPdamage;			public int SHPdamage;			public int SLKdamage;			public int SHKdamage;
 	public bool SLPlow;				public bool SHPlow;				public bool SLKlow;				public bool SHKlow;
 
 	//normal air frames values
-	public int ALPtotalFrames;		public int AHPtotalFrames;		public int ALKtotalFrames;		public int AHKtotalFrame;
-	public int ALPstartFrame;		public int AHPstartFrame;		public int ALKstartFrame;		public int AHKstartFrame;
-	public int ALPfinishFrame;		public int AHPfinishFrame;		public int ALKfinishFrame;		public int AHKfinishFrame;
-	public int ALPXforce;			public int AHPXforce;			public int ALKXforce;			public int AHKXforce;
-	public int ALPYforce;			public int AHPYforce;			public int ALKYforce;			public int AHKYforce;
-	public int ALPdamage;			public int AHPdamage;			public int ALKdamage;			public int AHKdamage;
 	public bool ALPlow;				public bool AHPlow;				public bool ALKlow;				public bool AHKlow;
 
 	//normal crouching frames values
-	public int CLPtotalFrames;		public int CHPtotalFrames;		public int CLKtotalFrames;		public int CHKtotalFrame;
-	public int CLPstartFrame;		public int CHPstartFrame;		public int CLKstartFrame;		public int CHKstartFrame;
-	public int CLPfinishFrame;		public int CHPfinishFrame;		public int CLKfinishFrame;		public int CHKfinishFrame;
-	public int CLPXforce;			public int CHPXforce;			public int CLKXforce;			public int CHKXforce;
-	public int CLPYforce;			public int CHPYforce;			public int CLKYforce;			public int CHKYforce;
-	public int CLPdamage;			public int CHPdamage;			public int CLKdamage;			public int CHKdamage;
 	public bool CLPlow;				public bool CHPlow;				public bool CLKlow;				public bool CHKlow;
 
 	//int array
@@ -143,7 +125,7 @@ public class PlayerController : MonoBehaviour
 	public int hyperMeter = 300;
 	//100 = level 1
 	//200 = level 2
-	//300 = level 3
+	//300 = level 3 (max level)
 	public int bullets = 6;
 	
 	//checking what direction the player is facing at the time of the frame
@@ -220,6 +202,8 @@ public class PlayerController : MonoBehaviour
 	public int damageAmountRecieved;
 	public bool recievedAttackLow = false;  //true if the attack is low
 	public int chipDamage;
+	public int damageType; //what type of damage to send
+	public int damageTypeRecieved;
 
 	//hurt launch variables
 	public int hurtX;  //how much force a punch does to you in X direction
@@ -711,6 +695,7 @@ public class PlayerController : MonoBehaviour
 			hurtX = attackValues[ 3, 0 ];
 			hurtY = attackValues[ 4, 0 ];
 			currentDamage = attackValues[ 5, 0 ];
+			damageType = attackValues[ 6, 0 ];
 			hurtLow = SLPlow;
 			LPtrigger = true;
 		}
@@ -723,6 +708,7 @@ public class PlayerController : MonoBehaviour
 			hurtX = attackValues[ 3, 1 ];
 			hurtY = attackValues[ 4, 1 ];
 			currentDamage = attackValues[ 5, 1 ];
+			damageType = attackValues[ 6, 1 ];
 			hurtLow = SHPlow;
 			HPtrigger = true;
 		}
@@ -735,6 +721,7 @@ public class PlayerController : MonoBehaviour
 			hurtX = attackValues[ 3, 2 ];
 			hurtY = attackValues[ 4, 2 ];
 			currentDamage = attackValues[ 5, 2 ];
+			damageType = attackValues[ 6, 2 ];
 			hurtLow = SLKlow;
 			LKtrigger = true;
 		}
@@ -747,6 +734,7 @@ public class PlayerController : MonoBehaviour
 			hurtX = attackValues[ 3, 3 ];
 			hurtY = attackValues[ 4, 3 ];
 			currentDamage = attackValues[ 5, 3 ];
+			damageType = attackValues[ 6, 3 ];
 			hurtLow = SHKlow;
 			HKtrigger = true;
 		}
@@ -763,6 +751,7 @@ public class PlayerController : MonoBehaviour
 			hurtX = attackValues[ 3, 8 ];
 			hurtY = attackValues[ 4, 8 ];
 			currentDamage = attackValues[ 5, 8 ];
+			damageType = attackValues[ 6, 8 ];
 			hurtLow = CLPlow;
 			LPtrigger = true;
 		}
@@ -775,6 +764,7 @@ public class PlayerController : MonoBehaviour
 			hurtX = attackValues[ 3, 9 ];
 			hurtY = attackValues[ 4, 9 ];
 			currentDamage = attackValues[ 5, 9 ];
+			damageType = attackValues[ 6, 9 ];
 			hurtLow = CHPlow;
 			HPtrigger = true;
 		}
@@ -787,6 +777,7 @@ public class PlayerController : MonoBehaviour
 			hurtX = attackValues[ 3, 10 ];
 			hurtY = attackValues[ 4, 10 ];
 			currentDamage = attackValues[ 5, 10 ];
+			damageType = attackValues[ 6, 10 ];
 			hurtLow = CLKlow;
 			LKtrigger = true;
 		}
@@ -799,6 +790,7 @@ public class PlayerController : MonoBehaviour
 			hurtX = attackValues[ 3, 11 ];
 			hurtY = attackValues[ 4, 11 ];
 			currentDamage = attackValues[ 5, 11 ];
+			damageType = attackValues[ 6, 11 ];
 			hurtLow = CHKlow;
 			HKtrigger = true;
 		}
@@ -815,6 +807,7 @@ public class PlayerController : MonoBehaviour
 			hurtX = attackValues[ 3, 4 ];
 			hurtY = attackValues[ 4, 4 ];
 			currentDamage = attackValues[ 5, 4 ];
+			damageType = attackValues[ 6, 4 ];
 			//
 			LPtrigger = true;
 			airLock = true;
@@ -828,6 +821,7 @@ public class PlayerController : MonoBehaviour
 			hurtX = attackValues[ 3, 5 ];
 			hurtY = attackValues[ 4, 5 ];
 			currentDamage = attackValues[ 5, 5 ];
+			damageType = attackValues[ 6, 5 ];
 			//
 			HPtrigger = true;
 			airLock = true;
@@ -841,6 +835,7 @@ public class PlayerController : MonoBehaviour
 			hurtX = attackValues[ 3, 6 ];
 			hurtY = attackValues[ 4, 6 ];
 			currentDamage = attackValues[ 5, 6 ];
+			damageType = attackValues[ 6, 6 ];
 			//
 			LKtrigger = true;
 			airLock = true;
@@ -854,6 +849,7 @@ public class PlayerController : MonoBehaviour
 			hurtX = attackValues[ 3, 7 ];
 			hurtY = attackValues[ 4, 7 ];
 			currentDamage = attackValues[ 5, 7 ];
+			damageType = attackValues[ 6, 7 ];
 			//
 			HKtrigger = true;
 			airLock = true;
@@ -876,72 +872,65 @@ public class PlayerController : MonoBehaviour
 		buttonRegister ();
 	}
 
+	//determines if the player was hit or not on the ground $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 	public void hurtWhileStanding()
 	{
+		//damageTypeRecieved values key
+		//0 = hurts upper body only, crouching opponent means it completely misses
+		//1 = hurts lower body only, crouch blocking only successful
+		//2 = hurts either upper or lower, any blocking will do
+		//3 = hurts overhead, only standing blocking will work
+		//4 = unblockable
+		//5 = trip, hurts lower body only, crouch blocking only successful
 		if( beingHurt == true )
 		{
-			if( crouchCheck == true && beingHurtLow == true || crouchCheck == false && beingHurtLow == false 
-			   || crouchCheck == false && beingHurtLow == true )
-				//the only one that passes this undetected is if the attack is high and the player is crouching
-				//obviously the attacking player would be attacking over the opposing player's head resulting in a miss
-				//the exception is an attack from the air, will be coded in later
+			//hurts lower body only, crouch blocking only successful
+			if( damageTypeRecieved == 1 )
 			{
-				if( enemyX  < transform.position.x )
+				if( blockCheck == true && crouchCheck == true )
 				{
-					rigidbody2D.AddForce ( new Vector2 ( recieveHurtX , 0 ) );
+					//blocked
+					blockCrouchingLock = true;
+					minusHealth( chipDamage );
+					normalForce();
+					frameSetting();
 				}
+				//damaged
 				else
 				{
-					rigidbody2D.AddForce ( new Vector2 ( -recieveHurtX , 0 ) );//recieveHurtX
-				}
-
-				if( blockCheck == true && crouchCheck == beingHurtLow ) //blocked the attack successfully
-				{
-					minusHealth( chipDamage );
-					if( crouchCheck == true )
-					{
-						blockCrouchingLock = true; //sends animation signal to showcase crouch blocking
-						if ( damageAmountRecieved <= damageThreshold )  //how long is the player in block lock
-						{
-							hitFrames = lightHitFrames;
-						}
-						else
-						{
-							hitFrames = heavyHitFrames; 
-						}
-					}
-					else //crouchCheck is false
-					{
-						blockStandingLock = true; //sends animation signal to showcase standing blocking
-						if ( damageAmountRecieved <= damageThreshold )  //how long is the player in block lock
-						{
-							hitFrames = lightHitFrames;
-						}
-						else
-						{
-							hitFrames = heavyHitFrames; 
-						}
-					}
-				}
-				else //player isn't blocking the attack successfully, recieve amount of damage
-				{
+					normalForce();
+					hurtLockSetting();
 					minusHealth( damageAmountRecieved );
-					if ( damageAmountRecieved <= damageThreshold ) //how long the player is in hit stun
-					{
-						hurtLockLight = true; 
-						hitFrames = lightHitFrames;
-					}
-					else
-					{
-						hurtLockHeavy = true;
-						hitFrames = heavyHitFrames;
-					}
+					frameSetting();
 					beingComboed++;
 				}
+			}
+			//hurts upper body only, crouching from attack means it completely misses
+			else if( damageTypeRecieved == 0 )
+			{
+				//blocked
+				if( blockCheck == true && crouchCheck == false )
+				{
+					blockStandingLock = true;
+					minusHealth( chipDamage );
+					normalForce();
+					frameSetting();
+				} 
+				//damaged
+				else if( crouchCheck == false && blockCheck == false )
+				{
+					normalForce();
+					hurtLockSetting();
+					minusHealth( damageAmountRecieved );
+					frameSetting();
+					beingComboed++;
+				}
+				//else miss completely
 			}
 			//rigidbody2D.AddForce (new Vector2 (0, 90000f));  //currently launches into SPAAAAAAAAAAAAACE
 		}
 	}
+	//end hit on ground determination sector $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 	public void blockInput()
 	{
@@ -966,35 +955,35 @@ public class PlayerController : MonoBehaviour
 		   && LPtrigger == true && groundCheck == true && crouchCheck == false )
 		{
 			//send an attack signal
-			atariDesu = attack.amIgettingHitSLP( hurtX, hurtY, currentDamage, hurtLow );
+			atariDesu = attack.amIgettingHitSLP( hurtX, hurtY, currentDamage, damageType );
 		}
 		//standingHPcalls
 		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
 		   && HPtrigger == true && groundCheck == true && crouchCheck == false )
 		{
 			//send an attack signal
-			atariDesu = attack.amIgettingHitSHP( hurtX, hurtY, currentDamage, hurtLow );
+			atariDesu = attack.amIgettingHitSHP( hurtX, hurtY, currentDamage, damageType );
 		}
 		//standingLKcalls
 		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
 		   && LKtrigger == true && groundCheck == true && crouchCheck == false )
 		{
 			//send an attack signal
-			atariDesu = attack.amIgettingHitSLK( hurtX, hurtY, currentDamage, hurtLow );
+			atariDesu = attack.amIgettingHitSLK( hurtX, hurtY, currentDamage, damageType );
 		}
 		//standingHKcalls
 		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
 		   && HKtrigger == true && groundCheck == true && crouchCheck == false )
 		{
 			//send an attack signal
-			atariDesu = attack.amIgettingHitSHK( hurtX, hurtY, currentDamage, hurtLow );
+			atariDesu = attack.amIgettingHitSHK( hurtX, hurtY, currentDamage, damageType );
 		}
 		//crouchingHPcalls
 		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
 		   && HPtrigger == true && groundCheck == true && crouchCheck == true )
 		{
 			//send an attack signal
-			atariDesu = attack.amIgettingHitCHP( hurtX, hurtY, currentDamage, hurtLow );
+			atariDesu = attack.amIgettingHitCHP( hurtX, hurtY, currentDamage, damageType );
 		}
 		normalFrames--;
 	}
@@ -1139,7 +1128,7 @@ public class PlayerController : MonoBehaviour
 
 
 	//amIgettingHit calls********************************************************************************************
-	public bool amIgettingHitSLP( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
+	public bool amIgettingHitSLP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
 		//light punch connected on call
 		if( SLP == true )
@@ -1147,14 +1136,14 @@ public class PlayerController : MonoBehaviour
 			recieveHurtX = sendingHurtX;
 			recieveHurtY = sendingHurtY;
 			damageAmountRecieved = damageAmountSent;
-			beingHurtLow = isHitLow;
+			damageTypeRecieved = damageTypeSent;
 			return beingHurt = true;
 		}
 		return false;
 
 	}
 
-	public bool amIgettingHitSHP( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
+	public bool amIgettingHitSHP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
 		//light punch connected on call
 		if( SHP == true )
@@ -1162,13 +1151,13 @@ public class PlayerController : MonoBehaviour
 			recieveHurtX = sendingHurtX;
 			recieveHurtY = sendingHurtY;
 			damageAmountRecieved = damageAmountSent;
-			beingHurtLow = isHitLow;
+			damageTypeRecieved = damageTypeSent;
 			return beingHurt = true;
 		}
 		return false;
 	}
 
-	public bool amIgettingHitSLK( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
+	public bool amIgettingHitSLK( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
 		//light kick connected on call
 		if( SLK == true )
@@ -1176,13 +1165,13 @@ public class PlayerController : MonoBehaviour
 			recieveHurtX = sendingHurtX;
 			recieveHurtY = sendingHurtY;
 			damageAmountRecieved = damageAmountSent;
-			beingHurtLow = isHitLow;
+			damageTypeRecieved = damageTypeSent;
 			return beingHurt = true;
 		}
 		return false;
 	}
 
-	public bool amIgettingHitSHK( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
+	public bool amIgettingHitSHK( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
 		//light kick connected on call
 		if( SHK == true )
@@ -1190,13 +1179,13 @@ public class PlayerController : MonoBehaviour
 			recieveHurtX = sendingHurtX;
 			recieveHurtY = sendingHurtY;
 			damageAmountRecieved = damageAmountSent;
-			beingHurtLow = isHitLow;
+			damageTypeRecieved = damageTypeSent;
 			return beingHurt = true;
 		}
 		return false;
 	}
 
-	public bool amIgettingHitCHP( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
+	public bool amIgettingHitCHP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
 		//light kick connected on call
 		if( SHK == true )
@@ -1204,7 +1193,7 @@ public class PlayerController : MonoBehaviour
 			recieveHurtX = sendingHurtX;
 			recieveHurtY = sendingHurtY;
 			damageAmountRecieved = damageAmountSent;
-			beingHurtLow = isHitLow;
+			damageTypeRecieved = damageTypeSent;
 			return beingHurt = true;
 		}
 		return false;
@@ -1236,4 +1225,42 @@ public class PlayerController : MonoBehaviour
 		anim.SetBool ( blockLockCrouchingString, blockCrouchingLock );
 	}
 	//animationCalls ends &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+	public void normalForce()
+	{
+		if( enemyX  < transform.position.x )
+		{
+			rigidbody2D.AddForce ( new Vector2 ( recieveHurtX , 0 ) );
+		}
+		else
+		{
+			rigidbody2D.AddForce ( new Vector2 ( -recieveHurtX , 0 ) );//recieveHurtX
+		}
+	}
+
+	public void frameSetting()
+	{
+		if ( damageAmountRecieved <= damageThreshold )  //how long is the player in block lock
+		{
+			hitFrames = lightHitFrames;
+		}
+		else
+		{
+			hitFrames = heavyHitFrames; 
+		}
+	}
+
+	public void hurtLockSetting()
+	{
+		if ( damageAmountRecieved <= damageThreshold ) //how long the player is in hit stun
+		{
+			hurtLockLight = true; 
+			hitFrames = lightHitFrames;
+		}
+		else
+		{
+			hurtLockHeavy = true;
+			hitFrames = heavyHitFrames;
+		}
+	}
 }

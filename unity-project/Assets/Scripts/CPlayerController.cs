@@ -86,24 +86,6 @@ public class CPlayerController : PlayerController
 		
 		//*****normal data declaration*****
 		//normal standing frames values
-		SLPtotalFrames = 4;		SHPtotalFrames = 7;		SLKtotalFrames = 4;		SHKtotalFrame = 7;
-		SLPstartFrame = 2;		SHPstartFrame = 5;		SLKstartFrame = 2;		SHKstartFrame = 5;
-		SLPfinishFrame = 0;		SHPfinishFrame = 3;		SLKfinishFrame = 0;		SHKfinishFrame = 3;
-		SLPXforce = 500;		SHPXforce = 500;		SLKXforce = 500;		SHKXforce = 500;
-		SLPYforce = 300;		SHPYforce = 600;		SLKYforce = 300;		SHKYforce = 600;
-		SLPdamage = 10;			SHPdamage = 20;			SLKdamage = 10;			SHKdamage = 20;
-		SLPlow = false;			SHPlow = false;			SLKlow = true;			SHKlow = false;
-		
-		//normal crouching frames values
-		CLPtotalFrames = 8;		CHPtotalFrames = 10;		CLKtotalFrames = 6;		CHKtotalFrame = 12;
-		CLPstartFrame = 6;		CHPstartFrame = 8;			CLKstartFrame = 4;		CHKstartFrame = 9;
-		CLPfinishFrame = 4;		CHPfinishFrame = 4;			CLKfinishFrame = 2;		CHKfinishFrame = 6;
-		CLPXforce = 200;		CHPXforce = 300;			CLKXforce = 100;		CHKXforce = 0;
-		CLPYforce = 100;		CHPYforce = 300;			CLKYforce = 0;			CHKYforce = 0;
-		CLPdamage = 4;			CHPdamage = 20;				CLKdamage = 8;			CHKdamage = 20;
-		CLPlow = false;			CHPlow = false;				CLKlow = true;			CHKlow = true;
-
-		//normal standing frames values
 		//lightPunch					heavyPunch						lightKick						heavyKick
 		attackValues[ 0, 0 ] = 4; 		attackValues[ 0, 1 ] = 7;		attackValues[ 0, 2 ] = 4;		attackValues[ 0, 3 ] = 7;   	//totalFrames
 		attackValues[ 1, 0 ] = 2; 		attackValues[ 1, 1 ] = 5;		attackValues[ 1, 2 ] = 2;		attackValues[ 1, 3 ] = 5;		//startFrame
