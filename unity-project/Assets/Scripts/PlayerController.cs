@@ -58,16 +58,7 @@ public class PlayerController : MonoBehaviour
 	//note: a normal once landed is called off from anymore calls to
 	//      avoid multiple hits of the same individual normal
 
-	//normal standing frames values
-	public bool SLPlow;				public bool SHPlow;				public bool SLKlow;				public bool SHKlow;
-
-	//normal air frames values
-	public bool ALPlow;				public bool AHPlow;				public bool ALKlow;				public bool AHKlow;
-
-	//normal crouching frames values
-	public bool CLPlow;				public bool CHPlow;				public bool CLKlow;				public bool CHKlow;
-
-	//int array
+	//array values for normals
 	public int[ , ]attackValues = new int[ 7, 12 ];
 	//Rows:	0: totalFrames		3: Xforce			6: hitType			Columns: 	00 - 03: standing values
 	//		1: startFrame		4: Yforce											04 - 07: air values
@@ -696,7 +687,6 @@ public class PlayerController : MonoBehaviour
 			hurtY = attackValues[ 4, 0 ];
 			currentDamage = attackValues[ 5, 0 ];
 			damageType = attackValues[ 6, 0 ];
-			hurtLow = SLPlow;
 			LPtrigger = true;
 		}
 		else if ( currentInput == "B" )
@@ -709,7 +699,6 @@ public class PlayerController : MonoBehaviour
 			hurtY = attackValues[ 4, 1 ];
 			currentDamage = attackValues[ 5, 1 ];
 			damageType = attackValues[ 6, 1 ];
-			hurtLow = SHPlow;
 			HPtrigger = true;
 		}
 		else if ( currentInput == "C" )
@@ -722,7 +711,6 @@ public class PlayerController : MonoBehaviour
 			hurtY = attackValues[ 4, 2 ];
 			currentDamage = attackValues[ 5, 2 ];
 			damageType = attackValues[ 6, 2 ];
-			hurtLow = SLKlow;
 			LKtrigger = true;
 		}
 		else if ( currentInput == "D" )
@@ -735,7 +723,6 @@ public class PlayerController : MonoBehaviour
 			hurtY = attackValues[ 4, 3 ];
 			currentDamage = attackValues[ 5, 3 ];
 			damageType = attackValues[ 6, 3 ];
-			hurtLow = SHKlow;
 			HKtrigger = true;
 		}
 	}
@@ -752,7 +739,6 @@ public class PlayerController : MonoBehaviour
 			hurtY = attackValues[ 4, 8 ];
 			currentDamage = attackValues[ 5, 8 ];
 			damageType = attackValues[ 6, 8 ];
-			hurtLow = CLPlow;
 			LPtrigger = true;
 		}
 		else if ( currentInput == "B" )
@@ -765,7 +751,6 @@ public class PlayerController : MonoBehaviour
 			hurtY = attackValues[ 4, 9 ];
 			currentDamage = attackValues[ 5, 9 ];
 			damageType = attackValues[ 6, 9 ];
-			hurtLow = CHPlow;
 			HPtrigger = true;
 		}
 		else if ( currentInput == "C" )
@@ -778,7 +763,6 @@ public class PlayerController : MonoBehaviour
 			hurtY = attackValues[ 4, 10 ];
 			currentDamage = attackValues[ 5, 10 ];
 			damageType = attackValues[ 6, 10 ];
-			hurtLow = CLKlow;
 			LKtrigger = true;
 		}
 		else if ( currentInput == "D" )
@@ -791,7 +775,6 @@ public class PlayerController : MonoBehaviour
 			hurtY = attackValues[ 4, 11 ];
 			currentDamage = attackValues[ 5, 11 ];
 			damageType = attackValues[ 6, 11 ];
-			hurtLow = CHKlow;
 			HKtrigger = true;
 		}
 	}
@@ -884,8 +867,69 @@ public class PlayerController : MonoBehaviour
 		//5 = trip, hurts lower body only, crouch blocking only successful
 		if( beingHurt == true )
 		{
+			if( damageTypeRecieved == 5 )
+			{
+				//trip animation
+				//haven't coded this yet
+			}
+			//unblockable
+			else if( damageTypeRecieved == 4 )
+			{
+				normalForce();
+				hurtLockSetting();
+				minusHealth( damageAmountRecieved );
+				frameSetting();
+				beingComboed++;
+			}
+			//hurts overhead, only standing blocking will work
+			//usually meant for air attacks
+			else if( damageTypeRecieved == 3 )
+			{
+				if( blockCheck == true && crouchCheck == false )
+				{
+					//blocked
+					blockStandingLock = true;
+					minusHealth( chipDamage );
+					normalForce();
+					frameSetting();
+				}
+				else
+				{
+					normalForce();
+					hurtLockSetting();
+					minusHealth( damageAmountRecieved );
+					frameSetting();
+					beingComboed++;
+				}
+			}
+			//hurts either upper or lower, any blocking will do
+			else if( damageTypeRecieved  == 2 )
+			{
+				if( blockCheck == true )
+				{
+					if( crouchCheck == true )
+					{
+						blockCrouchingLock = true;
+					}
+					else
+					{
+						blockStandingLock = true;
+					}
+					minusHealth( chipDamage );
+					normalForce();
+					frameSetting();
+				}
+				else
+				{
+					normalForce();
+					hurtLockSetting();
+					minusHealth( damageAmountRecieved );
+					frameSetting();
+					beingComboed++;
+				}
+			}
 			//hurts lower body only, crouch blocking only successful
-			if( damageTypeRecieved == 1 )
+			else if( damageTypeRecieved == 1 )
 			{
 				if( blockCheck == true && crouchCheck == true )
 				{
