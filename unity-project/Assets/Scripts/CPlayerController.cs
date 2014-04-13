@@ -107,7 +107,7 @@ public class CPlayerController : PlayerController
 		
 		//normal crouching frame values
 		//lightPunch					heavyPunch						lightKick						heavyKick
-		attackValues[ 0, 8 ] = 8; 		attackValues[ 0, 9 ] = 10;		attackValues[ 0, 10 ] = 6;		attackValues[ 0, 11 ] = 7;   	//totalFrames
+		attackValues[ 0, 8 ] = 8; 		attackValues[ 0, 9 ] = 10;		attackValues[ 0, 10 ] = 6;		attackValues[ 0, 11 ] = 10;   	//totalFrames
 		attackValues[ 1, 8 ] = 6; 		attackValues[ 1, 9 ] = 8;		attackValues[ 1, 10 ] = 4;		attackValues[ 1, 11 ] = 5;		//startFrame
 		attackValues[ 2, 8 ] = 4; 		attackValues[ 2, 9 ] = 4;		attackValues[ 2, 10 ] = 2;		attackValues[ 2, 11 ] = 3;		//finishFrame
 		attackValues[ 3, 8 ] = 200; 	attackValues[ 3, 9 ] = 300;		attackValues[ 3, 10 ] = 100;	attackValues[ 3, 11 ] = 0;		//Xforce
@@ -118,7 +118,9 @@ public class CPlayerController : PlayerController
 		damageThreshold = 10; //determines if the hit recieved is soft or hard hit
 		lightHitFrames = 15;  //stun lasts this long when ground damage is equal or less than damageThreshold
 		heavyHitFrames = 25;  //stun lasts this long when ground damage is greater than damageThreshold
-		
+		trippedAmount = 30;
+		countDownSetter = 20;
+
 		//note: startFrame is when the attack calls actually start happening in the
 		//      normal attack animation, finishFrame is when the attack calls stop
 		//      happening.  atariDesu is called to stop attack calls once

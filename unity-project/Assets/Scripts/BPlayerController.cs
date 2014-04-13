@@ -119,6 +119,8 @@ public class BPlayerController : PlayerController
 		damageThreshold = 10; //determines if the hit recieved is soft or hard hit
 		lightHitFrames = 15;  //stun lasts this long when ground damage is equal or less than damageThreshold
 		heavyHitFrames = 25;  //stun lasts this long when ground damage is greater than damageThreshold
+		trippedAmount = 40;
+		countDownSetter = 20;
 
 		//note: startFrame is when the attack calls actually start happening in the
 		//      normal attack animation, finishFrame is when the attack calls stop

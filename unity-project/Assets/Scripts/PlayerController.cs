@@ -102,7 +102,8 @@ public class PlayerController : MonoBehaviour
 
 	//countDown is needed when the player is recovering and getting up
 	//a value of 0 means the player is up and ready for more punishment
-	public int countDown = 0;
+	public int countDown; //set equal to countDownSetter when the player starts gettting up
+	public int countDownSetter; //how long it takes the player to get up
 
 	//countDelayHyper is needed when the player is in a state of action
 	//this prevents the spamming of an attack per frame
@@ -195,6 +196,9 @@ public class PlayerController : MonoBehaviour
 	public int chipDamage;
 	public int damageType; //what type of damage to send
 	public int damageTypeRecieved;
+	public bool beingTripped = false; //trigger for being tripped
+	public int trippedCountdown;  //set equal to trippedAmount when trip happens
+	public int trippedAmount;	//how many frames the tripped animation lasts
 
 	//hurt launch variables
 	public int hurtX;  //how much force a punch does to you in X direction
@@ -258,7 +262,6 @@ public class PlayerController : MonoBehaviour
 			return;
 		}
 
-
 		//Phase 1
 		//Player is on the ground, no control, and recovering from hurt (getting up)
 		//Flush the status here when countDown reaches 0
@@ -272,6 +275,29 @@ public class PlayerController : MonoBehaviour
 		{
 			countDown--;
 			flush ();
+		}
+		if( trippedCountdown > 1 )
+		{
+			trippedCountdown--;
+			canAct = false;
+			//the player is in the middle of being tripped animation
+			return;
+		}
+		if (trippedCountdown == 1) 
+		{
+			//the player is finished being tripped, now must get up
+			trippedCountdown--;
+			canAct = false;
+			countDown = countDownSetter;
+			return;
+		}
+		
+		if( beingTripped == true )
+		{
+			canAct = false;
+			trippedCountdown = trippedAmount;
+			beingTripped = false;
+			return;
 		}
 
 
@@ -1036,12 +1062,19 @@ public class PlayerController : MonoBehaviour
 			//send an attack signal
 			atariDesu = attack.amIgettingHitCHP( hurtX, hurtY, currentDamage, damageType );
 		}
-		//crouchingHPcalls
+		//crouchingLKcalls
 		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
 		   && LKtrigger == true && groundCheck == true && crouchCheck == true )
 		{
 			//send an attack signal
 			atariDesu = attack.amIgettingHitCLK( hurtX, hurtY, currentDamage, damageType );
+		}
+		//crouchingHKcalls
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
+		   && HKtrigger == true && groundCheck == true && crouchCheck == true )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitCHK( hurtX, hurtY, currentDamage, damageType );
 		}
 		normalFrames--;
 	}
@@ -1284,6 +1317,21 @@ public class PlayerController : MonoBehaviour
 		}
 		return false;
 	}
+
+	public bool amIgettingHitCHK( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		//crouching light kick connected on call
+		if( CHK == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
 
 	//amIgettingHit ends********************************************************************************************
 
