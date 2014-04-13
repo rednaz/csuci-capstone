@@ -311,21 +311,7 @@ public class PlayerController : MonoBehaviour
 
 		//Phase 2 (hurt standing stun)
 		//Player is on the ground and no control, stun from the previous hit
-		if ( hitFrames > 1 )
-		{
-			blockCrouchingLock = false;
-			blockStandingLock = false;
-			hurtLockLight = false;
-			hurtLockHeavy = false;
-			hitFrames--;
-			canAct = false;
-			return;
-		}
-		else if ( hitFrames == 1 )
-		{
-			hitFrames--;
-			flush ();
-		}
+
 
 
 		//Phase 3
@@ -341,6 +327,23 @@ public class PlayerController : MonoBehaviour
 		{
 			beingHurt = false;
 			return;
+		}
+		if ( hitFrames > 1 )
+		{
+			blockCrouchingLock = false;
+			blockStandingLock = false;
+			hurtLockLight = false;
+			hurtLockHeavy = false;
+			hitFrames--;
+			canAct = false;
+			return;
+		}
+		else if ( hitFrames == 1 )
+		{
+			Debug.Log ( debugString + " " + beingComboed );
+			beingComboed = 0;
+			hitFrames--;
+			flush ();
 		}
 
 
@@ -879,6 +882,7 @@ public class PlayerController : MonoBehaviour
 						hurtLockHeavy = true;
 						hitFrames = heavyHitFrames;
 					}
+					beingComboed++;
 				}
 			}
 			//rigidbody2D.AddForce (new Vector2 (0, 90000f));  //currently launches into SPAAAAAAAAAAAAACE
