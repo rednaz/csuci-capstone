@@ -1022,6 +1022,13 @@ public class PlayerController : MonoBehaviour
 			//send an attack signal
 			atariDesu = attack.amIgettingHitSHK( hurtX, hurtY, currentDamage, damageType );
 		}
+		//crouchingLPcalls
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
+		   && LPtrigger == true && groundCheck == true && crouchCheck == true )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitCLP( hurtX, hurtY, currentDamage, damageType );
+		}
 		//crouchingHPcalls
 		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
 		   && HPtrigger == true && groundCheck == true && crouchCheck == true )
@@ -1219,6 +1226,20 @@ public class PlayerController : MonoBehaviour
 	{
 		//light kick connected on call
 		if( SHK == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
+	public bool amIgettingHitCLP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		//light kick connected on call
+		if( SLK == true )
 		{
 			recieveHurtX = sendingHurtX;
 			recieveHurtY = sendingHurtY;
