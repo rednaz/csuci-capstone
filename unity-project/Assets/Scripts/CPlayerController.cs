@@ -30,6 +30,7 @@ public class CPlayerController : PlayerController
 		blockLockCrouchingString = "blockLockCrouching2";
 		gettingUpString = "gettingUp2";
 		gettingTrippedString = "gettingTripped2";
+		owAirTriggerString = "owAir2";
 		
 		//the other player declaration
 		OtherPlayer = "BPlayer1"; //this could probably be another call fuction

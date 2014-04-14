@@ -30,6 +30,7 @@ public class BPlayerController : PlayerController
 		blockLockCrouchingString = "blockLockCrouching1";
 		gettingUpString = "gettingUp1";
 		gettingTrippedString = "gettingTripped1";
+		owAirTriggerString = "owAir1";
 
 
 		//the other player declaration

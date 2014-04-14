@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour
 	//random number generator for sounds
 	private System.Random rand = new System.Random();
 
+	public bool owAirTrigger = false;
+
 	public string enemyScript;
 	public PlayerController attack;
 	public FreezeCode freeze;
@@ -33,6 +35,7 @@ public class PlayerController : MonoBehaviour
 	public string blockLockCrouchingString;
 	public string gettingUpString;
 	public string gettingTrippedString;
+	public string owAirTriggerString;
 
 	
 	//maxSpeed declaration
@@ -285,7 +288,7 @@ public class PlayerController : MonoBehaviour
 			//the player is in the middle of being tripped animation
 			return;
 		}
-		if (trippedCountdown == 1) 
+		if ( trippedCountdown == 1 ) 
 		{
 			//the player is finished being tripped, now must get up
 			trippedCountdown--;
@@ -302,17 +305,19 @@ public class PlayerController : MonoBehaviour
 
 
 		//Player is in the air and no control, being hurt
-		//Set countDown from the hit
-
-		//if( groundCheck == false && beingHurt == true )
-		//{
-		//	return;
-		//}
-
-
-		//Phase 2 (hurt standing stun)
-		//Player is on the ground and no control, stun from the previous hit
-
+		if( groundCheck == false )
+		{
+			hurtWhileAir();
+		}
+		if( owAirTrigger == true )
+		{
+			if( groundCheck == true )
+			{
+				owAirTrigger = false;
+				countDown = countDownSetter;
+			}
+			return;
+		}
 
 
 		//Phase 3
@@ -1379,6 +1384,7 @@ public class PlayerController : MonoBehaviour
 		anim.SetBool ( blockLockCrouchingString, blockCrouchingLock );
 		anim.SetInteger ( gettingUpString, countDown );
 		anim.SetInteger ( gettingTrippedString, trippedCountdown );
+		anim.SetBool ( owAirTriggerString, owAirTrigger );
 	}
 	//animationCalls ends &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
@@ -1391,6 +1397,18 @@ public class PlayerController : MonoBehaviour
 		else
 		{
 			rigidbody2D.AddForce ( new Vector2 ( -recieveHurtX , 0 ) );//recieveHurtX
+		}
+	}
+
+	public void normalForceAir()
+	{
+		if( enemyX  < transform.position.x )
+		{
+			rigidbody2D.AddForce ( new Vector2 ( recieveHurtX , recieveHurtY ) );
+		}
+		else
+		{
+			rigidbody2D.AddForce ( new Vector2 ( -recieveHurtX , recieveHurtY ) );//recieveHurtX
 		}
 	}
 
@@ -1419,4 +1437,18 @@ public class PlayerController : MonoBehaviour
 			hitFrames = heavyHitFrames;
 		}
 	}
+
+	//checking if player is hurt in the air ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	public void hurtWhileAir()
+	{
+		if( beingHurt == true )
+		{
+			beingHurt = false;
+			owAirTrigger = true;
+			normalForceAir();
+			minusHealth( damageAmountRecieved );
+			beingComboed++;
+		}
+	}
+	//end method of being hurt in the air ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 }
