@@ -31,6 +31,7 @@ public class CPlayerController : PlayerController
 		gettingUpString = "gettingUp2";
 		gettingTrippedString = "gettingTripped2";
 		owAirTriggerString = "owAir2";
+		alreadyAirString = "alreadyAir2";
 		
 		//the other player declaration
 		OtherPlayer = "BPlayer1"; //this could probably be another call fuction

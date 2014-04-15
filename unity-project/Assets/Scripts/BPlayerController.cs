@@ -31,6 +31,7 @@ public class BPlayerController : PlayerController
 		gettingUpString = "gettingUp1";
 		gettingTrippedString = "gettingTripped1";
 		owAirTriggerString = "owAir1";
+		alreadyAirString = "alreadyAir1";
 
 
 		//the other player declaration

@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
 	public string gettingUpString;
 	public string gettingTrippedString;
 	public string owAirTriggerString;
+	public string alreadyAirString;
 
 	
 	//maxSpeed declaration
@@ -101,6 +102,7 @@ public class PlayerController : MonoBehaviour
 	//needed because only one attack can be done in the air
 	//player must land before another air attack can be done again
 	public bool airLock = false; 
+	public bool alreadyAir = false;
 
 	//declaration of up force for jumping
 	public float jumpForce;
@@ -279,6 +281,8 @@ public class PlayerController : MonoBehaviour
 		else if ( countDown == 1 )
 		{
 			countDown--;
+			Debug.Log ( debugString + " " + beingComboed );
+			beingComboed = 0;
 			flush ();
 		}
 		if( trippedCountdown > 1 )
@@ -357,23 +361,6 @@ public class PlayerController : MonoBehaviour
 		}
 
 
-		//Phase 4
-		//Player is on the ground, no control, and recovering from hurt (getting up)
-		//Flush the status here when countDown reaches 0
-		/*
-		if ( countDown > 1 && groundCheck == true ) 
-		{
-			countDown--;
-			return;
-		} 
-		else if ( countDown == 1 )
-		{
-			countDown--;
-			flush ();
-		}
-		*/
-
-
 		//Phase 5
 		//Player is in the middle of a super/hyper and cannot move till
 		//the move completes, prevents spamming of supers/hypers
@@ -408,19 +395,42 @@ public class PlayerController : MonoBehaviour
 		//Blocking isn't possible in the air
 		//This the starting Phase where player can put input into the system to be registered
 		buttonRegistration ();
-
-
-		//implemented when jumping is put back in
-		//if ( airLock == false )
-		//{
-		//	airNormal ();
-		if ( groundCheck == false )
+		if( normalFrames > 1 && airLock == true && alreadyAir == false )
 		{
-			canAct = false;
+			blockCheck = false;
+			if( groundCheck == true )
+			{
+				normalFrames = 0;
+				airLock = false;
+				atariDesu = false;
+				normalReset();
+				alreadyAir = false;
+				return;
+			}
+			normalAirCalls();
 			return;
 		}
-
-			
+		if( normalFrames == 1 && airLock == true )
+		{
+			normalFrames--;
+			alreadyAir = true;
+			return;
+		}
+		if ( groundCheck == false )
+		{
+			blockCheck = false;
+			if( alreadyAir == false )
+			{
+				airNormal ();
+			}
+			return;
+		}
+		if( groundCheck == true )
+		{
+			alreadyAir = false;
+		}
+		
+		
 		//Phase 7
 		//Player is on the ground and attacking, left and right control not possible
 		//Super and hyper are possible here
@@ -668,12 +678,14 @@ public class PlayerController : MonoBehaviour
 	{
 		countDelayHyper = 0;
 		countDelaySuper = 0;
-
 		commands = "XXXXXXX";
 		previousInput = "";
 		nextInput = "";
 		beingHurt = false;
 		normalFrames = 0;
+		airLock = false;
+		hitFrames = 0;
+
 	}
 
 	void modifyHealth(int deltaHealth)
@@ -826,7 +838,6 @@ public class PlayerController : MonoBehaviour
 			hurtY = attackValues[ 4, 4 ];
 			currentDamage = attackValues[ 5, 4 ];
 			damageType = attackValues[ 6, 4 ];
-			//
 			LPtrigger = true;
 			airLock = true;
 		}
@@ -840,7 +851,6 @@ public class PlayerController : MonoBehaviour
 			hurtY = attackValues[ 4, 5 ];
 			currentDamage = attackValues[ 5, 5 ];
 			damageType = attackValues[ 6, 5 ];
-			//
 			HPtrigger = true;
 			airLock = true;
 		}
@@ -854,7 +864,6 @@ public class PlayerController : MonoBehaviour
 			hurtY = attackValues[ 4, 6 ];
 			currentDamage = attackValues[ 5, 6 ];
 			damageType = attackValues[ 6, 6 ];
-			//
 			LKtrigger = true;
 			airLock = true;
 		}
@@ -868,7 +877,6 @@ public class PlayerController : MonoBehaviour
 			hurtY = attackValues[ 4, 7 ];
 			currentDamage = attackValues[ 5, 7 ];
 			damageType = attackValues[ 6, 7 ];
-			//
 			HKtrigger = true;
 			airLock = true;
 		}
@@ -1357,6 +1365,19 @@ public class PlayerController : MonoBehaviour
 		return false;
 	}
 
+	public bool amIgettingHitAHK( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		if( AHK == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
 
 	//amIgettingHit ends********************************************************************************************
 
@@ -1385,6 +1406,7 @@ public class PlayerController : MonoBehaviour
 		anim.SetInteger ( gettingUpString, countDown );
 		anim.SetInteger ( gettingTrippedString, trippedCountdown );
 		anim.SetBool ( owAirTriggerString, owAirTrigger );
+		anim.SetBool ( alreadyAirString, alreadyAir );
 	}
 	//animationCalls ends &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
@@ -1451,4 +1473,15 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 	//end method of being hurt in the air ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+	public void normalAirCalls()
+	{
+		//air hk registered
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false && HKtrigger == true )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitAHK( hurtX, hurtY, currentDamage, damageType );
+		}
+		normalFrames--;
+	}
 }
