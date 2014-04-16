@@ -1377,6 +1377,18 @@ public class PlayerController : MonoBehaviour
 		}
 		return false;
 	}
+	public bool amIgettingHitAHP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		if( AHP == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
 
 
 	public bool amIgettingHitALK( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
@@ -1508,6 +1520,13 @@ public class PlayerController : MonoBehaviour
 		{
 			//send an attack signal
 			atariDesu = attack.amIgettingHitALP( hurtX, hurtY, currentDamage, damageType );
+		}
+
+		//air lp registered
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false && HPtrigger == true )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitAHP( hurtX, hurtY, currentDamage, damageType );
 		}
 
 		//air lk registered
