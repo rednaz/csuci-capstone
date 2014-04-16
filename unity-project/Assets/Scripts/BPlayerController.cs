@@ -103,7 +103,7 @@ public class BPlayerController : PlayerController
 		
 		//normal air frame values
 		//lightPunch					heavyPunch						lightKick						heavyKick
-		attackValues[ 0, 4 ] = 6; 		attackValues[ 0, 5 ] = 10;		attackValues[ 0, 6 ] = 6;		attackValues[ 0, 7 ] = 12;   	//totalFrames
+		attackValues[ 0, 4 ] = 6; 		attackValues[ 0, 5 ] = 12;		attackValues[ 0, 6 ] = 6;		attackValues[ 0, 7 ] = 12;   	//totalFrames
 		attackValues[ 1, 4 ] = 4; 		attackValues[ 1, 5 ] = 7;		attackValues[ 1, 6 ] = 4;		attackValues[ 1, 7 ] = 8;		//startFrame
 		attackValues[ 2, 4 ] = 2; 		attackValues[ 2, 5 ] = 4;		attackValues[ 2, 6 ] = 2;		attackValues[ 2, 7 ] = 4;		//finishFrame
 		attackValues[ 3, 4 ] = 500;		attackValues[ 3, 5 ] = 600;		attackValues[ 3, 6 ] = 500;		attackValues[ 3, 7 ] = 700;		//Xforce
