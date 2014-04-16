@@ -1365,6 +1365,20 @@ public class PlayerController : MonoBehaviour
 		return false;
 	}
 
+	public bool amIgettingHitALP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		if( ALP == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
+
 	public bool amIgettingHitALK( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
 		if( ALK == true )
@@ -1489,6 +1503,13 @@ public class PlayerController : MonoBehaviour
 
 	public void normalAirCalls()
 	{
+		//air lp registered
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false && LPtrigger == true )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitALP( hurtX, hurtY, currentDamage, damageType );
+		}
+
 		//air lk registered
 		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false && LKtrigger == true )
 		{
