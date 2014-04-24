@@ -52,35 +52,26 @@ public class CPlayerController : PlayerController
 		maxHealth = 1000;
 		health = maxHealth;
 		
-		//super 1 declarations
-		super1Aleft = "214A";
-		super1Bleft = "214B";
-		super1Aright = "236A";
-		super1Bright = "236B";
-		super1delay = 10;
-		
-		//hyper 1 declarations
-		hyper1Aleft = "412364A";
-		hyper1Bleft = "412364B";
-		hyper1Aright = "632146A";
-		hyper1Bright = "632146B";
-		hyper1delay = 100;
-		hyper1eat = 100;
-		
-		//hyper 2 declarations
-		hyper2Aleft = "XOXOXOX";
-		hyper2Bleft = "XOXOXOX";
-		hyper2Aright = "XOXOXOX";
-		hyper2Bright = "XOXOXOX";
-		hyper2delay = 100;
-		
-		//hyper 3 declarations
-		hyper3Aleft = "214214A";
-		hyper3Bleft = "214214B";
-		hyper3Aright = "236234A";
-		hyper3Bright = "236236B";
-		hyper3delay = 100;
-		hyper3eat = 300;
+		//drive inputs
+		//snap
+		drive[ 0, 0 ] = "236A"; 	//facing right
+		drive[ 1, 0 ] = "236B"; 	//facing right
+		drive[ 2, 0 ] = "214A"; 	//facing left
+		drive[ 3, 0 ] = "214B"; 	//facing left
+		driveDelay1 = 50;		//how many frames drive 1 takes
+
+		//stellar drive inputs
+		//down boy							//omni blast						//omni barrage
+		Sdrive[ 0, 0 ] = "236236C"; 		Sdrive[ 0, 1 ] = "236236A"; 		Sdrive[ 0, 2 ] = "632146A";   	//facing right
+		Sdrive[ 1, 0 ] = "236236D"; 		Sdrive[ 1, 1 ] = "236236B"; 		Sdrive[ 1, 2 ] = "632146B";   	//facing right
+		Sdrive[ 2, 0 ] = "214214C"; 		Sdrive[ 2, 1 ] = "214214A"; 		Sdrive[ 2, 2 ] = "412364A";   	//facing left
+		Sdrive[ 3, 0 ] = "214214D"; 		Sdrive[ 3, 1 ] = "214214B"; 		Sdrive[ 3, 2 ] = "412364B"; 	//facing left
+		stellarDrivedelay1 = 100;	 //how many frames stellar drive 1 takes
+		stellarDrivedelay2 = 100;	 //how many frames stellar drive 2 takes
+		stellarDrivedelay3 = 100;	 //how many frames stellar drive 3 takes
+		stellarEat1 = 100; //how much meter stellar drive 1 eats
+		stellarEat2 = 100; //how much meter stellar drive 2 eats
+		stellarEat3 = 300; //how much meter stellar drive 3 eats
 
 		//up force
 		jumpForce = 1200f;

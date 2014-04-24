@@ -158,39 +158,18 @@ public class PlayerController : MonoBehaviour
 	public bool superLock = false;
 	public bool hyperLock = false;
 
-	//super 1 declarations
-	public string super1Aleft;
-	public string super1Bleft;
-	public string super1Aright;
-	public string super1Bright;
-	public int super1delay;
+	//drive declarations
+	public string[ , ]drive = new string[ 4, 1 ];
+	public int driveDelay1;		//how many frames drive 1 takes
 
-
-	public string super2;
-
-	//hyper 1 declarations
-	public string hyper1Aleft;   //these
-	public string hyper1Bleft;   //recognize
-	public string hyper1Aright;  //input
-	public string hyper1Bright;  //patterns
-	public int hyper1delay;	 //how many frames the hyper takes to execute
-	public int hyper1eat; //how much meter the hyper takes
-
-	//hyper 2 declarations
-	public string hyper2Aleft;	 //these
-	public string hyper2Bleft;   //recognize
-	public string hyper2Aright;  //input
-	public string hyper2Bright;  //patterns
-	public int hyper2delay;	//how many frames the hyper takes to execute
-	public int hyper2eat; //how much meter the hyper takes
-
-	//hyper 3 declarations
-	public string hyper3Aleft;  //these
-	public string hyper3Bleft;  //recognize
-	public string hyper3Aright; //input
-	public string hyper3Bright; //patterns
-	public int hyper3delay; //how many frames the hyper takes to execute
-	public int hyper3eat; //how much meter the hyper takes
+	//stellar drives declarations
+	public string[ , ]Sdrive = new string[ 4, 3 ];
+	public int stellarDrivedelay1;	 //how many frames stellar drive 1 takes
+	public int stellarDrivedelay2;	 //how many frames stellar drive 2 takes
+	public int stellarDrivedelay3;	 //how many frames stellar drive 3 takes
+	public int stellarEat1; //how much meter stellar drive 1 eats
+	public int stellarEat2; //how much meter stellar drive 2 eats
+	public int stellarEat3; //how much meter stellar drive 3 eats
 
 	//combo declaration
 	int beingComboed = 0;
@@ -648,14 +627,14 @@ public class PlayerController : MonoBehaviour
 	void hyper1Check ()
 	{
 		//person was in the air at the time, hyper1 input doesn't count
-		if ( Equals (commands, hyper1Aleft ) && facingLeft == false && groundCheck == false || 
-		    Equals (commands, hyper1Bleft ) && facingLeft == false && groundCheck == false ) 
+		if ( Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == false && groundCheck == false || 
+		    Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == false && groundCheck == false ) 
 		{
 			nextInput = "X";
 			buttonRegister ();
 		}
-		else if(Equals (commands, hyper1Aright ) && facingLeft == true && groundCheck == true || 
-		        Equals (commands, hyper1Bright ) && facingLeft == true && groundCheck == true )		
+		else if(Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == true && groundCheck == true || 
+		        Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == true && groundCheck == true )		
 		{
 			char placeHolder3 = commands[ 5 ];
 			nextInput = "X";
@@ -663,20 +642,20 @@ public class PlayerController : MonoBehaviour
 		}
 
 		//all conditions for hyper1 has been met
-		if ( Equals (commands, hyper1Aleft ) && facingLeft == false && groundCheck == true || 
-		    Equals (commands, hyper1Bleft ) && facingLeft == false && groundCheck == true ) 
+		if ( Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == false && groundCheck == true || 
+		    Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == false && groundCheck == true ) 
 		{
 			Debug.Log ("HADOUKEN");
-			countDelayHyper = hyper1delay;
+			//countDelayHyper = hyper1delay;
 			flush ();
 			return;
 			
 		}
-		else if(Equals (commands, hyper1Aright ) && facingLeft == true && groundCheck == true || 
-		        Equals (commands, hyper1Bright ) && facingLeft == true && groundCheck == true )
+		else if(Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == true && groundCheck == true || 
+		        Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == true && groundCheck == true )
 		{
 			Debug.Log ("HADOUKEN");
-			countDelayHyper = hyper1delay;
+			//countDelayHyper = hyper1delay;
 			flush ();
 			return;
 		}
@@ -1552,4 +1531,38 @@ public class PlayerController : MonoBehaviour
 		}
 		normalFrames--;
 	}
+
+	//stellar drive routing instructions 88888888888888888888888888888888888888888888888888888888888888888888888888888888888
+
+	public void didStellarDriveActivate()
+	{
+
+		//countDelayHyper
+	}
+
+	//end stellar drive routing instructions 8888888888888888888888888888888888888888888888888888888888888888888888888888888
+
+	//stellar drive instructions!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	public void YouAreUnderArrestMethod()
+	{
+
+	}
+
+	public void DownBoyMethod()
+	{
+
+	}
+
+	public void OmniBlastMethod()
+	{
+
+	}
+
+	public void OmniBarrageMethod()
+	{
+
+	}
+
+	//end drive instructions!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
+
