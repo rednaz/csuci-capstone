@@ -129,7 +129,14 @@ public class CPlayerController : PlayerController
 		//      normal attack animation, finishFrame is when the attack calls stop
 		//      happening.  atariDesu is called to stop attack calls once
 		//      the individual normal lands
+
+		//drive declarations (who has access to what)
+		Snap = true;					Strike = false;
 		
+		//stellar drive declarations (who has access to what)
+		YouAreUnderArrest = false;		DownBoy = true;
+		OmniBlast = true;				OmniBarrage = true;
+
 		//GamePad.GetButtonDown(GamePad.Button.A, 1);
 	}
 }

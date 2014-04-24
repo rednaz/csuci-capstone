@@ -132,5 +132,11 @@ public class BPlayerController : PlayerController
 		//      happening.  atariDesu is called to stop attack calls once
 		//      the individual normal lands
 
+		//drive declarations (who has access to what)
+		Snap = false;					Strike = true;
+		
+		//stellar drive declarations (who has access to what)
+		YouAreUnderArrest = true;		DownBoy = false;
+		OmniBlast = true;				OmniBarrage = true;
 	}
 }

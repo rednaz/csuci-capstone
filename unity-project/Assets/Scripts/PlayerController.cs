@@ -58,6 +58,13 @@ public class PlayerController : MonoBehaviour
 	public bool SD1 = false;		public bool SD2 = false;		//hypers are now stellar drives
 	//note: S = standing, A = air, C = crouching
 
+	//drive declarations (who has access to what)
+	public bool Snap;					public bool Strike;
+
+	//stellar drive declarations (who has access to what)
+	public bool YouAreUnderArrest;		public bool DownBoy;
+	public bool OmniBlast;				public bool OmniBarrage;
+
 	//normal frames declaration
 	public int normalFrames = 0; //how many frames total the normal lasts
 	public int startNormal; //when the frame actually starts damage
