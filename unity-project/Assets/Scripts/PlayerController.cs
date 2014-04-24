@@ -54,6 +54,8 @@ public class PlayerController : MonoBehaviour
 	public bool	SHP = false;		public bool AHP = false;		public bool CHP = false;
 	public bool SLK = false;		public bool ALK = false;		public bool CLK = false;
 	public bool SHK = false;		public bool AHK = false;		public bool CHK = false;
+	public bool D1 = false;											//supers are now drives
+	public bool SD1 = false;		public bool SD2 = false;		//hypers are now stellar drives
 	//note: S = standing, A = air, C = crouching
 
 	//normal frames declaration
