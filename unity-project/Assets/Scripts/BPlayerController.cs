@@ -32,7 +32,11 @@ public class BPlayerController : PlayerController
 		gettingTrippedString = "gettingTripped1";
 		owAirTriggerString = "owAir1";
 		alreadyAirString = "alreadyAir1";
-
+		D1triggerString = "D1trigger1";
+		SD1triggerString = "SD1trigger1";		
+		SD2triggerString = "SD2trigger1";
+		driveFramesString = "driveFrames1";
+		stellarDriveFramesString = "stellarDriveFrames1";
 
 		//the other player declaration
 		OtherPlayer = "CPlayer2"; //this could probably be another call fuction

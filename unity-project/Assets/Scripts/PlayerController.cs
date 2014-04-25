@@ -37,6 +37,11 @@ public class PlayerController : MonoBehaviour
 	public string gettingTrippedString;
 	public string owAirTriggerString;
 	public string alreadyAirString;
+	public string D1triggerString;
+	public string SD1triggerString;		
+	public string SD2triggerString;
+	public string driveFramesString;
+	public string stellarDriveFramesString;
 
 	
 	//maxSpeed declaration
@@ -90,6 +95,12 @@ public class PlayerController : MonoBehaviour
 	//normal triggers
 	public bool LPtrigger = false;		public bool HPtrigger = false;		public bool LKtrigger = false;		public bool HKtrigger = false;
 
+	//drive triggers
+	public bool D1trigger = false;
+
+	//stellar drive triggers
+	public bool SD1trigger = false;		public bool SD2trigger = false;
+
 	//button declarations
 	public string LPgrabber;
 	public string HPgrabber;
@@ -129,8 +140,8 @@ public class PlayerController : MonoBehaviour
 	//this prevents the spamming of an attack per frame
 	public int countDelaySuper = 0;
 
-	//declaring hyper variable
-	public int hyperMeter = 300;
+	//declaring stellar drive variable
+	public int stellarDriveMeter = 300;
 	//100 = level 1
 	//200 = level 2
 	//300 = level 3 (max level)
@@ -152,11 +163,11 @@ public class PlayerController : MonoBehaviour
 	public string moveXgrabber;
 	public string moveYgrabber;
 
-	//super and hyper locks
-	//can't execute normals when super is locked
-	//can't execute supers when hyper is locked
-	public bool superLock = false;
-	public bool hyperLock = false;
+	//drive frames declaration
+	public int drive1Frames;
+
+	//stellar drive frames declaration
+	public int stellarDriveFrames;
 
 	//drive declarations
 	public string[ , ]drive = new string[ 4, 1 ];
@@ -1460,6 +1471,11 @@ public class PlayerController : MonoBehaviour
 		anim.SetInteger ( gettingTrippedString, trippedCountdown );
 		anim.SetBool ( owAirTriggerString, owAirTrigger );
 		anim.SetBool ( alreadyAirString, alreadyAir );
+		anim.SetBool ( D1triggerString, D1trigger  );
+		anim.SetBool ( SD1triggerString, SD1trigger  );
+		anim.SetBool ( SD2triggerString, SD2trigger );
+		anim.SetInteger ( driveFramesString, drive1Frames );
+		anim.SetInteger ( stellarDriveFramesString, stellarDriveFrames );
 	}
 	//animationCalls ends &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
