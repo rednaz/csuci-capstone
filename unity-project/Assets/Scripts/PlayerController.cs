@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour
 	public bool D1trigger = false;
 
 	//stellar drive triggers
-	public bool SD1trigger = false;		public bool SD2trigger = false;
+	public bool SD1trigger = false;		public bool SD2trigger = false;		public bool SD3trigger = false;
 
 	//button declarations
 	public string LPgrabber;
@@ -131,14 +131,6 @@ public class PlayerController : MonoBehaviour
 	//a value of 0 means the player is up and ready for more punishment
 	public int countDown; //set equal to countDownSetter when the player starts gettting up
 	public int countDownSetter; //how long it takes the player to get up
-
-	//countDelayHyper is needed when the player is in a state of action
-	//this prevents the spamming of an attack per frame
-	public int countDelayHyper = 0;
-
-	//countDelayHyper is needed when the player is in a state of action
-	//this prevents the spamming of an attack per frame
-	public int countDelaySuper = 0;
 
 	//declaring stellar drive variable
 	public int stellarDriveMeter = 300;
@@ -236,20 +228,13 @@ public class PlayerController : MonoBehaviour
 		//this line checks if the character is on the ground at this frame
 		groundCheck = Physics2D.OverlapCircle (daGround.position, groundRadius, whatIsGround);
 
-		//this is nothing but debug code, feel free to uncomment at your pleasure to
-		//see game activity
+		//this is nothing but debug code, feel free to uncomment 
+		//at your pleasure to see game activity
 		if (Input.GetKeyDown (KeyCode.Space)) 
 		{
 			//Debug.Log ( debugString + " health: " + health + " / " + maxHealth );
 			freeze.tempFreeze();
 		}
-		//Debug.Log ( debugString + " " + LP);
-		//if ( Input.GetButtonDown( LPgrabber ) )
-		//{
-		//	Debug.Log ( debugString + " check" );
-		//}
-		//Debug.Log ( debugString + " " + Input.GetAxis ( moveXgrabber ) );
-		//Debug.Log (health);
 
 		//setting up the animation for the frame
 		animationCalls ();
@@ -363,28 +348,34 @@ public class PlayerController : MonoBehaviour
 		//Phase 5
 		//Player is in the middle of a super/hyper and cannot move till
 		//the move completes, prevents spamming of supers/hypers
-		/*
-		if ( countDelayHyper > 1 ) 
+		if( stellarDriveFrames > 1 )
 		{
-			countDelayHyper--;
+			if ( YouAreUnderArrest == true && SD1trigger == true )  //stellar drive is only available to Barrett
+			{
+				YouAreUnderArrestMethod ();
+			}
+			if ( DownBoy == true && SD1trigger == true )	//stellar drive is only available to Olivia
+			{
+				DownBoyMethod ();
+			}
+			if ( OmniBlast == true && SD2trigger == true ) 	//stellar drive is only available to Barrett and Olivia
+			{
+				OmniBlastMethod ();
+			}
+			if ( OmniBarrage == true && SD3trigger == true )	//stellar drive is only available to Barrett and Olivia
+			{
+				OmniBarrageMethod ();
+			}
+			stellarDriveFrames--;
 			return;
 		}
-		else if( countDelayHyper == 1 ) 
+		if( stellarDriveFrames == 1 )
 		{
-			countDelayHyper--;
-			flush ();
-		}
-		if ( countDelaySuper > 1 ) 
-		{
-			countDelaySuper--;
+			SD1trigger = false;
+			SD2trigger = false;
+			stellarDriveFrames--;
 			return;
 		}
-		else if( countDelaySuper == 1 ) 
-		{
-			countDelaySuper--;
-			flush ();
-		}
-		*/
 
 
 		//Phase 6
@@ -438,10 +429,19 @@ public class PlayerController : MonoBehaviour
 
 
 		//Phase 8
-		//player successfully implemented a hyper, game executes hyper
+		//player successfully implemented a stellar drive, game executes stellar drive
 		//hyper 1, 2, and 3 checked if entered at this moment
 		//hyper1Check ();
-
+		if( SD1trigger == true )
+		{
+			stellarDriveFrames = stellarDrivedelay1;
+			return;
+		}
+		if( SD2trigger == true )
+		{
+			stellarDriveFrames = stellarDrivedelay2;
+			return;
+		}
 
 
 		//Phase 9
@@ -671,8 +671,8 @@ public class PlayerController : MonoBehaviour
 	//all memory from player control and status is wiped after being hurt and is recovering
 	void flush()
 	{
-		countDelayHyper = 0;
-		countDelaySuper = 0;
+		drive1Frames = 0;
+		stellarDriveFrames = 0;
 		commands = "XXXXXXX";
 		previousInput = "";
 		nextInput = "";
@@ -1441,6 +1441,18 @@ public class PlayerController : MonoBehaviour
 		}
 		return false;
 	}
+	public bool amIgettingHitDownBoy( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		if( SD1 == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
 
 
 	//amIgettingHit ends********************************************************************************************
@@ -1592,6 +1604,10 @@ public class PlayerController : MonoBehaviour
 
 	public void DownBoyMethod()
 	{
+		if( stellarDriveFrames % 3 == 0 )
+		{
+			attack.amIgettingHitDownBoy( -10, 0, 10, 2 );
+		}
 
 	}
 
