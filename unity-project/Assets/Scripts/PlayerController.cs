@@ -505,10 +505,7 @@ public class PlayerController : MonoBehaviour
 		//Debug.Log ( moveX + ", " + moveY );
 	}
 	//end FixedUpdate() -------------------------------------------------------------
-
-
-
-
+	
 
 	void determineFlip()
 	{
@@ -533,7 +530,6 @@ public class PlayerController : MonoBehaviour
 		theScale.x *= -1;
 		transform.localScale = theScale;
 	}
-
 
 	string buttonListener()
 	{
@@ -700,9 +696,6 @@ public class PlayerController : MonoBehaviour
 		health = health - currentDamage;
 		//Debug.Log (health);
 	}
-
-
-
 
 	public void minusOther()
 	{
@@ -1175,6 +1168,22 @@ public class PlayerController : MonoBehaviour
 			AHK = true;
 		}
 
+		//drive values
+		if( other.gameObject.tag == "drive1" )
+		{
+			D1 = true;
+		}
+
+		//stellar drive values
+		if( other.gameObject.tag == "stellarDrive1" )
+		{
+			SD1 = true;
+		}
+
+		if( other.gameObject.tag == "stellarDrive2" )
+		{
+			SD2 = true;
+		}
 	}
 
 	//when a hitbox leaves a player no longer touching
@@ -1232,6 +1241,23 @@ public class PlayerController : MonoBehaviour
 		if ( other.gameObject.tag == "HardKickAir" )
 		{
 			AHK = false;
+		}
+
+		//drive values
+		if( other.gameObject.tag == "drive1" )
+		{
+			D1 = false;
+		}
+		
+		//stellar drive values
+		if( other.gameObject.tag == "stellarDrive1" )
+		{
+			SD1 = false;
+		}
+		
+		if( other.gameObject.tag == "stellarDrive2" )
+		{
+			SD2 = false;
 		}
 	}
 	//end hitboxes---------------------------------------------------------------------------------------------------
