@@ -373,7 +373,9 @@ public class PlayerController : MonoBehaviour
 		{
 			SD1trigger = false;
 			SD2trigger = false;
+			SD3trigger = false;
 			stellarDriveFrames--;
+			flush ();
 			return;
 		}
 
@@ -431,7 +433,7 @@ public class PlayerController : MonoBehaviour
 		//Phase 8
 		//player successfully implemented a stellar drive, game executes stellar drive
 		//hyper 1, 2, and 3 checked if entered at this moment
-		//hyper1Check ();
+		hyper1Check ();
 		if( SD1trigger == true )
 		{
 			stellarDriveFrames = stellarDrivedelay1;
@@ -650,20 +652,16 @@ public class PlayerController : MonoBehaviour
 
 		//all conditions for hyper1 has been met
 		if ( Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == false && groundCheck == true || 
-		    Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == false && groundCheck == true ) 
+		    Equals (commands, Sdrive[ 1, 0 ] ) && facingLeft == false && groundCheck == true ) 
 		{
-			Debug.Log ("HADOUKEN");
-			//countDelayHyper = hyper1delay;
-			flush ();
+			SD1trigger = true;
 			return;
 			
 		}
-		else if(Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == true && groundCheck == true || 
-		        Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == true && groundCheck == true )
+		else if(Equals (commands, Sdrive[ 2, 0 ] ) && facingLeft == true && groundCheck == true || 
+		        Equals (commands, Sdrive[ 3, 0 ] ) && facingLeft == true && groundCheck == true )
 		{
-			Debug.Log ("HADOUKEN");
-			//countDelayHyper = hyper1delay;
-			flush ();
+			SD1trigger = true;
 			return;
 		}
 	}
@@ -1454,6 +1452,20 @@ public class PlayerController : MonoBehaviour
 		return false;
 	}
 
+	public bool amIgettingHitYAUA( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		if( SD1 == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
+
 
 	//amIgettingHit ends********************************************************************************************
 
@@ -1599,7 +1611,11 @@ public class PlayerController : MonoBehaviour
 	//stellar drive instructions!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	public void YouAreUnderArrestMethod()
 	{
-
+		rigidbody2D.AddForce ( new Vector2 ( -10 , 0 ) );
+		if( stellarDriveFrames % 3 == 0 )
+		{
+			attack.amIgettingHitYAUA( 10, 0, 10, 2 );
+		}
 	}
 
 	public void DownBoyMethod()
