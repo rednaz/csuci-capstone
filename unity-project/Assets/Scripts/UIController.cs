@@ -19,8 +19,8 @@ public class UIController : MonoBehaviour
 	// Health Bar UI
 	private Vector2 healthBarSize, bHealthBarPos, cHealthBarPos;
 
-	// Super/Hyper UI
-	// IMPLEMENT THIS
+	// Stellar Drive Bar UI
+	private Vector2 stellarSize;
 
 	// Timer UI
 	private float timeLeft;
@@ -35,10 +35,14 @@ public class UIController : MonoBehaviour
 	// Miscellaneous UI
 	private bool koOver;
 	private bool timeOver;
+	private float bDeltaHealth, bDeltaStellar, cDeltaHealth, cDeltaStellar;
+	public float fillSpeed;
 
 	// Temporary or testing variables
 	private float timer, nextTime;
 	public float timeRate;
+	public int bPlayerMaxStellar, cPlayerMaxStellar;
+	private int bPlayerCurrentStellar, cPlayerCurrentStellar;
 
 
 	void Start ()
@@ -47,18 +51,13 @@ public class UIController : MonoBehaviour
 		currentResX = Screen.width;
 		currentResY = Screen.height;
 
-		// Set position and size of health bars, super bars (to be implemented), and timer
-		setHealthBars (currentResX, currentResY);
+
+		// Set position and size of health bars, stellar bars, and timer
+		setFillBars (currentResX, currentResY);
 		setTimerGUI (currentResX, currentResY);
 
-		// Initialize progress bar textures
-		//progressBarEmpty = new Texture2D(1,1);
-		//progressBarFull = new Texture2D(1,1);
 
-
-		// Initialize player controller objects
-
-		// Attempt to get B Player
+		// Attempt to get B Player object
 		GameObject bPlayerObject = GameObject.FindWithTag ("BPlayer1");
 		//Debug.Log ("bPlayerObject value is '" + bPlayerObject + "'");
 
@@ -74,7 +73,7 @@ public class UIController : MonoBehaviour
 
 
 
-		// Attempt to get C Player
+		// Attempt to get C Player object
 		GameObject cPlayerObject = GameObject.FindWithTag ("CPlayer2");
 		//Debug.Log ("cPlayerObject value is '" + cPlayerObject + "'");
 
@@ -92,33 +91,40 @@ public class UIController : MonoBehaviour
 		// Miscellaneous actions taken here (if not dependent on above actions)
 		timeOver = false;
 		koOver = false;
+		bDeltaHealth = 0;
+		cDeltaHealth = 0;
+
 
 		// Temporary actions to be implemented properly later (THIS SHOULD BE EMPTY UPON COMPLETION OF THE PROJECT)
 		timer = 100.0f;
 		nextTime = Time.time + timeRate;
+		bPlayerCurrentStellar = bPlayerMaxStellar;
+		cPlayerCurrentStellar = cPlayerMaxStellar;
+		bDeltaStellar = 0;
+		cDeltaStellar = 0;
+
 	}
 
 
 	void OnGUI ()
 	{
-		// Adjust the health bar size and positions if the screen resolution changes
+		// Adjust the health/stellar bar size and positions if the screen resolution changes
 		if (screenResChange (currentResX, currentResY))
 		{
 			currentResX = Screen.width;
 			currentResY = Screen.height;
-			setHealthBars (currentResX, currentResY);
+			setFillBars (currentResX, currentResY);
 			setTimerGUI (currentResX, currentResY);
 		}
 	
-		// Draw the health bars
+		// Draw health and stellar bar for B player
+		drawFillBar (bDeltaHealth, bPlayer.maxHealth, bHealthBarPos.x, bHealthBarPos.y, healthBarSize.x, healthBarSize.y, false);
+		drawFillBar (bDeltaStellar, bPlayerMaxStellar, bHealthBarPos.x, bHealthBarPos.y + healthBarSize.y, stellarSize.x, stellarSize.y, false);
 
-		// B Player health bar
-		drawHealthBar (bPlayer.health, bPlayer.maxHealth, bHealthBarPos.x, bHealthBarPos.y, healthBarSize.x, healthBarSize.y, false);
-		// C Player health bar
-		drawHealthBar (cPlayer.health, cPlayer.maxHealth, cHealthBarPos.x, cHealthBarPos.y, healthBarSize.x, healthBarSize.y, true);
-
-		// Draw the super/hyper bars
-
+		// Draw health and stellar bar for C player
+		drawFillBar (cDeltaHealth, cPlayer.maxHealth, cHealthBarPos.x, cHealthBarPos.y, healthBarSize.x, healthBarSize.y, true);
+		drawFillBar (cDeltaStellar, cPlayerMaxStellar, cHealthBarPos.x + stellarSize.x, cHealthBarPos.y + healthBarSize.y, stellarSize.x, stellarSize.y, true);
+		
 		// Draw the timer
 		timerStyle = GUI.skin.GetStyle ("Box");
 		drawTimerGUI (timer, timerPos.x, timerPos.y, timerSize.x, timerSize.y);
@@ -145,10 +151,12 @@ public class UIController : MonoBehaviour
 		if (!timeOver && !koOver)
 			DecrementTime ();
 
-		if ((bPlayer.health < 1 || cPlayer.health < 1) && !timeOver)
-			koOver = true;
+		// Update delta health and stellar values
+		bDeltaHealth = updateDeltaVals (bPlayer.health, bDeltaHealth);
+		bDeltaStellar = updateDeltaVals (bPlayerCurrentStellar, bDeltaStellar);
+		cDeltaHealth = updateDeltaVals (cPlayer.health, cDeltaHealth);
+		cDeltaStellar = updateDeltaVals (cPlayerCurrentStellar, cDeltaStellar);
 	}
-
 
 
 
@@ -165,31 +173,35 @@ public class UIController : MonoBehaviour
 	}
 
 	// Reset health bar size and position values
-	void setHealthBars(float newWidth, float newHeight)
+	void setFillBars(float newWidth, float newHeight)
 	{
 		healthBarSize = new Vector2((float) Math.Round (newWidth / 3.0), (float) Math.Round (newHeight / 20.0));
 		bHealthBarPos = new Vector2((float) Math.Round (newWidth / 10.0), (float) Math.Round (newHeight / 20.0));
 		cHealthBarPos = new Vector2(newWidth - healthBarSize.x - bHealthBarPos.x, bHealthBarPos.y);
+
+		// Set stellar bar size
+		stellarSize = new Vector2((float) Math.Round (healthBarSize.x / 2.0), (float) Math.Round (healthBarSize.y / 3.0));
 	}
 
-	// Draws player B health bar
-	void drawHealthBar(float curHealth, float maxHealth, float posX, float posY, float sizeX, float sizeY, bool anchorRight)
+	// Draws health bar, either for player B or C depending on the value of the boolean variable 'anchorRight'
+	void drawFillBar(float curHealth, float maxHealth, float posX, float posY, float sizeX, float sizeY, bool anchorRight)
 	{
 		GUI.BeginGroup (new Rect (posX, posY, sizeX, sizeY));
 		GUI.Box (new Rect (0,0, sizeX, sizeY),progressBarEmpty);
+
+
+		// draw the filled-in part of the bar: if anchorRight is true, then the health bar gets "anchored" from the right side
+		// this is accomplished by adjusting the X position as the size of the health bar changes
 		float offsetX = 0;
-		// draw the filled-in part:
-		// if anchorRight is true, then the health bar gets "anchored" from the right side
 		if (anchorRight == true)
 			offsetX = sizeX * (1 - (curHealth / maxHealth));
 
 		GUI.BeginGroup (new Rect (offsetX, 0, sizeX * (curHealth / maxHealth), sizeY));
 		GUI.Box (new Rect (0, 0, sizeX, sizeY),progressBarFull);
 		
-		GUI.EndGroup ();
-		GUI.EndGroup ();
+		GUI.EndGroup ();  // end "fill" part of the health bar
+		GUI.EndGroup ();  // end empty part of health bar
 	}
-
 
 
 	// Sets timer GUI size and position values
@@ -239,6 +251,31 @@ public class UIController : MonoBehaviour
 		{
 			timeOver = true;
 		}
+	}
+
+	float updateDeltaVals(int currentVal, float deltaVal)
+	{
+		if (deltaVal < (float) currentVal)
+		{
+			// Used to approximate so the delta value doesn't constantly fluctuate around the actual value
+			if (Math.Abs (deltaVal - (float) currentVal) <= fillSpeed)
+				deltaVal = (float) currentVal;
+
+			else
+				deltaVal += fillSpeed;
+		}
+
+		else if (deltaVal > (float) currentVal)
+		{
+			// Used to approximate so the delta value doesn't constantly fluctuate around the actual value
+			if (Math.Abs (deltaVal - (float) currentVal) <= fillSpeed)
+				deltaVal = (float) currentVal;
+			
+			else
+				deltaVal -= fillSpeed;
+		}
+
+		return deltaVal;
 	}
 
 
