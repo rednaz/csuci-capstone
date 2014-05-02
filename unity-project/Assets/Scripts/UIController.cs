@@ -36,7 +36,7 @@ public class UIController : MonoBehaviour
 	private bool timeOver;
 	private float bDeltaHealth, bDeltaStellar, cDeltaHealth, cDeltaStellar;
 	private float bHealthFillSpeed, cHealthFillSpeed, bStellarFillSpeed, cStellarFillSpeed;
-	private bool initialFill;
+	private bool initialFill, isFillSpeedSetProperly;
 	
 	// Temporary or testing variables
 	private float timer, nextTime;
@@ -98,10 +98,14 @@ public class UIController : MonoBehaviour
 		
 		// Set player health fill speed
 		initialFill = true;
+		isFillSpeedSetProperly = false;
 		bHealthFillSpeed = calculateFillSpeed (bPlayer.maxHealth);
 		cHealthFillSpeed = calculateFillSpeed (cPlayer.maxHealth);
 		bStellarFillSpeed = calculateFillSpeed (bPlayerMaxStellar);
 		cStellarFillSpeed = calculateFillSpeed (cPlayerMaxStellar);
+
+		if (bHealthFillSpeed > 0 && bStellarFillSpeed > 0 && cHealthFillSpeed > 0 && cStellarFillSpeed > 0)
+			isFillSpeedSetProperly = true;
 		
 		
 		
@@ -173,7 +177,18 @@ public class UIController : MonoBehaviour
 		{
 			initialFill = false;
 		}
-		
+
+		if (!isFillSpeedSetProperly)
+		{
+			bHealthFillSpeed = calculateFillSpeed (bPlayer.maxHealth);
+			cHealthFillSpeed = calculateFillSpeed (cPlayer.maxHealth);
+			bStellarFillSpeed = calculateFillSpeed (bPlayerMaxStellar);
+			cStellarFillSpeed = calculateFillSpeed (cPlayerMaxStellar);
+
+			if (bHealthFillSpeed > 0 && bStellarFillSpeed > 0 && cHealthFillSpeed > 0 && cStellarFillSpeed > 0)
+				isFillSpeedSetProperly = true;
+		}
+
 		bDeltaHealth = updateDeltaVals (bPlayer.health, bDeltaHealth, bHealthFillSpeed * fillScale);
 		bDeltaStellar = updateDeltaVals (bPlayerCurrentStellar, bDeltaStellar, bStellarFillSpeed * fillScale);
 		cDeltaHealth = updateDeltaVals (cPlayer.health, cDeltaHealth, cHealthFillSpeed * fillScale);
@@ -203,7 +218,7 @@ public class UIController : MonoBehaviour
 		cHealthBarPos = new Vector2(newWidth - healthBarSize.x - bHealthBarPos.x, bHealthBarPos.y);
 		
 		// Set stellar bar size
-		stellarSize = new Vector2((float) Math.Round (healthBarSize.x / 2.0), (float) Math.Round (healthBarSize.y / 2.0));
+		stellarSize = new Vector2((float) Math.Round (healthBarSize.x / 2.0), (float) Math.Round (healthBarSize.y * (2.0/3.0)));
 	}
 	
 	// Draws health bar, either for player B or C depending on the value of the boolean variable 'anchorRight'
