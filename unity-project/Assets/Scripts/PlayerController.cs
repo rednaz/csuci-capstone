@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour
 	//random number generator for sounds
 	private System.Random rand = new System.Random();
 
+	public bool ReadySet = false;
+
 	public bool owAirTrigger = false;
 
 	public string enemyScript;
@@ -226,11 +228,22 @@ public class PlayerController : MonoBehaviour
 	//the heart of all actions-------------------------------------------------------
 	void FixedUpdate () 
 	{
+		//this line checks if the character is on the ground at this frame
+		groundCheck = Physics2D.OverlapCircle (daGround.position, groundRadius, whatIsGround);
+		//setting up the animation for the frame
+		animationCalls ();
+		//Phase Start (counter going to 0 then fight begins)
+		if ( ReadySet == false )
+		{
+			determineFlip ();
+			return;
+		}
+						
 		//int randomNum = rand.Next(0,100);
 		//Debug.Log ( randomNum );
 
-		//this line checks if the character is on the ground at this frame
-		groundCheck = Physics2D.OverlapCircle (daGround.position, groundRadius, whatIsGround);
+
+
 
 		//this is nothing but debug code, feel free to uncomment 
 		//at your pleasure to see game activity
@@ -240,8 +253,7 @@ public class PlayerController : MonoBehaviour
 			freeze.tempFreeze();
 		}
 
-		//setting up the animation for the frame
-		animationCalls ();
+
 
 
 		//Phase 0 

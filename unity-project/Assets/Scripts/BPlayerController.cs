@@ -133,4 +133,10 @@ public class BPlayerController : PlayerController
 		YouAreUnderArrest = true;		DownBoy = false;
 		OmniBlast = true;				OmniBarrage = true;
 	}
+
+	//set to true once the fight starts
+	public void fightOn1()
+	{
+		ReadySet = true;
+	}
 }

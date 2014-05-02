@@ -135,4 +135,10 @@ public class CPlayerController : PlayerController
 
 		//GamePad.GetButtonDown(GamePad.Button.A, 1);
 	}
+
+	//set to true once the fight starts
+	public void fightOn2()
+	{
+		ReadySet = true;
+	}
 }
