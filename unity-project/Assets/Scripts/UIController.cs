@@ -311,7 +311,7 @@ public class UIController : MonoBehaviour
 		timerPos = new Vector2 ((mainBarSize.x / 2) - (timerSize.x / 2), mainBarSize.y / 3);
 		timerStyle.alignment = TextAnchor.MiddleCenter;
 		timerStyle.fontSize = (int) timerSize.x / 2;
-		timerStyle.normal.textColor = new Color (0.8f, 0, 0);
+		timerStyle.normal.textColor = new Color (0.25f, 0.85f, 1f);
 		GUI.Box (new Rect (timerPos.x, timerPos.y, timerSize.x, timerSize.y), timer.ToString("00"), timerStyle);
 
 		GUI.EndGroup ();
