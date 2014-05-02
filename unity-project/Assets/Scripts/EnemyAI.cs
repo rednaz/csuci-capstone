@@ -47,7 +47,8 @@ public class EnemyAI : MonoBehaviour
 	// AI is doing combo
 	// public currentCombo;
 	public int comboPos = 0;
-	public int currAttack = 1;
+	public int currType = -1; // 0 for Drive, 1 for SDrive
+	public int currAttack = -1;
 
 	void Awake()
 	{
@@ -79,11 +80,17 @@ public class EnemyAI : MonoBehaviour
 
 		print ("Combo" + comboPos);
 
+		// updates knowledge of which way AI is facing
+		float dist = myTransform.position.x - playerTransform.position.x;
+		print (dist);
+		if (dist > 0)
+			faceLeft = true;
+
 		//PHASE 1
 		// if an interupt needs to be handled
 		if (handleInterrupt ())
 		{
-			block ();
+			block (dist);
 		}
 		//PHASE 2
 		if (running > 0)
@@ -103,17 +110,17 @@ public class EnemyAI : MonoBehaviour
 
 		//PHASE 4
 		// decide if AI can and will use a melee attack
-		if (melee ())
+		if (melee (dist))
 			return;
 
 		//PHASE 5
 		// decide if AI will use ranged attack
-		if (ranged ())
+		if (ranged (dist))
 			return;
 
 		//PHASE 6
 		// decide if AI will move
-		if (move ())
+		if (move (dist))
 			return;
 
 
@@ -134,7 +141,7 @@ public class EnemyAI : MonoBehaviour
 		return false;
 	}
 
-	public bool block ()
+	public bool block (int dist)
 	{
 		print ("In Blocking");
 		if (Random.Range (0, 10) < 5)
@@ -148,13 +155,30 @@ public class EnemyAI : MonoBehaviour
 		return false;
 	}
 
-	public bool melee ()
+	public bool melee (int dist)
 	{
-		if (Mathf.Abs (myTransform.position.x - playerTransform.position.x) < 1)
+		if (Mathf.Abs (dist) < 1)
 		{
 			if (comboPos > 0)
 			{
-				string current = phases.drive[currAttack, 0].ToString();
+				string current = "";
+
+				if (currType == 0)
+				{
+					if (faceLeft)
+						current = phases.drive[2, 0].ToString();
+					else
+						current = phases.drive[0, 0].ToString();
+					
+				}
+				else if (currType == 1)
+				{
+					if (faceLeft)
+						current = phases.Sdrive[2, currAttack].ToString();
+					else
+						current = phases.Sdrive[0, currAttack].ToString();
+				}
+
 				if (comboPos < current.Length)
 				{
 					phases.currentInput = "" + current[comboPos];
@@ -163,6 +187,8 @@ public class EnemyAI : MonoBehaviour
 				else
 				{
 					comboPos = 0;
+					currType = -1;
+					currAttack = -1;
 					return false;
 				}
 			}
@@ -172,14 +198,47 @@ public class EnemyAI : MonoBehaviour
 				print ("New Attack");
 				int attack = Random.Range (0, 10);
 				
-				if (attack < 5)
+				if (attack < 4)
 					return false;
 
 				else if (attack < 7)
-					kick();
+				{
+					currType = 0;
+					
+					if (faceLeft)
+						phases.currentInput = "" + phases.drive[2, 0].ToString()[comboPos];
+					else
+						phases.currentInput = "" + phases.drive[0, 0].ToString()[comboPos];
+					
+					comboPos++;
+				}
+
+				else if (attack < 8)
+				{
+					currType = 1;
+
+					currAttack = Random.Range (1, 3);
+
+					if (faceLeft)
+						phases.currentInput = "" + phases.Sdrive[2, currAttack].ToString()[comboPos];
+					else
+						phases.currentInput = "" + phases.Sdrive[0, currAttack].ToString()[comboPos];
+					
+					comboPos++;
+				}
 
 				else
-					punch();
+				{
+					attack = Random.Range (0, 4);
+
+					switch(attack)
+					{
+					case 0: phases.currentInput = "A"; break;
+					case 1: phases.currentInput = "B"; break;
+					case 2: phases.currentInput = "C"; break;
+					case 3: phases.currentInput = "D"; break;
+					}
+				}
 			}
 
 			return true;
@@ -215,12 +274,12 @@ public class EnemyAI : MonoBehaviour
 			phases.currentInput = "A";
 	}
 
-	public bool ranged ()
+	public bool ranged (int dist)
 	{
 		return false;
 	}
 	
-	public bool move()
+	public bool move(int dist)
 	{
 		int direction = Random.Range (0, 10);
 		
