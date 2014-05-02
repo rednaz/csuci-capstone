@@ -15,7 +15,10 @@ public class UIController : MonoBehaviour
 	
 	// Fill Bar textures
 	//private Texture2D barEmpty, healthBarFull, stellarBarFull;
-	
+
+	// Main Bar UI
+	private Vector2 mainBarSize, mainBarPos;
+
 	// Health Bar UI
 	private Vector2 healthBarSize, bHealthBarPos, cHealthBarPos;
 	
@@ -30,7 +33,7 @@ public class UIController : MonoBehaviour
 	private Vector2 finishSize, finishPos;
 
 	// GUI Styles
-	public GUIStyle barEmpty, healthFill, stellarFill, timerStyle, finishStyle;
+	public GUIStyle mainBarStyle, barEmpty, healthFill, stellarFill, timerStyle, finishStyle;
 
 	// Miscellaneous UI
 	private bool koOver;
@@ -48,13 +51,13 @@ public class UIController : MonoBehaviour
 	
 	void Start ()
 	{
+		Debug.Log (mainBarStyle.normal.background.width + ", " + mainBarStyle.normal.background.height);
 		// Save resolution to variables
 		currentResX = Screen.width;
 		currentResY = Screen.height;
 
 		// Set position and size of health bars, stellar bars, and timer
-		setFillBars (currentResX, currentResY);
-		setTimerGUI (currentResX, currentResY);
+		setMainBar ();
 
 		
 		// Attempt to get B Player object
@@ -126,28 +129,18 @@ public class UIController : MonoBehaviour
 		{
 			currentResX = Screen.width;
 			currentResY = Screen.height;
-			setFillBars (currentResX, currentResY);
-			setTimerGUI (currentResX, currentResY);
+			setMainBar ();
 		}
 		
-
-		// Draw health and stellar bar for B player
-		drawFillBar (bDeltaHealth, bPlayer.maxHealth, bHealthBarPos.x, bHealthBarPos.y, healthBarSize.x, healthBarSize.y, healthFill, false);
-		drawFillBar (bDeltaStellar, bPlayerMaxStellar, bHealthBarPos.x, bHealthBarPos.y + healthBarSize.y, stellarSize.x, stellarSize.y, stellarFill, false);
-		
-		// Draw health and stellar bar for C player
-		drawFillBar (cDeltaHealth, cPlayer.maxHealth, cHealthBarPos.x, cHealthBarPos.y, healthBarSize.x, healthBarSize.y, healthFill, true);
-		drawFillBar (cDeltaStellar, cPlayerMaxStellar, cHealthBarPos.x + stellarSize.x, cHealthBarPos.y + healthBarSize.y, stellarSize.x, stellarSize.y, stellarFill, true);
-		
-		// Draw the timer
-		//timerStyle = new GUIStyle(GUI.skin.box);
-		drawTimerGUI (timer, timerPos.x, timerPos.y, timerSize.x, timerSize.y);
+		// Draw main bar UI
+		// Includes both health bars, all six stellar drive meters, the timer, and remaining revolver shots
+		drawMainUI ();
 		
 		// Draw KO/time over UI depending on which flag gets set
 		if (koOver || timeOver)
 		{
 			//finishStyle = new GUIStyle(GUI.skin.box);
-			setFinishGUI (currentResX, currentResY);
+			setFinishGUI ();
 			
 			if (koOver)
 				drawFinishGUI ("Beatdown!", finishPos.x, finishPos.y, finishSize.x, finishSize.y);
@@ -163,24 +156,26 @@ public class UIController : MonoBehaviour
 		//Debug.Log ("UI:\nB Player: " + bPlayer.health + " / " + bPlayer.maxHealth + ", C Player: " + cPlayer.health + " / " + cPlayer.maxHealth);
 		// Temporary actions go here
 		
-		if (bPlayer.health < 1 || cPlayer.health < 1)
+		if (!timeOver && (bPlayer.health < 1 || cPlayer.health < 1))
 		{
 			koOver = true;
 		}
 		
 		if (!timeOver && !koOver)
 			DecrementTime ();
-		
+
+
+		// Fillscale is used to quickly fill up the health and hyper/stellar meters at the beginning of the match.
 		int fillScale = 5;
+
 		// Update delta health and stellar values
 		if (!initialFill)
 			fillScale = 1;
 		
 		else if (bDeltaHealth >= (float) bPlayer.health || cDeltaHealth >= (float) cPlayer.health)
-		{
 			initialFill = false;
-		}
 
+		// Used to counteract possibly getting zero health values at the program start
 		if (!isFillSpeedSetProperly)
 		{
 			bHealthFillSpeed = calculateFillSpeed (bPlayer.maxHealth);
@@ -211,63 +206,137 @@ public class UIController : MonoBehaviour
 	{
 		return (width != Screen.width || height != Screen.height);
 	}
-	
-	// Reset health bar size and position values
-	void setFillBars(float newWidth, float newHeight)
+
+	// Used to scale some part of the UI to fit the current screen dimensions
+	Vector2 scaleSize (float width, float height)
 	{
-		healthBarSize = new Vector2((float) Math.Round (newWidth / 3.0), (float) Math.Round (newHeight / 20.0));
-		bHealthBarPos = new Vector2((float) Math.Round (newWidth / 10.0), (float) Math.Round (newHeight / 20.0));
-		cHealthBarPos = new Vector2(newWidth - healthBarSize.x - bHealthBarPos.x, bHealthBarPos.y);
+		float scaledWidth = (float) Math.Round((width / 1920) * currentResX);
+		float scaledHeight = (float) Math.Round((height/ 1080) * currentResY);
+
+		return new Vector2 (scaledWidth, scaledHeight);
+	}
+
+	// Set main bar size and position
+	void setMainBar()
+	{
+		// Main bar dimensions in pixels: 1726x211 using our current asset
+
+
+		float mainBarAbsWidth = mainBarStyle.normal.background.width;
+		float mainBarAbsHeight = mainBarStyle.normal.background.height;
+
+		// Scaled main bar dimensions
+		float mainBarWidth = (float)Math.Round ((mainBarAbsWidth / 1920) * currentResX);
+		float mainBarHeight = (float)Math.Round ((mainBarAbsHeight / 1080) * currentResY);
+
+		// Finally, set final size and dimensions
+		mainBarSize = new Vector2 (mainBarWidth, mainBarHeight);
+		mainBarPos = new Vector2 ((currentResX / 2) - (mainBarSize.x / 2), (float)Math.Round (currentResY / 20.0));
+	}
+
+	// Draw main bar GUI
+	void drawMainUI()
+	{
+		// Set main bar size and position
+		mainBarSize = scaleSize (mainBarStyle.normal.background.width, mainBarStyle.normal.background.height);
+		mainBarPos = new Vector2 ((currentResX / 2) - (mainBarSize.x / 2), (float)Math.Round (currentResY / 20.0));
+
+		// Draw the main bar
+		GUI.BeginGroup (new Rect (mainBarPos.x, mainBarPos.y, mainBarSize.x, mainBarSize.y));
+		GUI.Box (new Rect (0, 0, mainBarSize.x, mainBarSize.y), new GUIContent (""), mainBarStyle);
+
+		// Get health bar size
+		healthBarSize = scaleSize (331, 32);
+
+		// Draw B player health bar (X must be set 5 more, Y must be set 14 more than what photoshop says!)
+		bHealthBarPos = scaleSize (234, 40);
+		drawFillBar (bDeltaHealth, bPlayer.maxHealth, bHealthBarPos.x, bHealthBarPos.y, healthBarSize.x, healthBarSize.y, healthFill, false);
+
+		// Size and positions of all six stellar meters (based on 1920x1080 pixels scaled to different resolutions)
+		Vector2 bPos1, bPos2, bPos3, cPos1, cPos2, cPos3;
+		stellarSize = scaleSize (114, 27);
+		bPos1 = scaleSize (202, 95);
+		bPos2 = scaleSize (326, 95);
+		bPos3 = scaleSize (449, 95);
+
+		// Remember - these bars go from right to left!
+		cPos1 = scaleSize (1409, 95);
+		cPos2 = scaleSize (1286, 95);
+		cPos3 = scaleSize (1162, 95);
+
 		
-		// Set stellar bar size
-		stellarSize = new Vector2((float) Math.Round (healthBarSize.x / 2.0), (float) Math.Round (healthBarSize.y * (2.0/3.0)));
+		// Draw B player stellar bars
+		if (bDeltaStellar > 200)
+		{
+			drawFillBar (100, 100, bPos1.x, bPos1.y, stellarSize.x, stellarSize.y, stellarFill, false);
+			drawFillBar (100, 100, bPos2.x, bPos2.y, stellarSize.x, stellarSize.y, stellarFill, false);
+			drawFillBar (bDeltaStellar - 200, 100, bPos3.x, bPos3.y, stellarSize.x, stellarSize.y, stellarFill, false);
+		}
+
+		else if (bDeltaStellar > 100)
+		{
+			drawFillBar (100, 100, bPos1.x, bPos1.y, stellarSize.x, stellarSize.y, stellarFill, false);
+			drawFillBar (bDeltaStellar - 100, 100, bPos2.x, bPos2.y, stellarSize.x, stellarSize.y, stellarFill, false);
+		}
+
+		else
+			drawFillBar (bDeltaStellar, 100, bPos1.x, bPos1.y, stellarSize.x, stellarSize.y, stellarFill, false);
+		
+
+		// Draw C player health bar
+		cHealthBarPos = scaleSize (1161, 40);
+		drawFillBar (cDeltaHealth, cPlayer.maxHealth, cHealthBarPos.x, cHealthBarPos.y, healthBarSize.x, healthBarSize.y, healthFill, true);
+
+
+		// Draw C player stellar bars
+		if (cDeltaStellar > 200)
+		{
+			drawFillBar (100, 100, cPos1.x, cPos1.y, stellarSize.x, stellarSize.y, stellarFill, true);
+			drawFillBar (100, 100, cPos2.x, cPos2.y, stellarSize.x, stellarSize.y, stellarFill, true);
+			drawFillBar (bDeltaStellar - 200, 100, cPos3.x, cPos3.y, stellarSize.x, stellarSize.y, stellarFill, true);
+		}
+		
+		else if (cDeltaStellar > 100)
+		{
+			drawFillBar (100, 100, cPos1.x, cPos1.y, stellarSize.x, stellarSize.y, stellarFill, true);
+			drawFillBar (cDeltaStellar - 100, 100, cPos2.x, cPos2.y, stellarSize.x, stellarSize.y, stellarFill, true);
+		}
+		
+		else
+			drawFillBar (cDeltaStellar, 100, cPos1.x, cPos1.y, stellarSize.x, stellarSize.y, stellarFill, true);
+
+
+		// Draw the timer
+		timerSize = new Vector2 ((float)Math.Round (mainBarSize.x / 7.5), (float) Math.Round (mainBarSize.y / 7.5));
+		timerPos = new Vector2 ((mainBarSize.x / 2) - (timerSize.x / 2), mainBarSize.y / 3);
+		timerStyle.alignment = TextAnchor.MiddleCenter;
+		timerStyle.fontSize = (int) timerSize.x / 2;
+		timerStyle.normal.textColor = new Color (0.8f, 0, 0);
+		GUI.Box (new Rect (timerPos.x, timerPos.y, timerSize.x, timerSize.y), timer.ToString("00"), timerStyle);
+
+		GUI.EndGroup ();
+
 	}
 	
-	// Draws health bar, either for player B or C depending on the value of the boolean variable 'anchorRight'
+	// Draws health or stellar meter, either for player B or C depending on the value of the boolean variable 'anchorRight'
 	void drawFillBar(float curHealth, float maxHealth, float posX, float posY, float sizeX, float sizeY, GUIStyle style, bool anchorRight)
 	{
 		GUI.BeginGroup (new Rect (posX, posY, sizeX, sizeY));
-		GUI.Box (new Rect (0, 0, sizeX, sizeY), new GUIContent(""), barEmpty);
-
-		// Set fill bar style
-		//style.normal.background = texture;
 		
 		// draw the filled-in part of the bar: if anchorRight is true, then the health bar gets "anchored" from the right side
 		// this is accomplished by adjusting the X position as the size of the health bar changes
 		float offsetX = 0;
 		if (anchorRight == true)
 			offsetX = sizeX * (1 - (curHealth / maxHealth));
-		
-		GUI.BeginGroup (new Rect (offsetX, 0, sizeX * (curHealth / maxHealth), sizeY));
-		GUI.Box (new Rect (0, 0, sizeX, sizeY), new GUIContent(""), style);
-		
-		GUI.EndGroup ();  // end "fill" part of the health bar
+
+		GUI.Box (new Rect (offsetX, 0, sizeX * (curHealth / maxHealth), sizeY), new GUIContent(""), style);
 		GUI.EndGroup ();  // end empty part of health bar
 	}
 	
-	
-	// Sets timer GUI size and position values
-	void setTimerGUI(float newWidth, float newHeight)
+	void setFinishGUI()
 	{
-		timerSize = new Vector2 ((float)Math.Round (newWidth / 10.0), (float)Math.Round (newHeight / 10.0));
-		timerPos = new Vector2 ((newWidth / 2) - (timerSize.x / 2), (float)Math.Round (newHeight / 20.0));
-	}
-	
-	void drawTimerGUI(float timeLeft, float posX, float posY, float sizeX, float sizeY)
-	{
-		timerStyle.alignment = TextAnchor.MiddleCenter;
-		timerStyle.fontSize = (int) sizeX / 2;
-		GUI.BeginGroup (new Rect (posX, posY, sizeX, sizeY));
-		GUI.Box (new Rect (0, 0, sizeX, sizeY), timeLeft.ToString("00"), timerStyle);
-		GUI.EndGroup ();
-	}
-	
-	
-	
-	void setFinishGUI(float newWidth, float newHeight)
-	{
-		finishSize = new Vector2 ((float)Math.Round (newWidth / 4.0 * 3.0), (float)Math.Round (newHeight / 4.0 * 3.0));
-		finishPos = new Vector2 ((newWidth / 2) - (finishSize.x / 2), (newHeight / 2) - (finishSize.y / 2));
+		finishSize = new Vector2 ((float)Math.Round (currentResX / 4.0 * 3.0), (float)Math.Round (currentResY / 4.0 * 3.0));
+		finishPos = new Vector2 ((currentResX / 2) - (finishSize.x / 2), (currentResY / 2) - (finishSize.y / 2));
 	}
 	
 	
@@ -293,33 +362,15 @@ public class UIController : MonoBehaviour
 		{
 			timeOver = true;
 		}
-
-
-		float rTime, gTime, bTime;
-		if (timer > 50 && timer < 75)
-		{
-			rTime = 1;
-			gTime = 1;
-			bTime = ((timer - 50)/25);
-			timerStyle.normal.textColor = new Color (rTime, gTime, bTime);
-		}
-		
-		else if (timer <= 50)
-		{
-			rTime = 1;
-			gTime = (timer/50);
-			bTime= 0;
-			timerStyle.normal.textColor = new Color (rTime, gTime, bTime);
-		}
 	}
 	
-	// Sets the fill speed based on the player's maximum health/stellar value
+	// Sets the fill speed based on the player's maximum health/stellar drive value
 	float calculateFillSpeed(float maxVal)
 	{
 		return maxVal / 500;
 	}
 
-	// Updates delta fillbar values
+	// Updates delta values for gradually changing the health and stellar meters
 	float updateDeltaVals(int currentVal, float deltaVal, float fillSpeed)
 	{
 		if (deltaVal < (float) currentVal)
