@@ -47,6 +47,7 @@ public class EnemyAI : MonoBehaviour
 	// AI is doing combo
 	// public currentCombo;
 	public int comboPos = 0;
+	public int currAttack = 1;
 
 	void Awake()
 	{
@@ -65,21 +66,24 @@ public class EnemyAI : MonoBehaviour
 		//PHASE 0
 		// if not an AI or can't act
 		// exit loop
-		if (!isAnAI)
-			return;
+		//if (!isAnAI)
+			//return;
 		if (!phases.canAct)
 		{
 			phases.currentInput = "X";
 			comboPos = 0;
 			return;
 		}
-		print (phases.health);
-		print (phases.blockCheck);
+		//print (phases.health);
+		//print (phases.blockCheck);
+
+		print ("Combo" + comboPos);
 
 		//PHASE 1
 		// if an interupt needs to be handled
 		if (handleInterrupt ())
 		{
+			block ();
 		}
 		//PHASE 2
 		if (running > 0)
@@ -114,41 +118,6 @@ public class EnemyAI : MonoBehaviour
 
 
 
-		// Create an array of all the colliders in front of the enemy.
-		//Collider2D[] frontHits = Physics2D.OverlapPointAll(frontCheck.position, 1);
-		
-		// Check each of the colliders.
-		/*foreach(Collider2D c in frontHits)
-		{
-			// If any of the colliders is an Obstacle...
-			if(c.tag == "Obstacle")
-			{
-				// ... Flip2 the enemy and stop checking the other colliders.
-				Flip2 ();
-				break;
-			}
-		}*/
-		
-		/*print ("my" + myTransform.position.x + " " + Random.Range(0,10));
-		//print (playerTransform.position.x);
-		
-		if (myTransform.position.x - playerTransform.position.x > 0 && !faceLeft)
-		{
-			Flip2 ();
-			faceLeft = true;
-		}
-		else if (myTransform.position.x - playerTransform.position.x < 0 && faceLeft)
-		{
-			Flip2 ();
-			faceLeft = false;
-		}
-		if (!waiting)
-		{
-			startState ();
-		}
-		
-		// Set the enemy's velocity to moveSpeed in the x direction.
-		//rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);*/	
 	}
 
 	public bool handleInterrupt ()
@@ -170,6 +139,7 @@ public class EnemyAI : MonoBehaviour
 		print ("In Blocking");
 		if (Random.Range (0, 10) < 5)
 		{
+			print ("BLOCKED");
 			phases.moveX = -1;
 			running = 2;
 			return true;
@@ -184,12 +154,22 @@ public class EnemyAI : MonoBehaviour
 		{
 			if (comboPos > 0)
 			{
-				//phases.currentInput = phases.hyper1Aright[comboPos].ToString();
-				comboPos++;
+				string current = phases.drive[currAttack, 0].ToString();
+				if (comboPos < current.Length)
+				{
+					phases.currentInput = "" + current[comboPos];
+					comboPos++;
+				}
+				else
+				{
+					comboPos = 0;
+					return false;
+				}
 			}
 
 			else
 			{
+				print ("New Attack");
 				int attack = Random.Range (0, 10);
 				
 				if (attack < 5)
@@ -221,10 +201,14 @@ public class EnemyAI : MonoBehaviour
 
 	public void punch ()
 	{
-		int attack = Random.Range (0, 10);
-		if (attack < 8)
+		int attack = Random.Range (0, 100);
+		if (attack < 5)
 		{
-			//phases.currentInput = phases.hyper1Aright[comboPos].ToString();
+		}
+		if (attack < 99)
+		{
+			currAttack = Random.Range (0, phases.drive.Length);
+			phases.currentInput = phases.drive[currAttack, comboPos].ToString();
 			comboPos++;
 		}
 		else
