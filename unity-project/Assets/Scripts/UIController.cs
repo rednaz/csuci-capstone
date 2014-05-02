@@ -13,8 +13,8 @@ public class UIController : MonoBehaviour
 	// Screen resolution
 	private float currentResX, currentResY;
 	
-	// Progress Bar textures
-	private Texture2D progressBarEmpty, progressBarFull; // These are placeholders for now
+	// Fill Bar textures
+	//private Texture2D barEmpty, healthBarFull, stellarBarFull;
 	
 	// Health Bar UI
 	private Vector2 healthBarSize, bHealthBarPos, cHealthBarPos;
@@ -25,12 +25,13 @@ public class UIController : MonoBehaviour
 	// Timer UI
 	private float timeLeft;
 	private Vector2 timerSize, timerPos;
-	private GUIStyle timerStyle;
 	
 	// Fight Finish UI (knockout or time over)
 	private Vector2 finishSize, finishPos;
-	private GUIStyle finishStyle;
-	
+
+	// GUI Styles
+	public GUIStyle barEmpty, healthFill, stellarFill, timerStyle, finishStyle;
+
 	// Miscellaneous UI
 	private bool koOver;
 	private bool timeOver;
@@ -50,12 +51,11 @@ public class UIController : MonoBehaviour
 		// Save resolution to variables
 		currentResX = Screen.width;
 		currentResY = Screen.height;
-		
-		
+
 		// Set position and size of health bars, stellar bars, and timer
 		setFillBars (currentResX, currentResY);
 		setTimerGUI (currentResX, currentResY);
-		
+
 		
 		// Attempt to get B Player object
 		GameObject bPlayerObject = GameObject.FindWithTag ("BPlayer1");
@@ -112,6 +112,8 @@ public class UIController : MonoBehaviour
 		// Temporary actions to be implemented properly later (THIS SHOULD BE EMPTY UPON COMPLETION OF THE PROJECT)
 		timer = 100.0f;
 		nextTime = Time.time + timeRate;
+		bPlayerMaxStellar = 300;
+		cPlayerMaxStellar = 300;
 		bPlayerCurrentStellar = bPlayerMaxStellar;
 		cPlayerCurrentStellar = cPlayerMaxStellar;
 	}
@@ -128,26 +130,27 @@ public class UIController : MonoBehaviour
 			setTimerGUI (currentResX, currentResY);
 		}
 		
+
 		// Draw health and stellar bar for B player
-		drawFillBar (bDeltaHealth, bPlayer.maxHealth, bHealthBarPos.x, bHealthBarPos.y, healthBarSize.x, healthBarSize.y, false);
-		drawFillBar (bDeltaStellar, bPlayerMaxStellar, bHealthBarPos.x, bHealthBarPos.y + healthBarSize.y, stellarSize.x, stellarSize.y, false);
+		drawFillBar (bDeltaHealth, bPlayer.maxHealth, bHealthBarPos.x, bHealthBarPos.y, healthBarSize.x, healthBarSize.y, healthFill, false);
+		drawFillBar (bDeltaStellar, bPlayerMaxStellar, bHealthBarPos.x, bHealthBarPos.y + healthBarSize.y, stellarSize.x, stellarSize.y, stellarFill, false);
 		
 		// Draw health and stellar bar for C player
-		drawFillBar (cDeltaHealth, cPlayer.maxHealth, cHealthBarPos.x, cHealthBarPos.y, healthBarSize.x, healthBarSize.y, true);
-		drawFillBar (cDeltaStellar, cPlayerMaxStellar, cHealthBarPos.x + stellarSize.x, cHealthBarPos.y + healthBarSize.y, stellarSize.x, stellarSize.y, true);
+		drawFillBar (cDeltaHealth, cPlayer.maxHealth, cHealthBarPos.x, cHealthBarPos.y, healthBarSize.x, healthBarSize.y, healthFill, true);
+		drawFillBar (cDeltaStellar, cPlayerMaxStellar, cHealthBarPos.x + stellarSize.x, cHealthBarPos.y + healthBarSize.y, stellarSize.x, stellarSize.y, stellarFill, true);
 		
 		// Draw the timer
-		timerStyle = GUI.skin.GetStyle ("Box");
+		//timerStyle = new GUIStyle(GUI.skin.box);
 		drawTimerGUI (timer, timerPos.x, timerPos.y, timerSize.x, timerSize.y);
 		
 		// Draw KO/time over UI depending on which flag gets set
 		if (koOver || timeOver)
 		{
-			finishStyle = GUI.skin.GetStyle ("Label");
+			//finishStyle = new GUIStyle(GUI.skin.box);
 			setFinishGUI (currentResX, currentResY);
 			
 			if (koOver)
-				drawFinishGUI ("K.O.", finishPos.x, finishPos.y, finishSize.x, finishSize.y);
+				drawFinishGUI ("Beatdown!", finishPos.x, finishPos.y, finishSize.x, finishSize.y);
 			
 			else
 				drawFinishGUI ("Time Over", finishPos.x, finishPos.y, finishSize.x, finishSize.y);
@@ -157,7 +160,7 @@ public class UIController : MonoBehaviour
 	
 	void Update ()
 	{
-		Debug.Log ("UI:\nB Player: " + bPlayer.health + " / " + bPlayer.maxHealth + ", C Player: " + cPlayer.health + " / " + cPlayer.maxHealth);
+		//Debug.Log ("UI:\nB Player: " + bPlayer.health + " / " + bPlayer.maxHealth + ", C Player: " + cPlayer.health + " / " + cPlayer.maxHealth);
 		// Temporary actions go here
 		
 		if (bPlayer.health < 1 || cPlayer.health < 1)
@@ -193,7 +196,6 @@ public class UIController : MonoBehaviour
 		bDeltaStellar = updateDeltaVals (bPlayerCurrentStellar, bDeltaStellar, bStellarFillSpeed * fillScale);
 		cDeltaHealth = updateDeltaVals (cPlayer.health, cDeltaHealth, cHealthFillSpeed * fillScale);
 		cDeltaStellar = updateDeltaVals (cPlayerCurrentStellar, cDeltaStellar, cStellarFillSpeed * fillScale);
-		Debug.Log ("C Player delta - " + cDeltaHealth);
 	}
 	
 	
@@ -222,11 +224,13 @@ public class UIController : MonoBehaviour
 	}
 	
 	// Draws health bar, either for player B or C depending on the value of the boolean variable 'anchorRight'
-	void drawFillBar(float curHealth, float maxHealth, float posX, float posY, float sizeX, float sizeY, bool anchorRight)
+	void drawFillBar(float curHealth, float maxHealth, float posX, float posY, float sizeX, float sizeY, GUIStyle style, bool anchorRight)
 	{
 		GUI.BeginGroup (new Rect (posX, posY, sizeX, sizeY));
-		GUI.Box (new Rect (0,0, sizeX, sizeY),progressBarEmpty);
-		
+		GUI.Box (new Rect (0, 0, sizeX, sizeY), new GUIContent(""), barEmpty);
+
+		// Set fill bar style
+		//style.normal.background = texture;
 		
 		// draw the filled-in part of the bar: if anchorRight is true, then the health bar gets "anchored" from the right side
 		// this is accomplished by adjusting the X position as the size of the health bar changes
@@ -235,7 +239,7 @@ public class UIController : MonoBehaviour
 			offsetX = sizeX * (1 - (curHealth / maxHealth));
 		
 		GUI.BeginGroup (new Rect (offsetX, 0, sizeX * (curHealth / maxHealth), sizeY));
-		GUI.Box (new Rect (0, 0, sizeX, sizeY),progressBarFull);
+		GUI.Box (new Rect (0, 0, sizeX, sizeY), new GUIContent(""), style);
 		
 		GUI.EndGroup ();  // end "fill" part of the health bar
 		GUI.EndGroup ();  // end empty part of health bar
@@ -289,8 +293,26 @@ public class UIController : MonoBehaviour
 		{
 			timeOver = true;
 		}
-	}
 
+
+		float rTime, gTime, bTime;
+		if (timer > 50 && timer < 75)
+		{
+			rTime = 1;
+			gTime = 1;
+			bTime = ((timer - 50)/25);
+			timerStyle.normal.textColor = new Color (rTime, gTime, bTime);
+		}
+		
+		else if (timer <= 50)
+		{
+			rTime = 1;
+			gTime = (timer/50);
+			bTime= 0;
+			timerStyle.normal.textColor = new Color (rTime, gTime, bTime);
+		}
+	}
+	
 	// Sets the fill speed based on the player's maximum health/stellar value
 	float calculateFillSpeed(float maxVal)
 	{
