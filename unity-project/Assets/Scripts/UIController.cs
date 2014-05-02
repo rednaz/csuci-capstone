@@ -270,9 +270,9 @@ public class UIController : MonoBehaviour
 	void drawFinishGUI(string message, float posX, float posY, float sizeX, float sizeY)
 	{
 		finishStyle.alignment = TextAnchor.MiddleCenter;
-		finishStyle.fontSize = (int) sizeY;
+		finishStyle.fontSize = (int) sizeY / 3;
 		GUI.BeginGroup (new Rect (posX, posY, sizeX, sizeY));
-		GUI.Label (new Rect (0, 0, sizeX, sizeY), message, timerStyle);
+		GUI.Label (new Rect (0, 0, sizeX, sizeY), message, finishStyle);
 		GUI.EndGroup ();
 	}
 	
