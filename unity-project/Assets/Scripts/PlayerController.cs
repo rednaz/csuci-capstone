@@ -110,6 +110,10 @@ public class PlayerController : MonoBehaviour
 	//crouching or not
 	public bool crouchCheck = false;
 
+	//for attacks that suck in their target
+	//downBoy is one of them
+	public bool flipDamage = false;
+
 	//blocking or not
 	public bool blockCheck = false;
 
@@ -565,21 +569,21 @@ public class PlayerController : MonoBehaviour
 		} 
 
 		//no buttons, so joystick inputs are next
-		else if( moveX < - 0.5f && moveY > .5f ) //down + left 
+		else if( moveX < - 0.5f && moveY < -.5f ) //down + left 
 		{
 			currentInput = "1";
 		}
-		else if( moveX > .5f && moveY > .5f ) //down + right
+		else if( moveX > .5f && moveY < -.5f ) //down + right
 		{
 			currentInput = "3";
 		}
 		else if ( moveY < - 0.5f ) // up (this pretty much cancels out anything since nothing requires up)
 		{
-			currentInput = "8";
+			currentInput = "2";
 		}
 		else if ( moveY > .5f ) //down
 		{
-			currentInput = "2";
+			currentInput = "8";
 		}
 		else if( moveX < - 0.5f ) //left
 		{
@@ -593,7 +597,7 @@ public class PlayerController : MonoBehaviour
 		{
 			currentInput = "X";
 		}
-		//Debug.Log (currentInput + " " + debugString);
+		//
 		return currentInput;
 	}
 
@@ -619,7 +623,7 @@ public class PlayerController : MonoBehaviour
 				placeHolder4.ToString() + placeHolder5.ToString() + placeHolder6.ToString() + nextInput;
 			previousInput = nextInput;
 			//Debug.Log ( placeHolder1 + placeHolder3 + placeHolder4 + placeHolder5 + placeHolder6 );
-			//Debug.Log (commands);
+			Debug.Log (commands);
 		}
 
 		else 
@@ -635,6 +639,7 @@ public class PlayerController : MonoBehaviour
 	//checkpoint if the hyper1 has been executed at this frame
 	void hyper1Check ()
 	{
+
 		//person was in the air at the time, hyper1 input doesn't count
 		if ( Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == false && groundCheck == false || 
 		    Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == false && groundCheck == false ) 
@@ -1611,20 +1616,39 @@ public class PlayerController : MonoBehaviour
 	//stellar drive instructions!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	public void YouAreUnderArrestMethod()
 	{
-		rigidbody2D.AddForce ( new Vector2 ( -10 , 0 ) );
-		if( stellarDriveFrames % 3 == 0 )
+
+		if( facingLeft == false )
 		{
-			attack.amIgettingHitYAUA( 10, 0, 10, 2 );
+			rigidbody2D.AddForce ( new Vector2 ( 30 , 0 ) );
+		}
+		else
+		{
+			rigidbody2D.AddForce ( new Vector2 ( -30 , 0 ) );
+		}
+
+		if( stellarDriveFrames % 10 == 0 )
+		{
+			attack.amIgettingHitYAUA( 200, 0, 20, 2 );
 		}
 	}
 
 	public void DownBoyMethod()
 	{
-		if( stellarDriveFrames % 3 == 0 )
+		if( stellarDriveFrames % 10 == 0 )
 		{
-			attack.amIgettingHitDownBoy( -10, 0, 10, 2 );
+			//flipDamage is used here so the target is bounced back and forth
+			//within the whip zone
+			if( flipDamage == false )
+			{
+				attack.amIgettingHitDownBoy( 200, 0, 20, 2 );
+				flipDamage = true;
+			}
+			else if ( flipDamage == true )
+			{
+				attack.amIgettingHitDownBoy( -200, 0, 20, 2 );
+				flipDamage = false;
+			}
 		}
-
 	}
 
 	public void OmniBlastMethod()
