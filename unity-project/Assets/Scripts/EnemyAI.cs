@@ -105,7 +105,7 @@ public class EnemyAI : MonoBehaviour
 
 		//PHASE 3
 		// decide if AI wants to block
-		if (incAttack && block ())
+		if (incAttack && block (dist))
 			return;
 
 		//PHASE 4
@@ -120,7 +120,7 @@ public class EnemyAI : MonoBehaviour
 
 		//PHASE 6
 		// decide if AI will move
-		if (move (dist))
+		if (move ())
 			return;
 
 
@@ -141,7 +141,7 @@ public class EnemyAI : MonoBehaviour
 		return false;
 	}
 
-	public bool block (int dist)
+	public bool block (float dist)
 	{
 		print ("In Blocking");
 		if (Random.Range (0, 10) < 5)
@@ -155,7 +155,7 @@ public class EnemyAI : MonoBehaviour
 		return false;
 	}
 
-	public bool melee (int dist)
+	public bool melee (float dist)
 	{
 		if (Mathf.Abs (dist) < 1)
 		{
@@ -274,27 +274,36 @@ public class EnemyAI : MonoBehaviour
 			phases.currentInput = "A";
 	}
 
-	public bool ranged (int dist)
+	public bool ranged (float dist)
 	{
 		return false;
 	}
 	
-	public bool move(int dist)
+	public bool move()
 	{
 		int direction = Random.Range (0, 10);
-		
+
+
 		if (direction < 3)
 		{
 			running = (Random.Range (0,2) + 1) * 10;
 			return true;
 		}
+		// move away from player
 		else if (direction < 5)
 		{
-			phases.moveX = -1;
+			if (faceLeft)
+				phases.moveX = 1;
+			else
+				phases.moveX = -1;
 		}
+		// move towards player
 		else
 		{
-			phases.moveX = 1;
+			if (faceLeft)
+				phases.moveX = -1;
+			else
+				phases.moveX = 1;
 		}
 		
 		running = (Random.Range (0,3) + 1) * 10;
