@@ -82,7 +82,6 @@ public class EnemyAI : MonoBehaviour
 
 		// updates knowledge of which way AI is facing
 		float dist = myTransform.position.x - playerTransform.position.x;
-		print (dist);
 		if (dist > 0)
 			faceLeft = true;
 
@@ -105,7 +104,7 @@ public class EnemyAI : MonoBehaviour
 
 		//PHASE 3
 		// decide if AI wants to block
-		if (incAttack && block (dist))
+		if (incAttack)
 			return;
 
 		//PHASE 4
@@ -115,7 +114,7 @@ public class EnemyAI : MonoBehaviour
 
 		//PHASE 5
 		// decide if AI will use ranged attack
-		if (ranged (dist))
+		if (ranged ())
 			return;
 
 		//PHASE 6
@@ -274,8 +273,24 @@ public class EnemyAI : MonoBehaviour
 			phases.currentInput = "A";
 	}
 
-	public bool ranged (float dist)
+	public bool ranged ()
 	{
+		print ("RANGED ATTACK");
+
+		if (Random.Range (0, 100) < 5)
+		{
+			currAttack = 0;
+
+			print ("FIRE");
+			
+			if (faceLeft)
+				phases.currentInput = "" + phases.Sdrive[2, currAttack].ToString()[comboPos];
+			else
+				phases.currentInput = "" + phases.Sdrive[0, currAttack].ToString()[comboPos];
+			
+			comboPos++;
+		}
+
 		return false;
 	}
 	
