@@ -184,7 +184,7 @@ public class EnemyAI : MonoBehaviour
 		{
 			if (comboPos > 0)
 			{
-				phases.currentInput = phases.hyper1Aright[comboPos].ToString();
+				//phases.currentInput = phases.hyper1Aright[comboPos].ToString();
 				comboPos++;
 			}
 
@@ -224,7 +224,7 @@ public class EnemyAI : MonoBehaviour
 		int attack = Random.Range (0, 10);
 		if (attack < 8)
 		{
-			phases.currentInput = phases.hyper1Aright[comboPos].ToString();
+			//phases.currentInput = phases.hyper1Aright[comboPos].ToString();
 			comboPos++;
 		}
 		else

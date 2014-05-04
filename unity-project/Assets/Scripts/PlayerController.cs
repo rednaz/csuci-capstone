@@ -6,6 +6,10 @@ public class PlayerController : MonoBehaviour
 	//random number generator for sounds
 	private System.Random rand = new System.Random();
 
+	public bool ReadySet = false;
+
+	public bool owAirTrigger = false;
+
 	public string enemyScript;
 	public PlayerController attack;
 	public FreezeCode freeze;
@@ -31,6 +35,15 @@ public class PlayerController : MonoBehaviour
 	public string hitFramesString;
 	public string blockLockStandingString;
 	public string blockLockCrouchingString;
+	public string gettingUpString;
+	public string gettingTrippedString;
+	public string owAirTriggerString;
+	public string alreadyAirString;
+	public string D1triggerString;
+	public string SD1triggerString;		
+	public string SD2triggerString;
+	public string driveFramesString;
+	public string stellarDriveFramesString;
 
 	
 	//maxSpeed declaration
@@ -42,13 +55,22 @@ public class PlayerController : MonoBehaviour
 	public float enemyX; //grabbing the exact position of the enemy at the exact frame
 
 	//button pushes: only one button can be registered in the system at a time per frame
-	//turns true when the attack is in range
+	//turns true when the attack is in range (hitboxes use this)
 	//standard attacks
 	public bool SLP = false;		public bool ALP = false;		public bool CLP = false;
 	public bool	SHP = false;		public bool AHP = false;		public bool CHP = false;
 	public bool SLK = false;		public bool ALK = false;		public bool CLK = false;
 	public bool SHK = false;		public bool AHK = false;		public bool CHK = false;
+	public bool D1 = false;											//supers are now drives
+	public bool SD1 = false;		public bool SD2 = false;		//hypers are now stellar drives
 	//note: S = standing, A = air, C = crouching
+
+	//drive declarations (who has access to what)
+	public bool Snap;					public bool Strike;
+
+	//stellar drive declarations (who has access to what)
+	public bool YouAreUnderArrest;		public bool DownBoy;
+	public bool OmniBlast;				public bool OmniBarrage;
 
 	//normal frames declaration
 	public int normalFrames = 0; //how many frames total the normal lasts
@@ -58,34 +80,7 @@ public class PlayerController : MonoBehaviour
 	//note: a normal once landed is called off from anymore calls to
 	//      avoid multiple hits of the same individual normal
 
-	//normal standing frames values
-	public int SLPtotalFrames;		public int SHPtotalFrames;		public int SLKtotalFrames;		public int SHKtotalFrame;
-	public int SLPstartFrame;		public int SHPstartFrame;		public int SLKstartFrame;		public int SHKstartFrame;
-	public int SLPfinishFrame;		public int SHPfinishFrame;		public int SLKfinishFrame;		public int SHKfinishFrame;
-	public int SLPXforce;			public int SHPXforce;			public int SLKXforce;			public int SHKXforce;
-	public int SLPYforce;			public int SHPYforce;			public int SLKYforce;			public int SHKYforce;
-	public int SLPdamage;			public int SHPdamage;			public int SLKdamage;			public int SHKdamage;
-	public bool SLPlow;				public bool SHPlow;				public bool SLKlow;				public bool SHKlow;
-
-	//normal air frames values
-	public int ALPtotalFrames;		public int AHPtotalFrames;		public int ALKtotalFrames;		public int AHKtotalFrame;
-	public int ALPstartFrame;		public int AHPstartFrame;		public int ALKstartFrame;		public int AHKstartFrame;
-	public int ALPfinishFrame;		public int AHPfinishFrame;		public int ALKfinishFrame;		public int AHKfinishFrame;
-	public int ALPXforce;			public int AHPXforce;			public int ALKXforce;			public int AHKXforce;
-	public int ALPYforce;			public int AHPYforce;			public int ALKYforce;			public int AHKYforce;
-	public int ALPdamage;			public int AHPdamage;			public int ALKdamage;			public int AHKdamage;
-	public bool ALPlow;				public bool AHPlow;				public bool ALKlow;				public bool AHKlow;
-
-	//normal crouching frames values
-	public int CLPtotalFrames;		public int CHPtotalFrames;		public int CLKtotalFrames;		public int CHKtotalFrame;
-	public int CLPstartFrame;		public int CHPstartFrame;		public int CLKstartFrame;		public int CHKstartFrame;
-	public int CLPfinishFrame;		public int CHPfinishFrame;		public int CLKfinishFrame;		public int CHKfinishFrame;
-	public int CLPXforce;			public int CHPXforce;			public int CLKXforce;			public int CHKXforce;
-	public int CLPYforce;			public int CHPYforce;			public int CLKYforce;			public int CHKYforce;
-	public int CLPdamage;			public int CHPdamage;			public int CLKdamage;			public int CHKdamage;
-	public bool CLPlow;				public bool CHPlow;				public bool CLKlow;				public bool CHKlow;
-
-	//int array
+	//array values for normals
 	public int[ , ]attackValues = new int[ 7, 12 ];
 	//Rows:	0: totalFrames		3: Xforce			6: hitType			Columns: 	00 - 03: standing values
 	//		1: startFrame		4: Yforce											04 - 07: air values
@@ -97,9 +92,16 @@ public class PlayerController : MonoBehaviour
 	//2 = hurts either upper or lower, any blocking will do
 	//3 = hurts overhead, only standing blocking will work
 	//4 = unblockable
+	//5 = trip, hurts lower body only, crouch blocking only successful
 
 	//normal triggers
 	public bool LPtrigger = false;		public bool HPtrigger = false;		public bool LKtrigger = false;		public bool HKtrigger = false;
+
+	//drive triggers
+	public bool D1trigger = false;
+
+	//stellar drive triggers
+	public bool SD1trigger = false;		public bool SD2trigger = false;		public bool SD3trigger = false;
 
 	//button declarations
 	public string LPgrabber;
@@ -109,6 +111,10 @@ public class PlayerController : MonoBehaviour
 
 	//crouching or not
 	public bool crouchCheck = false;
+
+	//for attacks that suck in their target
+	//downBoy is one of them
+	public bool flipDamage = false;
 
 	//blocking or not
 	public bool blockCheck = false;
@@ -122,27 +128,21 @@ public class PlayerController : MonoBehaviour
 	//needed because only one attack can be done in the air
 	//player must land before another air attack can be done again
 	public bool airLock = false; 
+	public bool alreadyAir = false;
 
 	//declaration of up force for jumping
 	public float jumpForce;
 
 	//countDown is needed when the player is recovering and getting up
 	//a value of 0 means the player is up and ready for more punishment
-	public int countDown = 0;
+	public int countDown; //set equal to countDownSetter when the player starts gettting up
+	public int countDownSetter; //how long it takes the player to get up
 
-	//countDelayHyper is needed when the player is in a state of action
-	//this prevents the spamming of an attack per frame
-	public int countDelayHyper = 0;
-
-	//countDelayHyper is needed when the player is in a state of action
-	//this prevents the spamming of an attack per frame
-	public int countDelaySuper = 0;
-
-	//declaring hyper variable
-	public int hyperMeter = 300;
+	//declaring stellar drive variable
+	public int stellarDriveMeter = 300;
 	//100 = level 1
 	//200 = level 2
-	//300 = level 3
+	//300 = level 3 (max level)
 	public int bullets = 6;
 	
 	//checking what direction the player is facing at the time of the frame
@@ -161,45 +161,24 @@ public class PlayerController : MonoBehaviour
 	public string moveXgrabber;
 	public string moveYgrabber;
 
-	//super and hyper locks
-	//can't execute normals when super is locked
-	//can't execute supers when hyper is locked
-	public bool superLock = false;
-	public bool hyperLock = false;
+	//drive frames declaration
+	public int drive1Frames;
 
-	//super 1 declarations
-	public string super1Aleft;
-	public string super1Bleft;
-	public string super1Aright;
-	public string super1Bright;
-	public int super1delay;
+	//stellar drive frames declaration
+	public int stellarDriveFrames;
 
+	//drive declarations
+	public string[ , ]drive = new string[ 4, 1 ];
+	public int driveDelay1;		//how many frames drive 1 takes
 
-	public string super2;
-
-	//hyper 1 declarations
-	public string hyper1Aleft;   //these
-	public string hyper1Bleft;   //recognize
-	public string hyper1Aright;  //input
-	public string hyper1Bright;  //patterns
-	public int hyper1delay;	 //how many frames the hyper takes to execute
-	public int hyper1eat; //how much meter the hyper takes
-
-	//hyper 2 declarations
-	public string hyper2Aleft;	 //these
-	public string hyper2Bleft;   //recognize
-	public string hyper2Aright;  //input
-	public string hyper2Bright;  //patterns
-	public int hyper2delay;	//how many frames the hyper takes to execute
-	public int hyper2eat; //how much meter the hyper takes
-
-	//hyper 3 declarations
-	public string hyper3Aleft;  //these
-	public string hyper3Bleft;  //recognize
-	public string hyper3Aright; //input
-	public string hyper3Bright; //patterns
-	public int hyper3delay; //how many frames the hyper takes to execute
-	public int hyper3eat; //how much meter the hyper takes
+	//stellar drives declarations
+	public string[ , ]Sdrive = new string[ 4, 3 ];
+	public int stellarDrivedelay1;	 //how many frames stellar drive 1 takes
+	public int stellarDrivedelay2;	 //how many frames stellar drive 2 takes
+	public int stellarDrivedelay3;	 //how many frames stellar drive 3 takes
+	public int stellarEat1; //how much meter stellar drive 1 eats
+	public int stellarEat2; //how much meter stellar drive 2 eats
+	public int stellarEat3; //how much meter stellar drive 3 eats
 
 	//combo declaration
 	int beingComboed = 0;
@@ -219,6 +198,11 @@ public class PlayerController : MonoBehaviour
 	public int damageAmountRecieved;
 	public bool recievedAttackLow = false;  //true if the attack is low
 	public int chipDamage;
+	public int damageType; //what type of damage to send
+	public int damageTypeRecieved;
+	public bool beingTripped = false; //trigger for being tripped
+	public int trippedCountdown;  //set equal to trippedAmount when trip happens
+	public int trippedAmount;	//how many frames the tripped animation lasts
 
 	//hurt launch variables
 	public int hurtX;  //how much force a punch does to you in X direction
@@ -244,29 +228,32 @@ public class PlayerController : MonoBehaviour
 	//the heart of all actions-------------------------------------------------------
 	void FixedUpdate () 
 	{
+		//this line checks if the character is on the ground at this frame
+		groundCheck = Physics2D.OverlapCircle (daGround.position, groundRadius, whatIsGround);
+		//setting up the animation for the frame
+		animationCalls ();
+		//Phase Start (counter going to 0 then fight begins)
+		if ( ReadySet == false )
+		{
+			determineFlip ();
+			return;
+		}
+						
 		//int randomNum = rand.Next(0,100);
 		//Debug.Log ( randomNum );
 
-		//this line checks if the character is on the ground at this frame
-		groundCheck = Physics2D.OverlapCircle (daGround.position, groundRadius, whatIsGround);
 
-		//this is nothing but debug code, feel free to uncomment at your pleasure to
-		//see game activity
+
+
+		//this is nothing but debug code, feel free to uncomment 
+		//at your pleasure to see game activity
 		if (Input.GetKeyDown (KeyCode.Space)) 
 		{
-			Debug.Log ( debugString + " health: " + health + " / " + maxHealth );
+			//Debug.Log ( debugString + " health: " + health + " / " + maxHealth );
 			freeze.tempFreeze();
 		}
-		//Debug.Log ( debugString + " " + LP);
-		//if ( Input.GetButtonDown( LPgrabber ) )
-		//{
-		//	Debug.Log ( debugString + " check" );
-		//}
-		//Debug.Log ( debugString + " " + Input.GetAxis ( moveXgrabber ) );
-		//Debug.Log (health);
 
-		//setting up the animation for the frame
-		animationCalls ();
+
 
 
 		//Phase 0 
@@ -282,7 +269,6 @@ public class PlayerController : MonoBehaviour
 			return;
 		}
 
-
 		//Phase 1
 		//Player is on the ground, no control, and recovering from hurt (getting up)
 		//Flush the status here when countDown reaches 0
@@ -295,35 +281,46 @@ public class PlayerController : MonoBehaviour
 		else if ( countDown == 1 )
 		{
 			countDown--;
+			Debug.Log ( debugString + " " + beingComboed );
+			beingComboed = 0;
 			flush ();
+		}
+		if( trippedCountdown > 1 )
+		{
+			trippedCountdown--;
+			canAct = false;
+			//the player is in the middle of being tripped animation
+			return;
+		}
+		if ( trippedCountdown == 1 ) 
+		{
+			//the player is finished being tripped, now must get up
+			trippedCountdown--;
+			canAct = false;
+			countDown = countDownSetter;
+			return;
+		}
+		if( beingTripped == true )
+		{
+			canAct = false;
+			beingTripped = false;
+			return;
 		}
 
 
 		//Player is in the air and no control, being hurt
-		//Set countDown from the hit
-
-		//if( groundCheck == false && beingHurt == true )
-		//{
-		//	return;
-		//}
-
-
-		//Phase 2 (hurt standing stun)
-		//Player is on the ground and no control, stun from the previous hit
-		if ( hitFrames > 1 )
+		if( groundCheck == false )
 		{
-			blockCrouchingLock = false;
-			blockStandingLock = false;
-			hurtLockLight = false;
-			hurtLockHeavy = false;
-			hitFrames--;
-			canAct = false;
-			return;
+			hurtWhileAir();
 		}
-		else if ( hitFrames == 1 )
+		if( owAirTrigger == true )
 		{
-			hitFrames--;
-			flush ();
+			if( groundCheck == true )
+			{
+				owAirTrigger = false;
+				countDown = countDownSetter;
+			}
+			return;
 		}
 
 
@@ -341,50 +338,62 @@ public class PlayerController : MonoBehaviour
 			beingHurt = false;
 			return;
 		}
-
-
-		//Phase 4
-		//Player is on the ground, no control, and recovering from hurt (getting up)
-		//Flush the status here when countDown reaches 0
-		/*
-		if ( countDown > 1 && groundCheck == true ) 
+		if ( trippedCountdown > 1 )
 		{
-			countDown--;
 			return;
-		} 
-		else if ( countDown == 1 )
+		}
+		if ( hitFrames > 1 )
 		{
-			countDown--;
+			blockCrouchingLock = false;
+			blockStandingLock = false;
+			hurtLockLight = false;
+			hurtLockHeavy = false;
+			hitFrames--;
+			canAct = false;
+			return;
+		}
+		else if ( hitFrames == 1 )
+		{
+			Debug.Log ( debugString + " " + beingComboed );
+			beingComboed = 0;
+			hitFrames--;
 			flush ();
 		}
-		*/
 
 
 		//Phase 5
 		//Player is in the middle of a super/hyper and cannot move till
 		//the move completes, prevents spamming of supers/hypers
-		/*
-		if ( countDelayHyper > 1 ) 
+		if( stellarDriveFrames > 1 )
 		{
-			countDelayHyper--;
+			if ( YouAreUnderArrest == true && SD1trigger == true )  //stellar drive is only available to Barrett
+			{
+				YouAreUnderArrestMethod ();
+			}
+			if ( DownBoy == true && SD1trigger == true )	//stellar drive is only available to Olivia
+			{
+				DownBoyMethod ();
+			}
+			if ( OmniBlast == true && SD2trigger == true ) 	//stellar drive is only available to Barrett and Olivia
+			{
+				OmniBlastMethod ();
+			}
+			if ( OmniBarrage == true && SD3trigger == true )	//stellar drive is only available to Barrett and Olivia
+			{
+				OmniBarrageMethod ();
+			}
+			stellarDriveFrames--;
 			return;
 		}
-		else if( countDelayHyper == 1 ) 
+		if( stellarDriveFrames == 1 )
 		{
-			countDelayHyper--;
+			SD1trigger = false;
+			SD2trigger = false;
+			SD3trigger = false;
+			stellarDriveFrames--;
 			flush ();
-		}
-		if ( countDelaySuper > 1 ) 
-		{
-			countDelaySuper--;
 			return;
 		}
-		else if( countDelaySuper == 1 ) 
-		{
-			countDelaySuper--;
-			flush ();
-		}
-		*/
 
 
 		//Phase 6
@@ -394,19 +403,42 @@ public class PlayerController : MonoBehaviour
 		//Blocking isn't possible in the air
 		//This the starting Phase where player can put input into the system to be registered
 		buttonRegistration ();
-
-
-		//implemented when jumping is put back in
-		//if ( airLock == false )
-		//{
-		//	airNormal ();
-		if ( groundCheck == false )
+		if( normalFrames > 1 && airLock == true && alreadyAir == false )
 		{
-			canAct = false;
+			blockCheck = false;
+			if( groundCheck == true )
+			{
+				normalFrames = 0;
+				airLock = false;
+				atariDesu = false;
+				normalReset();
+				alreadyAir = false;
+				return;
+			}
+			normalAirCalls();
 			return;
 		}
-
-			
+		if( normalFrames == 1 && airLock == true )
+		{
+			normalFrames--;
+			alreadyAir = true;
+			return;
+		}
+		if ( groundCheck == false )
+		{
+			blockCheck = false;
+			if( alreadyAir == false )
+			{
+				airNormal ();
+			}
+			return;
+		}
+		if( groundCheck == true )
+		{
+			alreadyAir = false;
+		}
+		
+		
 		//Phase 7
 		//Player is on the ground and attacking, left and right control not possible
 		//Super and hyper are possible here
@@ -415,10 +447,19 @@ public class PlayerController : MonoBehaviour
 
 
 		//Phase 8
-		//player successfully implemented a hyper, game executes hyper
+		//player successfully implemented a stellar drive, game executes stellar drive
 		//hyper 1, 2, and 3 checked if entered at this moment
-		//hyper1Check ();
-
+		hyper1Check ();
+		if( SD1trigger == true )
+		{
+			stellarDriveFrames = stellarDrivedelay1;
+			return;
+		}
+		if( SD2trigger == true )
+		{
+			stellarDriveFrames = stellarDrivedelay2;
+			return;
+		}
 
 
 		//Phase 9
@@ -493,10 +534,7 @@ public class PlayerController : MonoBehaviour
 		//Debug.Log ( moveX + ", " + moveY );
 	}
 	//end FixedUpdate() -------------------------------------------------------------
-
-
-
-
+	
 
 	void determineFlip()
 	{
@@ -522,7 +560,6 @@ public class PlayerController : MonoBehaviour
 		transform.localScale = theScale;
 	}
 
-
 	string buttonListener()
 	{
 		//buttons get priority to be pushed
@@ -544,21 +581,21 @@ public class PlayerController : MonoBehaviour
 		} 
 
 		//no buttons, so joystick inputs are next
-		else if( moveX < - 0.5f && moveY > .5f ) //down + left 
+		else if( moveX < - 0.5f && moveY < -.5f ) //down + left 
 		{
 			currentInput = "1";
 		}
-		else if( moveX > .5f && moveY > .5f ) //down + right
+		else if( moveX > .5f && moveY < -.5f ) //down + right
 		{
 			currentInput = "3";
 		}
 		else if ( moveY < - 0.5f ) // up (this pretty much cancels out anything since nothing requires up)
 		{
-			currentInput = "8";
+			currentInput = "2";
 		}
 		else if ( moveY > .5f ) //down
 		{
-			currentInput = "2";
+			currentInput = "8";
 		}
 		else if( moveX < - 0.5f ) //left
 		{
@@ -572,7 +609,7 @@ public class PlayerController : MonoBehaviour
 		{
 			currentInput = "X";
 		}
-		//Debug.Log (currentInput + " " + debugString);
+		//
 		return currentInput;
 	}
 
@@ -598,7 +635,7 @@ public class PlayerController : MonoBehaviour
 				placeHolder4.ToString() + placeHolder5.ToString() + placeHolder6.ToString() + nextInput;
 			previousInput = nextInput;
 			//Debug.Log ( placeHolder1 + placeHolder3 + placeHolder4 + placeHolder5 + placeHolder6 );
-			//Debug.Log (commands);
+			Debug.Log (commands);
 		}
 
 		else 
@@ -614,15 +651,16 @@ public class PlayerController : MonoBehaviour
 	//checkpoint if the hyper1 has been executed at this frame
 	void hyper1Check ()
 	{
+
 		//person was in the air at the time, hyper1 input doesn't count
-		if ( Equals (commands, hyper1Aleft ) && facingLeft == false && groundCheck == false || 
-		    Equals (commands, hyper1Bleft ) && facingLeft == false && groundCheck == false ) 
+		if ( Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == false && groundCheck == false || 
+		    Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == false && groundCheck == false ) 
 		{
 			nextInput = "X";
 			buttonRegister ();
 		}
-		else if(Equals (commands, hyper1Aright ) && facingLeft == true && groundCheck == true || 
-		        Equals (commands, hyper1Bright ) && facingLeft == true && groundCheck == true )		
+		else if(Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == true && groundCheck == true || 
+		        Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == true && groundCheck == true )		
 		{
 			char placeHolder3 = commands[ 5 ];
 			nextInput = "X";
@@ -630,21 +668,17 @@ public class PlayerController : MonoBehaviour
 		}
 
 		//all conditions for hyper1 has been met
-		if ( Equals (commands, hyper1Aleft ) && facingLeft == false && groundCheck == true || 
-		    Equals (commands, hyper1Bleft ) && facingLeft == false && groundCheck == true ) 
+		if ( Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == false && groundCheck == true || 
+		    Equals (commands, Sdrive[ 1, 0 ] ) && facingLeft == false && groundCheck == true ) 
 		{
-			Debug.Log ("HADOUKEN");
-			countDelayHyper = hyper1delay;
-			flush ();
+			SD1trigger = true;
 			return;
 			
 		}
-		else if(Equals (commands, hyper1Aright ) && facingLeft == true && groundCheck == true || 
-		        Equals (commands, hyper1Bright ) && facingLeft == true && groundCheck == true )
+		else if(Equals (commands, Sdrive[ 2, 0 ] ) && facingLeft == true && groundCheck == true || 
+		        Equals (commands, Sdrive[ 3, 0 ] ) && facingLeft == true && groundCheck == true )
 		{
-			Debug.Log ("HADOUKEN");
-			countDelayHyper = hyper1delay;
-			flush ();
+			SD1trigger = true;
 			return;
 		}
 	}
@@ -652,14 +686,16 @@ public class PlayerController : MonoBehaviour
 	//all memory from player control and status is wiped after being hurt and is recovering
 	void flush()
 	{
-		countDelayHyper = 0;
-		countDelaySuper = 0;
-
+		drive1Frames = 0;
+		stellarDriveFrames = 0;
 		commands = "XXXXXXX";
 		previousInput = "";
 		nextInput = "";
 		beingHurt = false;
 		normalFrames = 0;
+		airLock = false;
+		hitFrames = 0;
+
 	}
 
 	void modifyHealth(int deltaHealth)
@@ -687,9 +723,6 @@ public class PlayerController : MonoBehaviour
 		//Debug.Log (health);
 	}
 
-
-
-
 	public void minusOther()
 	{
 		health = health - 1;
@@ -701,52 +734,51 @@ public class PlayerController : MonoBehaviour
 		if ( currentInput == "A" )
 		{
 			//standing light punch executed
-			normalFrames = SLPtotalFrames;
-			startNormal = SLPstartFrame;
-			finishNormal = SLPfinishFrame;
-			hurtX = SLPXforce;
-			hurtY = SLPYforce;
-			hurtLow = SLPlow;
-			currentDamage = SLPdamage;
+			normalFrames = attackValues[ 0, 0 ];
+			startNormal = attackValues[ 1, 0 ];
+			finishNormal = attackValues[ 2, 0 ];
+			hurtX = attackValues[ 3, 0 ];
+			hurtY = attackValues[ 4, 0 ];
+			currentDamage = attackValues[ 5, 0 ];
+			damageType = attackValues[ 6, 0 ];
 			LPtrigger = true;
 		}
 		else if ( currentInput == "B" )
 		{
 			//standing heavy punch executed
-			normalFrames = SHPtotalFrames;
-			startNormal = SHPstartFrame;
-			finishNormal = SHPfinishFrame;
-			hurtX = SHPXforce;
-			hurtY = SHPYforce;
-			hurtLow = SHPlow;
-			currentDamage = SHPdamage;
+			normalFrames = attackValues[ 0, 1 ];
+			startNormal = attackValues[ 1, 1 ];
+			finishNormal = attackValues[ 2, 1 ];
+			hurtX = attackValues[ 3, 1 ];
+			hurtY = attackValues[ 4, 1 ];
+			currentDamage = attackValues[ 5, 1 ];
+			damageType = attackValues[ 6, 1 ];
 			HPtrigger = true;
 		}
 		else if ( currentInput == "C" )
 		{
 			//standing light kick executed
-			normalFrames = SLKtotalFrames;
-			startNormal = SLKstartFrame;
-			finishNormal = SLKfinishFrame;
-			hurtX = SLKXforce;
-			hurtY = SLKYforce;
-			hurtLow = SLKlow;
-			currentDamage = SLKdamage;
+			normalFrames = attackValues[ 0, 2 ];
+			startNormal = attackValues[ 1, 2 ];
+			finishNormal = attackValues[ 2, 2 ];
+			hurtX = attackValues[ 3, 2 ];
+			hurtY = attackValues[ 4, 2 ];
+			currentDamage = attackValues[ 5, 2 ];
+			damageType = attackValues[ 6, 2 ];
 			LKtrigger = true;
 		}
 		else if ( currentInput == "D" )
 		{
 			//standing heavy kick executed
-			normalFrames = SHKtotalFrame;
-			startNormal = SHKstartFrame;
-			finishNormal = SHKfinishFrame;
-			hurtX = SHKXforce;
-			hurtY = SHKYforce;
-			hurtLow = SHKlow;
-			currentDamage = SHKdamage;
+			normalFrames = attackValues[ 0, 3 ];
+			startNormal = attackValues[ 1, 3 ];
+			finishNormal = attackValues[ 2, 3 ];
+			hurtX = attackValues[ 3, 3 ];
+			hurtY = attackValues[ 4, 3 ];
+			currentDamage = attackValues[ 5, 3 ];
+			damageType = attackValues[ 6, 3 ];
 			HKtrigger = true;
 		}
-
 	}
 
 	public void crouchingNormal()
@@ -754,27 +786,50 @@ public class PlayerController : MonoBehaviour
 		if ( currentInput == "A" )
 		{
 			//crouching light punch executed
+			normalFrames = attackValues[ 0, 8 ];
+			startNormal = attackValues[ 1, 8 ];
+			finishNormal = attackValues[ 2, 8 ];
+			hurtX = attackValues[ 3, 8 ];
+			hurtY = attackValues[ 4, 8 ];
+			currentDamage = attackValues[ 5, 8 ];
+			damageType = attackValues[ 6, 8 ];
+			LPtrigger = true;
 		}
 		else if ( currentInput == "B" )
 		{
 			//crouching heavy punch executed
-			//standing heavy punch executed
-			normalFrames = CHPtotalFrames;
-			startNormal = CHPstartFrame;
-			finishNormal = CHPfinishFrame;
-			hurtX = CHPXforce;
-			hurtY = CHPYforce;
-			hurtLow = CHPlow;
-			currentDamage = CHPdamage;
+			normalFrames = attackValues[ 0, 9 ];
+			startNormal = attackValues[ 1, 9 ];
+			finishNormal = attackValues[ 2, 9 ];
+			hurtX = attackValues[ 3, 9 ];
+			hurtY = attackValues[ 4, 9 ];
+			currentDamage = attackValues[ 5, 9 ];
+			damageType = attackValues[ 6, 9 ];
 			HPtrigger = true;
 		}
 		else if ( currentInput == "C" )
 		{
 			//crouching light kick executed
+			normalFrames = attackValues[ 0, 10 ];
+			startNormal = attackValues[ 1, 10 ];
+			finishNormal = attackValues[ 2, 10 ];
+			hurtX = attackValues[ 3, 10 ];
+			hurtY = attackValues[ 4, 10 ];
+			currentDamage = attackValues[ 5, 10 ];
+			damageType = attackValues[ 6, 10 ];
+			LKtrigger = true;
 		}
 		else if ( currentInput == "D" )
 		{
 			//crouching heavy kick executed
+			normalFrames = attackValues[ 0, 11 ];
+			startNormal = attackValues[ 1, 11 ];
+			finishNormal = attackValues[ 2, 11 ];
+			hurtX = attackValues[ 3, 11 ];
+			hurtY = attackValues[ 4, 11 ];
+			currentDamage = attackValues[ 5, 11 ];
+			damageType = attackValues[ 6, 11 ];
+			HKtrigger = true;
 		}
 	}
 
@@ -783,21 +838,53 @@ public class PlayerController : MonoBehaviour
 		if ( currentInput == "A" )
 		{
 			//air light punch executed
+			normalFrames = attackValues[ 0, 4 ];
+			startNormal = attackValues[ 1, 4 ];
+			finishNormal = attackValues[ 2, 4 ];
+			hurtX = attackValues[ 3, 4 ];
+			hurtY = attackValues[ 4, 4 ];
+			currentDamage = attackValues[ 5, 4 ];
+			damageType = attackValues[ 6, 4 ];
+			LPtrigger = true;
 			airLock = true;
 		}
 		else if ( currentInput == "B" )
 		{
 			//air heavy punch executed
+			normalFrames = attackValues[ 0, 5 ];
+			startNormal = attackValues[ 1, 5 ];
+			finishNormal = attackValues[ 2, 5 ];
+			hurtX = attackValues[ 3, 5 ];
+			hurtY = attackValues[ 4, 5 ];
+			currentDamage = attackValues[ 5, 5 ];
+			damageType = attackValues[ 6, 5 ];
+			HPtrigger = true;
 			airLock = true;
 		}
 		else if ( currentInput == "C" )
 		{
 			//air light kick executed
+			normalFrames = attackValues[ 0, 6 ];
+			startNormal = attackValues[ 1, 6 ];
+			finishNormal = attackValues[ 2, 6 ];
+			hurtX = attackValues[ 3, 6 ];
+			hurtY = attackValues[ 4, 6 ];
+			currentDamage = attackValues[ 5, 6 ];
+			damageType = attackValues[ 6, 6 ];
+			LKtrigger = true;
 			airLock = true;
 		}
 		else if ( currentInput == "D" )
 		{
 			//air heavy kick executed
+			normalFrames = attackValues[ 0, 7 ];
+			startNormal = attackValues[ 1, 7 ];
+			finishNormal = attackValues[ 2, 7 ];
+			hurtX = attackValues[ 3, 7 ];
+			hurtY = attackValues[ 4, 7 ];
+			currentDamage = attackValues[ 5, 7 ];
+			damageType = attackValues[ 6, 7 ];
+			HKtrigger = true;
 			airLock = true;
 		}
 	}
@@ -818,71 +905,142 @@ public class PlayerController : MonoBehaviour
 		buttonRegister ();
 	}
 
+	//determines if the player was hit or not on the ground $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 	public void hurtWhileStanding()
 	{
+		//damageTypeRecieved values key
+		//0 = hurts upper body only, crouching opponent means it completely misses
+		//1 = hurts lower body only, crouch blocking only successful
+		//2 = hurts either upper or lower, any blocking will do
+		//3 = hurts overhead, only standing blocking will work
+		//4 = unblockable
+		//5 = trip, hurts lower body only, crouch blocking only successful
 		if( beingHurt == true )
 		{
-			if( crouchCheck == true && beingHurtLow == true || crouchCheck == false && beingHurtLow == false 
-			   || crouchCheck == false && beingHurtLow == true )
-				//the only one that passes this undetected is if the attack is high and the player is crouching
-				//obviously the attacking player would be attacking over the opposing player's head resulting in a miss
-				//the exception is an attack from the air, will be coded in later
+			//triping
+			if( damageTypeRecieved == 5 )
 			{
-				if( enemyX  < transform.position.x )
+				if( blockCheck == true && crouchCheck == true )
 				{
-					rigidbody2D.AddForce ( new Vector2 ( recieveHurtX , 0 ) );
+					//blocked
+					blockCrouchingLock = true;
+					minusHealth( chipDamage );
+					normalForce();
+					frameSetting();
+				}
+				//damaged and tripped
+				else
+				{
+					normalForce();
+					trippedCountdown = trippedAmount;
+					minusHealth( damageAmountRecieved );
+					beingTripped = true;
+					beingComboed++;
+				}
+			}
+			//unblockable
+			else if( damageTypeRecieved == 4 )
+			{
+				normalForce();
+				hurtLockSetting();
+				minusHealth( damageAmountRecieved );
+				frameSetting();
+				beingComboed++;
+			}
+			//hurts overhead, only standing blocking will work
+			//usually meant for air attacks
+			else if( damageTypeRecieved == 3 )
+			{
+				if( blockCheck == true && crouchCheck == false )
+				{
+					//blocked
+					blockStandingLock = true;
+					minusHealth( chipDamage );
+					normalForce();
+					frameSetting();
 				}
 				else
 				{
-					rigidbody2D.AddForce ( new Vector2 ( -recieveHurtX , 0 ) );//recieveHurtX
+					normalForce();
+					hurtLockSetting();
+					minusHealth( damageAmountRecieved );
+					frameSetting();
+					beingComboed++;
 				}
-
-				if( blockCheck == true && crouchCheck == beingHurtLow ) //blocked the attack successfully
+			}
+			//hurts either upper or lower, any blocking will do
+			else if( damageTypeRecieved  == 2 )
+			{
+				if( blockCheck == true )
 				{
-					minusHealth( chipDamage );
 					if( crouchCheck == true )
 					{
-						blockCrouchingLock = true; //sends animation signal to showcase crouch blocking
-						if ( damageAmountRecieved <= damageThreshold )  //how long is the player in block lock
-						{
-							hitFrames = lightHitFrames;
-						}
-						else
-						{
-							hitFrames = heavyHitFrames; 
-						}
-					}
-					else //crouchCheck is false
-					{
-						blockStandingLock = true; //sends animation signal to showcase standing blocking
-						if ( damageAmountRecieved <= damageThreshold )  //how long is the player in block lock
-						{
-							hitFrames = lightHitFrames;
-						}
-						else
-						{
-							hitFrames = heavyHitFrames; 
-						}
-					}
-				}
-				else //player isn't blocking the attack successfully, recieve amount of damage
-				{
-					minusHealth( damageAmountRecieved );
-					if ( damageAmountRecieved <= damageThreshold ) //how long the player is in hit stun
-					{
-						hurtLockLight = true; 
-						hitFrames = lightHitFrames;
+						blockCrouchingLock = true;
 					}
 					else
 					{
-						hurtLockHeavy = true;
-						hitFrames = heavyHitFrames;
+						blockStandingLock = true;
 					}
+					minusHealth( chipDamage );
+					normalForce();
+					frameSetting();
 				}
+				else
+				{
+					normalForce();
+					hurtLockSetting();
+					minusHealth( damageAmountRecieved );
+					frameSetting();
+					beingComboed++;
+				}
+			}
+			//hurts lower body only, crouch blocking only successful
+			else if( damageTypeRecieved == 1 )
+			{
+				if( blockCheck == true && crouchCheck == true )
+				{
+					//blocked
+					blockCrouchingLock = true;
+					minusHealth( chipDamage );
+					normalForce();
+					frameSetting();
+				}
+				//damaged
+				else
+				{
+					normalForce();
+					hurtLockSetting();
+					minusHealth( damageAmountRecieved );
+					frameSetting();
+					beingComboed++;
+				}
+			}
+			//hurts upper body only, crouching from attack means it completely misses
+			else if( damageTypeRecieved == 0 )
+			{
+				//blocked
+				if( blockCheck == true && crouchCheck == false )
+				{
+					blockStandingLock = true;
+					minusHealth( chipDamage );
+					normalForce();
+					frameSetting();
+				} 
+				//damaged
+				else if( crouchCheck == false && blockCheck == false )
+				{
+					normalForce();
+					hurtLockSetting();
+					minusHealth( damageAmountRecieved );
+					frameSetting();
+					beingComboed++;
+				}
+				//else miss completely
 			}
 			//rigidbody2D.AddForce (new Vector2 (0, 90000f));  //currently launches into SPAAAAAAAAAAAAACE
 		}
 	}
+	//end hit on ground determination sector $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 	public void blockInput()
 	{
@@ -907,35 +1065,56 @@ public class PlayerController : MonoBehaviour
 		   && LPtrigger == true && groundCheck == true && crouchCheck == false )
 		{
 			//send an attack signal
-			atariDesu = attack.amIgettingHitSLP( hurtX, hurtY, currentDamage, hurtLow );
+			atariDesu = attack.amIgettingHitSLP( hurtX, hurtY, currentDamage, damageType );
 		}
 		//standingHPcalls
 		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
 		   && HPtrigger == true && groundCheck == true && crouchCheck == false )
 		{
 			//send an attack signal
-			atariDesu = attack.amIgettingHitSHP( hurtX, hurtY, currentDamage, hurtLow );
+			atariDesu = attack.amIgettingHitSHP( hurtX, hurtY, currentDamage, damageType );
 		}
 		//standingLKcalls
 		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
 		   && LKtrigger == true && groundCheck == true && crouchCheck == false )
 		{
 			//send an attack signal
-			atariDesu = attack.amIgettingHitSLK( hurtX, hurtY, currentDamage, hurtLow );
+			atariDesu = attack.amIgettingHitSLK( hurtX, hurtY, currentDamage, damageType );
 		}
 		//standingHKcalls
 		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
 		   && HKtrigger == true && groundCheck == true && crouchCheck == false )
 		{
 			//send an attack signal
-			atariDesu = attack.amIgettingHitSHK( hurtX, hurtY, currentDamage, hurtLow );
+			atariDesu = attack.amIgettingHitSHK( hurtX, hurtY, currentDamage, damageType );
+		}
+		//crouchingLPcalls
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
+		   && LPtrigger == true && groundCheck == true && crouchCheck == true )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitCLP( hurtX, hurtY, currentDamage, damageType );
 		}
 		//crouchingHPcalls
 		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
 		   && HPtrigger == true && groundCheck == true && crouchCheck == true )
 		{
 			//send an attack signal
-			atariDesu = attack.amIgettingHitCHP( hurtX, hurtY, currentDamage, hurtLow );
+			atariDesu = attack.amIgettingHitCHP( hurtX, hurtY, currentDamage, damageType );
+		}
+		//crouchingLKcalls
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
+		   && LKtrigger == true && groundCheck == true && crouchCheck == true )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitCLK( hurtX, hurtY, currentDamage, damageType );
+		}
+		//crouchingHKcalls
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false 
+		   && HKtrigger == true && groundCheck == true && crouchCheck == true )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitCHK( hurtX, hurtY, currentDamage, damageType );
 		}
 		normalFrames--;
 	}
@@ -1015,6 +1194,22 @@ public class PlayerController : MonoBehaviour
 			AHK = true;
 		}
 
+		//drive values
+		if( other.gameObject.tag == "drive1" )
+		{
+			D1 = true;
+		}
+
+		//stellar drive values
+		if( other.gameObject.tag == "stellarDrive1" )
+		{
+			SD1 = true;
+		}
+
+		if( other.gameObject.tag == "stellarDrive2" )
+		{
+			SD2 = true;
+		}
 	}
 
 	//when a hitbox leaves a player no longer touching
@@ -1073,6 +1268,23 @@ public class PlayerController : MonoBehaviour
 		{
 			AHK = false;
 		}
+
+		//drive values
+		if( other.gameObject.tag == "drive1" )
+		{
+			D1 = false;
+		}
+		
+		//stellar drive values
+		if( other.gameObject.tag == "stellarDrive1" )
+		{
+			SD1 = false;
+		}
+		
+		if( other.gameObject.tag == "stellarDrive2" )
+		{
+			SD2 = false;
+		}
 	}
 	//end hitboxes---------------------------------------------------------------------------------------------------
 
@@ -1080,76 +1292,197 @@ public class PlayerController : MonoBehaviour
 
 
 	//amIgettingHit calls********************************************************************************************
-	public bool amIgettingHitSLP( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
+	public bool amIgettingHitSLP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
-		//light punch connected on call
+		//standing light punch connected on call
 		if( SLP == true )
 		{
 			recieveHurtX = sendingHurtX;
 			recieveHurtY = sendingHurtY;
 			damageAmountRecieved = damageAmountSent;
-			beingHurtLow = isHitLow;
+			damageTypeRecieved = damageTypeSent;
 			return beingHurt = true;
 		}
 		return false;
 
 	}
 
-	public bool amIgettingHitSHP( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
+	public bool amIgettingHitSHP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
-		//light punch connected on call
+		//standing heavy punch connected on call
 		if( SHP == true )
 		{
 			recieveHurtX = sendingHurtX;
 			recieveHurtY = sendingHurtY;
 			damageAmountRecieved = damageAmountSent;
-			beingHurtLow = isHitLow;
+			damageTypeRecieved = damageTypeSent;
 			return beingHurt = true;
 		}
 		return false;
 	}
 
-	public bool amIgettingHitSLK( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
+	public bool amIgettingHitSLK( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
-		//light kick connected on call
+		//standing light kick connected on call
 		if( SLK == true )
 		{
 			recieveHurtX = sendingHurtX;
 			recieveHurtY = sendingHurtY;
 			damageAmountRecieved = damageAmountSent;
-			beingHurtLow = isHitLow;
+			damageTypeRecieved = damageTypeSent;
 			return beingHurt = true;
 		}
 		return false;
 	}
 
-	public bool amIgettingHitSHK( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
+	public bool amIgettingHitSHK( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
-		//light kick connected on call
+		//standing heavy kick connected on call
 		if( SHK == true )
 		{
 			recieveHurtX = sendingHurtX;
 			recieveHurtY = sendingHurtY;
 			damageAmountRecieved = damageAmountSent;
-			beingHurtLow = isHitLow;
+			damageTypeRecieved = damageTypeSent;
 			return beingHurt = true;
 		}
 		return false;
 	}
 
-	public bool amIgettingHitCHP( int sendingHurtX, int sendingHurtY, int damageAmountSent, bool isHitLow )
+	public bool amIgettingHitCLP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
 	{
-		//light kick connected on call
-		if( SHK == true )
+		//crouching light punch connected on call
+		if( CLP == true )
 		{
 			recieveHurtX = sendingHurtX;
 			recieveHurtY = sendingHurtY;
 			damageAmountRecieved = damageAmountSent;
-			beingHurtLow = isHitLow;
+			damageTypeRecieved = damageTypeSent;
 			return beingHurt = true;
 		}
 		return false;
 	}
+
+	public bool amIgettingHitCHP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		//crouching heavy punch connected on call
+		if( CHP == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
+	public bool amIgettingHitCLK( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		//crouching light kick connected on call
+		if( CLK == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
+	public bool amIgettingHitCHK( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		//crouching light kick connected on call
+		if( CHK == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
+	public bool amIgettingHitALP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		if( ALP == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+	public bool amIgettingHitAHP( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		if( AHP == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
+
+	public bool amIgettingHitALK( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		if( ALK == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
+	public bool amIgettingHitAHK( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		if( AHK == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+	public bool amIgettingHitDownBoy( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		if( SD1 == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
+	public bool amIgettingHitYAUA( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		if( SD1 == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
+
 
 	//amIgettingHit ends********************************************************************************************
 
@@ -1175,6 +1508,171 @@ public class PlayerController : MonoBehaviour
 		anim.SetInteger ( hitFramesString, hitFrames );
 		anim.SetBool ( blockLockStandingString, blockStandingLock );
 		anim.SetBool ( blockLockCrouchingString, blockCrouchingLock );
+		anim.SetInteger ( gettingUpString, countDown );
+		anim.SetInteger ( gettingTrippedString, trippedCountdown );
+		anim.SetBool ( owAirTriggerString, owAirTrigger );
+		anim.SetBool ( alreadyAirString, alreadyAir );
+		anim.SetBool ( D1triggerString, D1trigger  );
+		anim.SetBool ( SD1triggerString, SD1trigger  );
+		anim.SetBool ( SD2triggerString, SD2trigger );
+		anim.SetInteger ( driveFramesString, drive1Frames );
+		anim.SetInteger ( stellarDriveFramesString, stellarDriveFrames );
 	}
 	//animationCalls ends &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+	public void normalForce()
+	{
+		if( enemyX  < transform.position.x )
+		{
+			rigidbody2D.AddForce ( new Vector2 ( recieveHurtX , 0 ) );
+		}
+		else
+		{
+			rigidbody2D.AddForce ( new Vector2 ( -recieveHurtX , 0 ) );//recieveHurtX
+		}
+	}
+
+	public void normalForceAir()
+	{
+		if( enemyX  < transform.position.x )
+		{
+			rigidbody2D.AddForce ( new Vector2 ( recieveHurtX , recieveHurtY ) );
+		}
+		else
+		{
+			rigidbody2D.AddForce ( new Vector2 ( -recieveHurtX , recieveHurtY ) );//recieveHurtX
+		}
+	}
+
+	public void frameSetting()
+	{
+		if ( damageAmountRecieved <= damageThreshold )  //how long is the player in block lock
+		{
+			hitFrames = lightHitFrames;
+		}
+		else
+		{
+			hitFrames = heavyHitFrames; 
+		}
+	}
+
+	public void hurtLockSetting()
+	{
+		if ( damageAmountRecieved <= damageThreshold ) //how long the player is in hit stun
+		{
+			hurtLockLight = true; 
+			hitFrames = lightHitFrames;
+		}
+		else
+		{
+			hurtLockHeavy = true;
+			hitFrames = heavyHitFrames;
+		}
+	}
+
+	//checking if player is hurt in the air ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	public void hurtWhileAir()
+	{
+		if( beingHurt == true )
+		{
+			beingHurt = false;
+			owAirTrigger = true;
+			normalForceAir();
+			minusHealth( damageAmountRecieved );
+			beingComboed++;
+		}
+	}
+	//end method of being hurt in the air ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+	public void normalAirCalls()
+	{
+		//air lp registered
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false && LPtrigger == true )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitALP( hurtX, hurtY, currentDamage, damageType );
+		}
+
+		//air lp registered
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false && HPtrigger == true )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitAHP( hurtX, hurtY, currentDamage, damageType );
+		}
+
+		//air lk registered
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false && LKtrigger == true )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitALK( hurtX, hurtY, currentDamage, damageType );
+		}
+		//air hk registered
+		if( normalFrames <= startNormal && normalFrames >= finishNormal && atariDesu == false && HKtrigger == true )
+		{
+			//send an attack signal
+			atariDesu = attack.amIgettingHitAHK( hurtX, hurtY, currentDamage, damageType );
+		}
+		normalFrames--;
+	}
+
+	//stellar drive routing instructions 88888888888888888888888888888888888888888888888888888888888888888888888888888888888
+
+	public void didStellarDriveActivate()
+	{
+
+		//countDelayHyper
+	}
+
+	//end stellar drive routing instructions 8888888888888888888888888888888888888888888888888888888888888888888888888888888
+
+	//stellar drive instructions!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	public void YouAreUnderArrestMethod()
+	{
+
+		if( facingLeft == false )
+		{
+			rigidbody2D.AddForce ( new Vector2 ( 30 , 0 ) );
+		}
+		else
+		{
+			rigidbody2D.AddForce ( new Vector2 ( -30 , 0 ) );
+		}
+
+		if( stellarDriveFrames % 10 == 0 )
+		{
+			attack.amIgettingHitYAUA( 200, 0, 20, 2 );
+		}
+	}
+
+	public void DownBoyMethod()
+	{
+		if( stellarDriveFrames % 10 == 0 )
+		{
+			//flipDamage is used here so the target is bounced back and forth
+			//within the whip zone
+			if( flipDamage == false )
+			{
+				attack.amIgettingHitDownBoy( 200, 0, 20, 2 );
+				flipDamage = true;
+			}
+			else if ( flipDamage == true )
+			{
+				attack.amIgettingHitDownBoy( -200, 0, 20, 2 );
+				flipDamage = false;
+			}
+		}
+	}
+
+	public void OmniBlastMethod()
+	{
+
+	}
+
+	public void OmniBarrageMethod()
+	{
+
+	}
+
+	//end drive instructions!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
+
