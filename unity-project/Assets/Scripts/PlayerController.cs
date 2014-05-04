@@ -247,11 +247,11 @@ public class PlayerController : MonoBehaviour
 
 		//this is nothing but debug code, feel free to uncomment 
 		//at your pleasure to see game activity
-		if (Input.GetKeyDown (KeyCode.Space)) 
-		{
+		//if (Input.GetKeyDown (KeyCode.Space)) 
+		//{
 			//Debug.Log ( debugString + " health: " + health + " / " + maxHealth );
-			freeze.tempFreeze();
-		}
+		//	freeze.tempFreeze();
+		//}
 
 
 
