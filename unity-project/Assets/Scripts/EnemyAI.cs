@@ -78,7 +78,7 @@ public class EnemyAI : MonoBehaviour
 		//print (phases.health);
 		//print (phases.blockCheck);
 
-		print ("Combo" + comboPos);
+		//print ("Combo" + comboPos);
 
 		// updates knowledge of which way AI is facing
 		float dist = myTransform.position.x - playerTransform.position.x;
@@ -87,10 +87,18 @@ public class EnemyAI : MonoBehaviour
 
 		//PHASE 1
 		// if an interupt needs to be handled
-		if (handleInterrupt ())
+		switch (handleInterrupt ())
+		{
+		case 0: block (dist); break;
+		case 1: contCombo (); return;
+		case -1: print ("NO INTERRUPTS"); break;
+		}
+
+		/*if (handleInterrupt ())
 		{
 			block (dist);
-		}
+		}*/
+
 		//PHASE 2
 		if (running > 0)
 		{
@@ -126,18 +134,18 @@ public class EnemyAI : MonoBehaviour
 
 	}
 
-	public bool handleInterrupt ()
+	public int handleInterrupt ()
 	{
+		print ("Current Attack" + currAttack);
+
 		if (player.normalFrames > 0)
-		{
-			incAttack = true;
+			return 0;
+		else if (currAttack > -1)
+			return 1;
 
-			return true;
-		}
+		// nothing to handle
 		else
-			incAttack = false;
-
-		return false;
+			return -1;
 	}
 
 	public bool block (float dist)
@@ -152,6 +160,46 @@ public class EnemyAI : MonoBehaviour
 		}
 
 		return false;
+	}
+
+	public void contCombo ()
+	{
+		print ("IN CONTINUE COMBO");
+
+		string current = "";
+			
+		if (currType == 0)
+		{
+			if (faceLeft)
+				current = phases.drive[2, 0].ToString();
+			else
+				current = phases.drive[0, 0].ToString();
+
+		}
+		else if (currType == 1)
+		{
+			if (faceLeft)
+				current = phases.Sdrive[2, currAttack].ToString();
+			else
+				current = phases.Sdrive[0, currAttack].ToString();
+		}
+		print ("ATTACK LENGTH " + current.Length);
+		print ("CURRENT COMBO " + comboPos);
+		if (comboPos < current.Length - 1)
+		{
+			phases.currentInput = "" + current[comboPos];
+			comboPos++;
+		}
+		else
+		{
+			comboPos = 0;
+			currType = -1;
+			currAttack = -1;
+			
+			print ("RESET");
+			print ("COMBOPOS " + comboPos);
+			print ("CURRATTACK " + currAttack);
+		}
 	}
 
 	public bool melee (float dist)
