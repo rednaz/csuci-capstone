@@ -7,8 +7,11 @@ public class UIController : MonoBehaviour
 	// Instance Variables
 	
 	// Players
-	private BPlayerController bPlayer;
-	private CPlayerController cPlayer;
+	public BPlayerController bPlayer;
+	public CPlayerController cPlayer;
+
+	// Game Controller
+	public GameController gc;
 	
 	// Screen resolution
 	private float currentResX, currentResY;
@@ -30,10 +33,10 @@ public class UIController : MonoBehaviour
 	private Vector2 timerSize, timerPos;
 	
 	// Fight Finish UI (knockout or time over)
-	private Vector2 finishSize, finishPos;
+	private Vector2 finishSize, finishPos, finishShadow;
 
 	// GUI Styles
-	public GUIStyle mainBarStyle, barEmpty, healthFill, stellarFill, timerStyle, finishStyle, whiteText;
+	public GUIStyle mainBarStyle, barEmpty, healthFill, stellarFill, timerStyle, finishStyle, playerText;
 	public GUIStyle barrettPortrait, oliviaPortrait; // Player portraits on left and right sides of mainbar
 
 	// Miscellaneous UI
@@ -44,8 +47,6 @@ public class UIController : MonoBehaviour
 	private bool initialFill, isFillSpeedSetProperly;
 	
 	// Temporary or testing variables
-	private float timer, nextTime;
-	public float timeRate;
 	public int bPlayerMaxStellar, cPlayerMaxStellar;
 	private int bPlayerCurrentStellar, cPlayerCurrentStellar;
 	
@@ -60,38 +61,11 @@ public class UIController : MonoBehaviour
 		// Set position and size of health bars, stellar bars, and timer
 		setMainBar ();
 
-		
-		// Attempt to get B Player object
-		GameObject bPlayerObject = GameObject.FindWithTag ("BPlayer1");
-		//Debug.Log ("bPlayerObject value is '" + bPlayerObject + "'");
-		
-		if (bPlayerObject != null)
-		{
-			bPlayer = bPlayerObject.GetComponent <BPlayerController>();
-		}
-		if (bPlayer == null)
-		{
-			Debug.Log ("Cannot find 'BPlayerController' script");
-		}
-		Debug.Log ("B Player initialized with " + bPlayer.health + " / " + bPlayer.maxHealth + " health" );
-		
-		
-		
-		// Attempt to get C Player object
-		GameObject cPlayerObject = GameObject.FindWithTag ("CPlayer2");
-		//Debug.Log ("cPlayerObject value is '" + cPlayerObject + "'");
-		
-		if (cPlayerObject != null)
-		{
-			cPlayer = cPlayerObject.GetComponent <CPlayerController>();
-		}
-		if (cPlayer == null)
-		{
-			Debug.Log ("Cannot find 'CPlayerController' script");
-		}
-		Debug.Log ("C Player initialized with " + cPlayer.health + " / " + cPlayer.maxHealth + " health" );
-		
-		
+		// GUI Style initialization stuff
+		playerText.normal.textColor = Color.white;
+		timerStyle.normal.textColor = new Color (0.25f, 0.85f, 1f);
+
+
 		// Miscellaneous actions taken here (if not dependent on above actions)
 		timeOver = false;
 		koOver = false;
@@ -111,10 +85,7 @@ public class UIController : MonoBehaviour
 		if (bHealthFillSpeed > 0 && bStellarFillSpeed > 0 && cHealthFillSpeed > 0 && cStellarFillSpeed > 0)
 			isFillSpeedSetProperly = true;
 
-		
 		// Temporary actions to be implemented properly later (THIS SHOULD BE EMPTY UPON COMPLETION OF THE PROJECT)
-		timer = 100.0f;
-		nextTime = Time.time + timeRate;
 		bPlayerMaxStellar = 300;
 		cPlayerMaxStellar = 300;
 		bPlayerCurrentStellar = bPlayerMaxStellar;
@@ -137,16 +108,22 @@ public class UIController : MonoBehaviour
 		drawMainUI ();
 		
 		// Draw KO/time over UI depending on which flag gets set
-		if (koOver || timeOver)
+		if (gc.koOver || gc.timeOver)
 		{
 			//finishStyle = new GUIStyle(GUI.skin.box);
 			setFinishGUI ();
+			String finishStr;
 			
-			if (koOver)
-				drawFinishGUI ("Beatdown!", finishPos.x, finishPos.y, finishSize.x, finishSize.y);
-			
+			if (gc.koOver)
+				finishStr = "Beatdown!";
+
 			else
-				drawFinishGUI ("Time Over", finishPos.x, finishPos.y, finishSize.x, finishSize.y);
+				finishStr = "Time Over";
+
+			finishStyle.normal.textColor = Color.grey;
+			drawFinishGUI (finishStr, finishShadow.x, finishShadow.y, finishSize.x, finishSize.y);
+			finishStyle.normal.textColor = Color.white;
+			drawFinishGUI (finishStr, finishPos.x, finishPos.y, finishSize.x, finishSize.y);
 		}
 	} 
 	
@@ -154,16 +131,6 @@ public class UIController : MonoBehaviour
 	void Update ()
 	{
 		//Debug.Log ("UI:\nB Player: " + bPlayer.health + " / " + bPlayer.maxHealth + ", C Player: " + cPlayer.health + " / " + cPlayer.maxHealth);
-		// Temporary actions go here
-		
-		if (!timeOver && (bPlayer.health < 1 || cPlayer.health < 1))
-		{
-			koOver = true;
-		}
-		
-		if (!timeOver && !koOver)
-			DecrementTime ();
-
 
 		// Fillscale is used to quickly fill up the health and hyper/stellar meters at the beginning of the match.
 		int fillScale = 5;
@@ -220,8 +187,6 @@ public class UIController : MonoBehaviour
 	void setMainBar()
 	{
 		// Main bar dimensions in pixels: 1726x211 using our current asset
-
-
 		float mainBarAbsWidth = mainBarStyle.normal.background.width;
 		float mainBarAbsHeight = mainBarStyle.normal.background.height;
 
@@ -250,23 +215,33 @@ public class UIController : MonoBehaviour
 		Vector2 barrettPos = scaleSize (22, 38);
 		Vector2 oliviaPos = scaleSize (1563, 38);
 
-		GUI.Box (new Rect (barrettPos.x, barrettPos.y, portraitSize.x, portraitSize.y), new GUIContent (""), barrettPortrait);
-		GUI.Box (new Rect (oliviaPos.x, oliviaPos.y, portraitSize.x, portraitSize.y), new GUIContent (""), oliviaPortrait);
+		GUI.Box (new Rect (barrettPos.x, barrettPos.y, portraitSize.x, portraitSize.y), "", barrettPortrait);
+		GUI.Box (new Rect (oliviaPos.x, oliviaPos.y, portraitSize.x, portraitSize.y), "", oliviaPortrait);
 
 		// Draw main bar UI
-		GUI.Box (new Rect (0, 0, mainBarSize.x, mainBarSize.y), new GUIContent (""), mainBarStyle);
+		GUI.Box (new Rect (0, 0, mainBarSize.x, mainBarSize.y), "", mainBarStyle);
 
 		// Draw player name text
 		// White text GUI style
 		Vector2 whiteFont = scaleSize (48, 48);
-		whiteText.normal.textColor = Color.white;
-		whiteText.fontSize = (int) whiteFont.x;
+		playerText.fontSize = (int) whiteFont.x;
+
 		Vector2 barrettTextPos = scaleSize (188, 160);
-		Vector2 oliviaTextPos = scaleSize (1539/* - 188*/, 160);
-		whiteText.alignment = TextAnchor.UpperLeft;
-		GUI.Box (new Rect (barrettTextPos.x, barrettTextPos.y, 0, 0), "Barrett", whiteText);
-		whiteText.alignment = TextAnchor.UpperRight;
-		GUI.Box (new Rect (oliviaTextPos.x, oliviaTextPos.y, 0, 0), "Olivia", whiteText);
+		Vector2 barrettTextShadow = scaleSize (190, 162);
+		Vector2 oliviaTextPos = scaleSize (1539, 160);
+		Vector2 oliviaTextShadow = scaleSize (1541, 162);
+
+		playerText.alignment = TextAnchor.UpperLeft;
+		playerText.normal.textColor = Color.grey;
+		GUI.Box (new Rect (barrettTextShadow.x, barrettTextShadow.y, 0, 0), "Barrett", playerText);
+		playerText.normal.textColor = Color.white;
+		GUI.Box (new Rect (barrettTextPos.x, barrettTextPos.y, 0, 0), "Barrett", playerText);
+
+		playerText.alignment = TextAnchor.UpperRight;
+		playerText.normal.textColor = Color.grey;
+		GUI.Box (new Rect (oliviaTextShadow.x, oliviaTextShadow.y, 0, 0), "Olivia", playerText);
+		playerText.normal.textColor = Color.white;
+		GUI.Box (new Rect (oliviaTextPos.x, oliviaTextPos.y, 0, 0), "Olivia", playerText);
 
 		// Get health bar size
 		healthBarSize = scaleSize (331, 32);
@@ -334,8 +309,7 @@ public class UIController : MonoBehaviour
 		timerPos = new Vector2 ((mainBarSize.x / 2) - (timerSize.x / 2), mainBarSize.y / 3);
 		timerStyle.alignment = TextAnchor.MiddleCenter;
 		timerStyle.fontSize = (int) timerSize.x / 2;
-		timerStyle.normal.textColor = new Color (0.25f, 0.85f, 1f);
-		GUI.Box (new Rect (timerPos.x, timerPos.y, timerSize.x, timerSize.y), timer.ToString("00"), timerStyle);
+		GUI.Box (new Rect (timerPos.x, timerPos.y, timerSize.x, timerSize.y), gc.timer.ToString("00"), timerStyle);
 
 		GUI.EndGroup ();
 
@@ -352,14 +326,16 @@ public class UIController : MonoBehaviour
 		if (anchorRight == true)
 			offsetX = sizeX * (1 - (curHealth / maxHealth));
 
-		GUI.Box (new Rect (offsetX, 0, sizeX * (curHealth / maxHealth), sizeY), new GUIContent(""), style);
+		GUI.Box (new Rect (offsetX, 0, sizeX * (curHealth / maxHealth), sizeY), "", style);
 		GUI.EndGroup ();  // end empty part of health bar
 	}
 	
 	void setFinishGUI()
 	{
 		finishSize = new Vector2 ((float)Math.Round (currentResX / 4.0 * 3.0), (float)Math.Round (currentResY / 4.0 * 3.0));
+		Vector2 shadowOffset = scaleSize (5, 5);
 		finishPos = new Vector2 ((currentResX / 2) - (finishSize.x / 2), (currentResY / 2) - (finishSize.y / 2));
+		finishShadow = new Vector2 (finishPos.x + shadowOffset.x, finishPos.y + shadowOffset.y);
 	}
 	
 	
@@ -372,21 +348,7 @@ public class UIController : MonoBehaviour
 		GUI.EndGroup ();
 	}
 	
-	// Temporary functions go here, SHOULD BE EMPTY UPON PROJECT COMPLETION
-	void DecrementTime ()
-	{
-		if (timer > 0 && Time.time > nextTime)
-		{
-			timer -= 1;
-			nextTime = Time.time + timeRate;
-		}
-		
-		else if (timer == 0)
-		{
-			timeOver = true;
-		}
-	}
-	
+
 	// Sets the fill speed based on the player's maximum health/stellar drive value
 	float calculateFillSpeed(float maxVal)
 	{
