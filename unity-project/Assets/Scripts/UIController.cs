@@ -12,6 +12,11 @@ public class UIController : MonoBehaviour
 
 	// Game Controller
 	public GameController gc;
+
+	// Ready set go
+	public ReadySetGo readySetGo;
+	public int goLimit;
+	private int goCounter;
 	
 	// Screen resolution
 	private float currentResX, currentResY;
@@ -85,6 +90,9 @@ public class UIController : MonoBehaviour
 		if (bHealthFillSpeed > 0 && bStellarFillSpeed > 0 && cHealthFillSpeed > 0 && cStellarFillSpeed > 0)
 			isFillSpeedSetProperly = true;
 
+		// Set go counter to 0
+		goCounter = 0;
+
 		// Temporary actions to be implemented properly later (THIS SHOULD BE EMPTY UPON COMPLETION OF THE PROJECT)
 		bPlayerMaxStellar = 300;
 		cPlayerMaxStellar = 300;
@@ -106,7 +114,27 @@ public class UIController : MonoBehaviour
 		// Draw main bar UI
 		// Includes both health bars, all six stellar drive meters, the timer, and remaining revolver shots
 		drawMainUI ();
-		
+
+		// Draw ready go text at game start
+		if (readySetGo.counter > 1)
+		{
+			setFinishGUI ();
+			finishStyle.normal.textColor = Color.grey;
+			drawFinishGUI ("Ready...", finishShadow.x, finishShadow.y, finishSize.x, finishSize.y);
+			finishStyle.normal.textColor = Color.yellow;
+			drawFinishGUI ("Ready...", finishPos.x, finishPos.y, finishSize.x, finishSize.y);
+		}
+
+		else if (goCounter < goLimit)
+		{
+			setFinishGUI ();
+			finishStyle.normal.textColor = Color.yellow;
+			drawFinishGUI ("FIGHT!", finishShadow.x, finishShadow.y, finishSize.x, finishSize.y);
+			finishStyle.normal.textColor = Color.red;
+			drawFinishGUI ("FIGHT!", finishPos.x, finishPos.y, finishSize.x, finishSize.y);
+			goCounter++;
+		}
+
 		// Draw KO/time over UI depending on which flag gets set
 		if (gc.koOver || gc.timeOver)
 		{
@@ -233,15 +261,15 @@ public class UIController : MonoBehaviour
 
 		playerText.alignment = TextAnchor.UpperLeft;
 		playerText.normal.textColor = Color.grey;
-		GUI.Box (new Rect (barrettTextShadow.x, barrettTextShadow.y, 0, 0), "Barrett", playerText);
+		GUI.Box (new Rect (barrettTextShadow.x, barrettTextShadow.y, 0, 0), bPlayer.debugString, playerText);
 		playerText.normal.textColor = Color.white;
-		GUI.Box (new Rect (barrettTextPos.x, barrettTextPos.y, 0, 0), "Barrett", playerText);
+		GUI.Box (new Rect (barrettTextPos.x, barrettTextPos.y, 0, 0), bPlayer.debugString, playerText);
 
 		playerText.alignment = TextAnchor.UpperRight;
 		playerText.normal.textColor = Color.grey;
-		GUI.Box (new Rect (oliviaTextShadow.x, oliviaTextShadow.y, 0, 0), "Olivia", playerText);
+		GUI.Box (new Rect (oliviaTextShadow.x, oliviaTextShadow.y, 0, 0), cPlayer.debugString, playerText);
 		playerText.normal.textColor = Color.white;
-		GUI.Box (new Rect (oliviaTextPos.x, oliviaTextPos.y, 0, 0), "Olivia", playerText);
+		GUI.Box (new Rect (oliviaTextPos.x, oliviaTextPos.y, 0, 0), cPlayer.debugString, playerText);
 
 		// Get health bar size
 		healthBarSize = scaleSize (331, 32);
