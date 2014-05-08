@@ -33,7 +33,8 @@ public class UIController : MonoBehaviour
 	private Vector2 finishSize, finishPos;
 
 	// GUI Styles
-	public GUIStyle mainBarStyle, barEmpty, healthFill, stellarFill, timerStyle, finishStyle;
+	public GUIStyle mainBarStyle, barEmpty, healthFill, stellarFill, timerStyle, finishStyle, whiteText;
+	public GUIStyle barrettPortrait, oliviaPortrait; // Player portraits on left and right sides of mainbar
 
 	// Miscellaneous UI
 	private bool koOver;
@@ -109,8 +110,7 @@ public class UIController : MonoBehaviour
 
 		if (bHealthFillSpeed > 0 && bStellarFillSpeed > 0 && cHealthFillSpeed > 0 && cStellarFillSpeed > 0)
 			isFillSpeedSetProperly = true;
-		
-		
+
 		
 		// Temporary actions to be implemented properly later (THIS SHOULD BE EMPTY UPON COMPLETION OF THE PROJECT)
 		timer = 100.0f;
@@ -241,9 +241,32 @@ public class UIController : MonoBehaviour
 		mainBarSize = scaleSize (mainBarStyle.normal.background.width, mainBarStyle.normal.background.height);
 		mainBarPos = new Vector2 ((currentResX / 2) - (mainBarSize.x / 2), (float)Math.Round (currentResY / 20.0));
 
-		// Draw the main bar
+		// Begin the mainbar group to set relative pixel position values for the rest of the main bar GUI
+		// Draw the player portraits, then the mainbar
 		GUI.BeginGroup (new Rect (mainBarPos.x, mainBarPos.y, mainBarSize.x, mainBarSize.y));
+
+		// Draw Barrett and Olivia portraits
+		Vector2 portraitSize = scaleSize (142, 151);
+		Vector2 barrettPos = scaleSize (22, 38);
+		Vector2 oliviaPos = scaleSize (1563, 38);
+
+		GUI.Box (new Rect (barrettPos.x, barrettPos.y, portraitSize.x, portraitSize.y), new GUIContent (""), barrettPortrait);
+		GUI.Box (new Rect (oliviaPos.x, oliviaPos.y, portraitSize.x, portraitSize.y), new GUIContent (""), oliviaPortrait);
+
+		// Draw main bar UI
 		GUI.Box (new Rect (0, 0, mainBarSize.x, mainBarSize.y), new GUIContent (""), mainBarStyle);
+
+		// Draw player name text
+		// White text GUI style
+		Vector2 whiteFont = scaleSize (48, 48);
+		whiteText.normal.textColor = Color.white;
+		whiteText.fontSize = (int) whiteFont.x;
+		Vector2 barrettTextPos = scaleSize (188, 160);
+		Vector2 oliviaTextPos = scaleSize (1539/* - 188*/, 160);
+		whiteText.alignment = TextAnchor.UpperLeft;
+		GUI.Box (new Rect (barrettTextPos.x, barrettTextPos.y, 0, 0), "Barrett", whiteText);
+		whiteText.alignment = TextAnchor.UpperRight;
+		GUI.Box (new Rect (oliviaTextPos.x, oliviaTextPos.y, 0, 0), "Olivia", whiteText);
 
 		// Get health bar size
 		healthBarSize = scaleSize (331, 32);
@@ -259,7 +282,7 @@ public class UIController : MonoBehaviour
 		bPos2 = scaleSize (326, 95);
 		bPos3 = scaleSize (449, 95);
 
-		// Remember - these bars go from right to left!
+		// Remember - these bars go from right to left, which is why Pos1 is further right than the other two!
 		cPos1 = scaleSize (1409, 95);
 		cPos2 = scaleSize (1286, 95);
 		cPos3 = scaleSize (1162, 95);
