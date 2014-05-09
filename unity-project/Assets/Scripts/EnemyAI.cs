@@ -29,17 +29,6 @@ public class EnemyAI : MonoBehaviour
 
 	public bool hasInterrupt = false;
 
-	/***************************************************
-	 * determines if AI is turned on
-	 * NOTE: isAnAI check is only there to simulate 
-	 * 	game menu selection to Single playerTransform mode 
-	 * 	If that feature is implemented, isAnAI would 
-	 * 	be removed along with EnemyAI component from 
-	 * 	the character object and would be added 
-	 * 	through the menu selection ONLY.
-	 ***************************************************/
-	public bool isAnAI;
-
 	// frames to run
 	public int running;
 	// used for entering PHASE 3
@@ -47,13 +36,11 @@ public class EnemyAI : MonoBehaviour
 	// AI is doing combo
 	// public currentCombo;
 	public int comboPos = 0;
+	public int currType = -1; // 0 for Drive, 1 for SDrive
+	public int currAttack = -1;
 
 	void Awake()
 	{
-		// Setting up the references.
-		//ren = transform.Find("body").GetComponent<SpriteRenderer>();
-		//frontCheck = transform.Find("frontCheck").transform;
-
 		phases = gameObject.GetComponent<PlayerController>();
 		player = phases.attack;
 		playerTransform = player.transform;
@@ -63,24 +50,33 @@ public class EnemyAI : MonoBehaviour
 	void FixedUpdate ()
 	{
 		//PHASE 0
-		// if not an AI or can't act
-		// exit loop
-		if (!isAnAI)
-			return;
+		// if can't act exit loop
 		if (!phases.canAct)
 		{
 			phases.currentInput = "X";
 			comboPos = 0;
 			return;
 		}
-		print (phases.health);
-		print (phases.blockCheck);
+
+		// updates knowledge of which way AI is facing
+		float dist = myTransform.position.x - playerTransform.position.x;
+		if (dist > 0)
+			faceLeft = true;
 
 		//PHASE 1
 		// if an interupt needs to be handled
-		if (handleInterrupt ())
+		switch (handleInterrupt ())
 		{
+		case 0: block (dist); break;
+		case 1: contCombo (); return;
+		case -1: print ("NO INTERRUPTS"); break;
 		}
+
+		/*if (handleInterrupt ())
+		{
+			block (dist);
+		}*/
+
 		//PHASE 2
 		if (running > 0)
 		{
@@ -94,12 +90,12 @@ public class EnemyAI : MonoBehaviour
 
 		//PHASE 3
 		// decide if AI wants to block
-		if (incAttack && block ())
+		if (incAttack)
 			return;
 
 		//PHASE 4
 		// decide if AI can and will use a melee attack
-		if (melee ())
+		if (melee (dist))
 			return;
 
 		//PHASE 5
@@ -114,62 +110,28 @@ public class EnemyAI : MonoBehaviour
 
 
 
-		// Create an array of all the colliders in front of the enemy.
-		//Collider2D[] frontHits = Physics2D.OverlapPointAll(frontCheck.position, 1);
-		
-		// Check each of the colliders.
-		/*foreach(Collider2D c in frontHits)
-		{
-			// If any of the colliders is an Obstacle...
-			if(c.tag == "Obstacle")
-			{
-				// ... Flip2 the enemy and stop checking the other colliders.
-				Flip2 ();
-				break;
-			}
-		}*/
-		
-		/*print ("my" + myTransform.position.x + " " + Random.Range(0,10));
-		//print (playerTransform.position.x);
-		
-		if (myTransform.position.x - playerTransform.position.x > 0 && !faceLeft)
-		{
-			Flip2 ();
-			faceLeft = true;
-		}
-		else if (myTransform.position.x - playerTransform.position.x < 0 && faceLeft)
-		{
-			Flip2 ();
-			faceLeft = false;
-		}
-		if (!waiting)
-		{
-			startState ();
-		}
-		
-		// Set the enemy's velocity to moveSpeed in the x direction.
-		//rigidbody2D.velocity = new Vector2(transform.localScale.x * moveSpeed, rigidbody2D.velocity.y);*/	
 	}
 
-	public bool handleInterrupt ()
+	public int handleInterrupt ()
 	{
+		print ("Current Attack" + currAttack);
+
 		if (player.normalFrames > 0)
-		{
-			incAttack = true;
+			return 0;
+		else if (currAttack > -1)
+			return 1;
 
-			return true;
-		}
+		// nothing to handle
 		else
-			incAttack = false;
-
-		return false;
+			return -1;
 	}
 
-	public bool block ()
+	public bool block (float dist)
 	{
 		print ("In Blocking");
-		if (Random.Range (0, 10) < 5)
+		if (Random.Range (0, 10) < 3)
 		{
+			print ("BLOCKED");
 			phases.moveX = -1;
 			running = 2;
 			return true;
@@ -178,28 +140,90 @@ public class EnemyAI : MonoBehaviour
 		return false;
 	}
 
-	public bool melee ()
+	public void contCombo ()
 	{
-		if (Mathf.Abs (myTransform.position.x - playerTransform.position.x) < 1)
+		print ("IN CONTINUE COMBO");
+
+		string current = "";
+			
+		if (currType == 0)
 		{
-			if (comboPos > 0)
+			if (faceLeft)
+				current = phases.drive[2, 0].ToString();
+			else
+				current = phases.drive[0, 0].ToString();
+
+		}
+		else if (currType == 1)
+		{
+			if (faceLeft)
+				current = phases.Sdrive[2, currAttack].ToString();
+			else
+				current = phases.Sdrive[0, currAttack].ToString();
+		}
+		print ("ATTACK LENGTH " + current.Length);
+		print ("CURRENT COMBO " + comboPos);
+		if (comboPos < current.Length - 1)
+		{
+			phases.currentInput = "" + current[comboPos];
+			comboPos++;
+		}
+		else
+		{
+			comboPos = 0;
+			currType = -1;
+			currAttack = -1;
+			
+			print ("RESET");
+			print ("COMBOPOS " + comboPos);
+			print ("CURRATTACK " + currAttack);
+		}
+	}
+
+	public bool melee (float dist)
+	{
+		if (Mathf.Abs (dist) < 1)
+		{
+			print ("New Attack");
+			int attack = Random.Range (0, 10);
+				
+			if (attack < 4)
+				return false;
+
+			else if (attack < 7)
 			{
-				phases.currentInput = phases.hyper1Aright[comboPos].ToString();
+				currType = 0;
+					
+				if (faceLeft)
+					phases.currentInput = "" + phases.drive[2, 0].ToString()[comboPos];
+				else
+					phases.currentInput = "" + phases.drive[0, 0].ToString()[comboPos];
+
 				comboPos++;
 			}
 
+			else if (attack < 8)
+			{
+				currType = 1;
+
+				currAttack = Random.Range (1, 3);
+
+				if (faceLeft)
+					phases.currentInput = "" + phases.Sdrive[2, currAttack].ToString()[comboPos];
+				else
+					phases.currentInput = "" + phases.Sdrive[0, currAttack].ToString()[comboPos];
+
+				comboPos++;
+			}
 			else
 			{
-				int attack = Random.Range (0, 10);
-				
-				if (attack < 5)
-					return false;
-
-				else if (attack < 7)
-					kick();
-
-				else
-					punch();
+				switch(Random.Range (0, 4))
+				{
+				case 0: phases.currentInput = "A"; break;
+				case 1: phases.currentInput = "B"; break;
+				case 2: phases.currentInput = "C"; break;
+				case 3: phases.currentInput = "D"; break;
+				}
 			}
 
 			return true;
@@ -208,113 +232,56 @@ public class EnemyAI : MonoBehaviour
 		return false;
 	}
 
-	public void kick ()
-	{
-		int attack = Random.Range (0, 10);
-		if (attack < 8)
-		{
-
-		}
-		else
-			phases.currentInput = "C";
-	}
-
-	public void punch ()
-	{
-		int attack = Random.Range (0, 10);
-		if (attack < 8)
-		{
-			phases.currentInput = phases.hyper1Aright[comboPos].ToString();
-			comboPos++;
-		}
-		else
-			phases.currentInput = "A";
-	}
-
 	public bool ranged ()
 	{
+		print ("RANGED ATTACK");
+
+		if (Random.Range (0, 100) < 5)
+		{
+			currAttack = 0;
+
+			print ("FIRE");
+			
+			if (faceLeft)
+				phases.currentInput = "" + phases.Sdrive[2, currAttack].ToString()[comboPos];
+			else
+				phases.currentInput = "" + phases.Sdrive[0, currAttack].ToString()[comboPos];
+			
+			comboPos++;
+		}
+
 		return false;
 	}
 	
 	public bool move()
 	{
 		int direction = Random.Range (0, 10);
-		
+
+
 		if (direction < 3)
 		{
 			running = (Random.Range (0,2) + 1) * 10;
 			return true;
 		}
+		// move away from player
 		else if (direction < 5)
 		{
-			phases.moveX = -1;
+			if (faceLeft)
+				phases.moveX = 1;
+			else
+				phases.moveX = -1;
 		}
+		// move towards player
 		else
 		{
-			phases.moveX = 1;
+			if (faceLeft)
+				phases.moveX = -1;
+			else
+				phases.moveX = 1;
 		}
 		
 		running = (Random.Range (0,3) + 1) * 10;
 
 		return true;
-	}
-
-	public void isAI()
-	{
-		print ("I'm an AI");
-	}
-
-	public void startState()
-	{
-		if (Mathf.Abs (myTransform.position.x - playerTransform.position.x) > 0) {
-			//if (Random.Range(0,100) > 80) enemy not constantly moving towards playerTransform
-			//{
-			//}
-
-			rangeState ();
-			print ("ranged");
-		} 
-		else
-		{
-			print ("melee");
-			meleeState ();
-		}
-	}
-
-	public void meleeState()
-	{
-
-	}
-
-	public void rangeState()
-	{
-		move ();
-	}
-
-	public void moveState()
-	{
-
-	}
-
-	public void stop()
-	{
-		rigidbody2D.velocity = new Vector2(0, rigidbody2D.velocity.y);
-
-		waiting = false;
-	}
-	
-	public void Hurt()
-	{
-		// Reduce the number of hit points by one.
-		HP--;
-	}
-	
-	
-	public void Flip2()
-	{
-		// Multiply the x component of localScale by -1.
-		Vector3 enemyScale = transform.localScale;
-		enemyScale.x *= -1;
-		transform.localScale = enemyScale;
 	}
 }

@@ -28,6 +28,15 @@ public class BPlayerController : PlayerController
 		hitFramesString = "hitFrames1";
 		blockLockStandingString = "blockLockStanding1";
 		blockLockCrouchingString = "blockLockCrouching1";
+		gettingUpString = "gettingUp1";
+		gettingTrippedString = "gettingTripped1";
+		owAirTriggerString = "owAir1";
+		alreadyAirString = "alreadyAir1";
+		D1triggerString = "D1trigger1";
+		SD1triggerString = "SD1trigger1";		
+		SD2triggerString = "SD2trigger1";
+		driveFramesString = "driveFrames1";
+		stellarDriveFramesString = "stellarDriveFrames1";
 
 		//the other player declaration
 		OtherPlayer = "CPlayer2"; //this could probably be another call fuction
@@ -48,36 +57,26 @@ public class BPlayerController : PlayerController
 		maxHealth = 1000;
 		health = maxHealth;
 		
-		//super 1 declarations
-		super1Aleft = "214A";
-		super1Bleft = "214B";
-		super1Aright = "236A";
-		super1Bright = "236B";
-		super1delay = 10;
-		
-		
-		//hyper 1 declarations
-		hyper1Aleft = "412364A";
-		hyper1Bleft = "412364B";
-		hyper1Aright = "632146A";
-		hyper1Bright = "632146B";
-		hyper1delay = 100;
-		hyper1eat = 100;
-
-		//hyper 2 declarations
-		hyper2Aleft = "XOXOXOX";
-		hyper2Bleft = "XOXOXOX";
-		hyper2Aright = "XOXOXOX";
-		hyper2Bright = "XOXOXOX";
-		hyper2delay = 100;
-		
-		//hyper 3 declarations
-		hyper3Aleft = "214214A";
-		hyper3Bleft = "214214B";
-		hyper3Aright = "236234A";
-		hyper3Bright = "236236B";
-		hyper3delay = 100;
-		hyper3eat = 300;
+		//drive inputs
+		//strike
+		drive[ 0, 0 ] = "236C"; 
+		drive[ 1, 0 ] = "236D"; 
+		drive[ 2, 0 ] = "236C"; 
+		drive[ 3, 0 ] = "236D"; 
+		driveDelay1 = 50;		//how many frames drive 1 takes
+			
+		//stellar drive inputs
+		//you are under arrest				//omni blast						//omni barrage
+		Sdrive[ 0, 0 ] = "236236C"; 		Sdrive[ 0, 1 ] = "236236C"; 		Sdrive[ 0, 2 ] = "632146A"; 	//facing right
+		Sdrive[ 1, 0 ] = "236236D"; 		Sdrive[ 1, 1 ] = "236236D"; 		Sdrive[ 1, 2 ] = "632146B"; 	//facing right
+		Sdrive[ 2, 0 ] = "214214C"; 		Sdrive[ 2, 1 ] = "214214C"; 		Sdrive[ 2, 2 ] = "412364A"; 	//facing left
+		Sdrive[ 3, 0 ] = "214214D"; 		Sdrive[ 3, 1 ] = "214214D"; 		Sdrive[ 3, 2 ] = "412364B"; 	//facing left
+		stellarDrivedelay1 = 100;	 //how many frames stellar drive 1 takes
+		stellarDrivedelay2 = 100;	 //how many frames stellar drive 2 takes
+		stellarDrivedelay3 = 100;	 //how many frames stellar drive 3 takes
+		stellarEat1 = 100; //how much meter stellar drive 1 eats
+		stellarEat2 = 100; //how much meter stellar drive 2 eats
+		stellarEat3 = 300; //how much meter stellar drive 3 eats
 
 		//up force
 		jumpForce = 1200f;  
@@ -87,67 +86,51 @@ public class BPlayerController : PlayerController
 
 		//*****normal data declaration*****
 		//normal standing frames values
-		SLPtotalFrames = 6;		SHPtotalFrames = 10;		SLKtotalFrames = 6;		SHKtotalFrame = 12;
-		SLPstartFrame = 4;		SHPstartFrame = 7;			SLKstartFrame = 4;		SHKstartFrame = 9;
-		SLPfinishFrame = 2;		SHPfinishFrame = 4;			SLKfinishFrame = 2;		SHKfinishFrame = 6;
-		SLPXforce = 500;		SHPXforce = 500;			SLKXforce = 500;		SHKXforce = 500;
-		SLPYforce = 200;		SHPYforce = 600;			SLKYforce = 300;		SHKYforce = 600;
-		SLPdamage = 10;			SHPdamage = 20;				SLKdamage = 10;			SHKdamage = 20;
-		SLPlow = false;			SHPlow = false;				SLKlow = true;			SHKlow = false;
-
-		//normal air frames values
-		//ALPtotalFrames;		AHPtotalFrames;		ALKtotalFrames;		AHKtotalFrame;
-		//ALPstartFrame;		AHPstartFrame;		ALKstartFrame;		AHKstartFrame;
-		//ALPfinishFrame;		AHPfinishFrame;		ALKfinishFrame;		AHKfinishFrame;
-		//ALPXforce = 5;		AHPXforce = 10;		ALKXforce = 5;		AHKXforce = 10;
-		//ALPYforce = 200;		AHPYforce = 300;	ALKYforce = 200;	AHKYforce = 300;
-		//ALPdamage = 10;		AHPdamage = 20;		ALKdamage = 10;		AHKdamage = 20;
-		//ALPlow = true;		AHPlow = true;		ALKlow = true;		AHKlow = true;
+		//lightPunch					heavyPunch						lightKick						heavyKick
+		attackValues[ 0, 0 ] = 6; 		attackValues[ 0, 1 ] = 10;		attackValues[ 0, 2 ] = 6;		attackValues[ 0, 3 ] = 12;   	//totalFrames
+		attackValues[ 1, 0 ] = 4; 		attackValues[ 1, 1 ] = 6;		attackValues[ 1, 2 ] = 4;		attackValues[ 1, 3 ] = 9;		//startFrame
+		attackValues[ 2, 0 ] = 2; 		attackValues[ 2, 1 ] = 4;		attackValues[ 2, 2 ] = 2;		attackValues[ 2, 3 ] = 6;		//finishFrame
+		attackValues[ 3, 0 ] = 500; 	attackValues[ 3, 1 ] = 500;		attackValues[ 3, 2 ] = 500;		attackValues[ 3, 3 ] = 500;		//Xforce
+		attackValues[ 4, 0 ] = 200; 	attackValues[ 4, 1 ] = 600;		attackValues[ 4, 2 ] = 300;		attackValues[ 4, 3 ] = 600;		//Yforce
+		attackValues[ 5, 0 ] = 10; 		attackValues[ 5, 1 ] = 20;		attackValues[ 5, 2 ] = 10;		attackValues[ 5, 3 ] = 20;		//damageAmount
+		attackValues[ 6, 0 ] = 0; 		attackValues[ 6, 1 ] = 0;		attackValues[ 6, 2 ] = 1;		attackValues[ 6, 3 ] = 0;		//damageType
 		
-		//normal crouching frames values
-		CLPtotalFrames = 8;		CHPtotalFrames = 10;		CLKtotalFrames = 6;		CHKtotalFrame = 12;
-		CLPstartFrame = 6;		CHPstartFrame = 8;			CLKstartFrame = 4;		CHKstartFrame = 9;
-		CLPfinishFrame = 4;		CHPfinishFrame = 4;			CLKfinishFrame = 2;		CHKfinishFrame = 6;
-		CLPXforce = 200;		CHPXforce = 300;			CLKXforce = 100;		CHKXforce = 0;
-		CLPYforce = 100;		CHPYforce = 300;			CLKYforce = 0;			CHKYforce = 0;
-		CLPdamage = 4;			CHPdamage = 20;				CLKdamage = 8;			CHKdamage = 20;
-		CLPlow = false;			CHPlow = false;				CLKlow = true;			CHKlow = true;
-
-		//normal standing frames values
-		//lightPunch				heavyPunch					lightKick					heavyKick
-		attackValues[ 0, 0 ] = 6; 	attackValues[ 0, 1 ] = 6;	attackValues[ 0, 2 ] = 6;	attackValues[ 0, 3 ] = 6;   //totalFrames
-		attackValues[ 1, 0 ] = 6; 	attackValues[ 1, 1 ] = 6;	attackValues[ 1, 2 ] = 6;	attackValues[ 1, 3 ] = 6;	//startFrame
-		attackValues[ 2, 0 ] = 6; 	attackValues[ 2, 1 ] = 6;	attackValues[ 2, 2 ] = 6;	attackValues[ 2, 3 ] = 6;	//finishFrame
-		attackValues[ 3, 0 ] = 6; 	attackValues[ 3, 1 ] = 6;	attackValues[ 3, 2 ] = 6;	attackValues[ 3, 3 ] = 6;	//Xforce
-		attackValues[ 4, 0 ] = 6; 	attackValues[ 4, 1 ] = 6;	attackValues[ 4, 2 ] = 6;	attackValues[ 4, 3 ] = 6;	//Yforce
-		attackValues[ 5, 0 ] = 6; 	attackValues[ 5, 1 ] = 6;	attackValues[ 5, 2 ] = 6;	attackValues[ 5, 3 ] = 6;	//damage
-		//beingHurtLow
 		//normal air frame values
-		//lightPunch				heavyPunch					lightKick					heavyKick
-		attackValues[ 0, 4 ] = 6; 	attackValues[ 0, 5 ] = 6;	attackValues[ 0, 6 ] = 6;	attackValues[ 0, 7 ] = 6;   
-		attackValues[ 1, 4 ] = 6; 	attackValues[ 1, 5 ] = 6;	attackValues[ 1, 6 ] = 6;	attackValues[ 1, 7 ] = 6;
-		attackValues[ 2, 4 ] = 6; 	attackValues[ 2, 5 ] = 6;	attackValues[ 2, 6 ] = 6;	attackValues[ 2, 7 ] = 6;
-		attackValues[ 3, 4 ] = 6; 	attackValues[ 3, 5 ] = 6;	attackValues[ 3, 6 ] = 6;	attackValues[ 3, 7 ] = 6;
-		attackValues[ 4, 4 ] = 6; 	attackValues[ 4, 5 ] = 6;	attackValues[ 4, 6 ] = 6;	attackValues[ 4, 7 ] = 6;
-		attackValues[ 5, 4 ] = 6; 	attackValues[ 5, 5 ] = 6;	attackValues[ 5, 6 ] = 6;	attackValues[ 5, 7 ] = 6;
-
+		//lightPunch					heavyPunch						lightKick						heavyKick
+		attackValues[ 0, 4 ] = 6; 		attackValues[ 0, 5 ] = 12;		attackValues[ 0, 6 ] = 6;		attackValues[ 0, 7 ] = 12;   	//totalFrames
+		attackValues[ 1, 4 ] = 4; 		attackValues[ 1, 5 ] = 7;		attackValues[ 1, 6 ] = 4;		attackValues[ 1, 7 ] = 8;		//startFrame
+		attackValues[ 2, 4 ] = 2; 		attackValues[ 2, 5 ] = 4;		attackValues[ 2, 6 ] = 2;		attackValues[ 2, 7 ] = 4;		//finishFrame
+		attackValues[ 3, 4 ] = 500;		attackValues[ 3, 5 ] = 600;		attackValues[ 3, 6 ] = 500;		attackValues[ 3, 7 ] = 700;		//Xforce
+		attackValues[ 4, 4 ] = 300;		attackValues[ 4, 5 ] = 400;		attackValues[ 4, 6 ] = 300;		attackValues[ 4, 7 ] = 500;		//Yforce
+		attackValues[ 5, 4 ] = 10; 		attackValues[ 5, 5 ] = 20;		attackValues[ 5, 6 ] = 6;		attackValues[ 5, 7 ] = 25;		//damageAmount
+		attackValues[ 6, 4 ] = 3; 		attackValues[ 6, 5 ] = 3;		attackValues[ 6, 6 ] = 3;		attackValues[ 6, 7 ] = 3;		//damageType
+		
 		//normal crouching frame values
-		//lightPunch				heavyPunch					lightKick					heavyKick
-		attackValues[ 0, 8 ] = 6; 	attackValues[ 0, 9 ] = 6;	attackValues[ 0, 10 ] = 6;	attackValues[ 0, 11 ] = 6;   
-		attackValues[ 1, 8 ] = 6; 	attackValues[ 1, 9 ] = 6;	attackValues[ 1, 10 ] = 6;	attackValues[ 1, 11 ] = 6;
-		attackValues[ 2, 8 ] = 6; 	attackValues[ 2, 9 ] = 6;	attackValues[ 2, 10 ] = 6;	attackValues[ 2, 11 ] = 6;
-		attackValues[ 3, 8 ] = 6; 	attackValues[ 3, 9 ] = 6;	attackValues[ 3, 10 ] = 6;	attackValues[ 3, 11 ] = 6;
-		attackValues[ 4, 8 ] = 6; 	attackValues[ 4, 9 ] = 6;	attackValues[ 4, 10 ] = 6;	attackValues[ 4, 11 ] = 6;
-		attackValues[ 5, 8 ] = 6; 	attackValues[ 5, 9 ] = 6;	attackValues[ 5, 10 ] = 6;	attackValues[ 5, 11 ] = 6;
+		//lightPunch					heavyPunch						lightKick						heavyKick
+		attackValues[ 0, 8 ] = 8; 		attackValues[ 0, 9 ] = 10;		attackValues[ 0, 10 ] = 6;		attackValues[ 0, 11 ] = 12;   	//totalFrames
+		attackValues[ 1, 8 ] = 6; 		attackValues[ 1, 9 ] = 8;		attackValues[ 1, 10 ] = 4;		attackValues[ 1, 11 ] = 9;		//startFrame
+		attackValues[ 2, 8 ] = 4; 		attackValues[ 2, 9 ] = 4;		attackValues[ 2, 10 ] = 2;		attackValues[ 2, 11 ] = 6;		//finishFrame
+		attackValues[ 3, 8 ] = 500;		attackValues[ 3, 9 ] = 600;		attackValues[ 3, 10 ] = 400;	attackValues[ 3, 11 ] = 0;		//Xforce
+		attackValues[ 4, 8 ] = 300; 	attackValues[ 4, 9 ] = 600;		attackValues[ 4, 10 ] = 400;	attackValues[ 4, 11 ] = 0;		//Yforce
+		attackValues[ 5, 8 ] = 8;	 	attackValues[ 5, 9 ] = 15;		attackValues[ 5, 10 ] = 10;		attackValues[ 5, 11 ] = 25;		//damageAmount
+		attackValues[ 6, 8 ] = 2;	 	attackValues[ 6, 9 ] = 2;		attackValues[ 6, 10 ] = 1;		attackValues[ 6, 11 ] = 5;		//damageType
 
 		damageThreshold = 10; //determines if the hit recieved is soft or hard hit
 		lightHitFrames = 15;  //stun lasts this long when ground damage is equal or less than damageThreshold
 		heavyHitFrames = 25;  //stun lasts this long when ground damage is greater than damageThreshold
+		trippedAmount = 40;
+		countDownSetter = 20;
 
 		//note: startFrame is when the attack calls actually start happening in the
 		//      normal attack animation, finishFrame is when the attack calls stop
 		//      happening.  atariDesu is called to stop attack calls once
 		//      the individual normal lands
 
+		//drive declarations (who has access to what)
+		Snap = false;					Strike = true;
+		
+		//stellar drive declarations (who has access to what)
+		YouAreUnderArrest = true;		DownBoy = false;
+		OmniBlast = true;				OmniBarrage = true;
 	}
 }
