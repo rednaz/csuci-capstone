@@ -54,7 +54,7 @@ public class BPlayerController : PlayerController
 		HPgrabber = "HP1";
 		LKgrabber = "LK1";
 		HKgrabber = "HK1";
-		maxHealth = 1000;
+		maxHealth = 500;
 		health = maxHealth;
 		
 		//drive inputs
@@ -132,5 +132,11 @@ public class BPlayerController : PlayerController
 		//stellar drive declarations (who has access to what)
 		YouAreUnderArrest = true;		DownBoy = false;
 		OmniBlast = true;				OmniBarrage = true;
+	}
+
+	//set to true once the fight starts
+	public void fightOn1()
+	{
+		ReadySet = true;
 	}
 }

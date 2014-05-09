@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour
 	//random number generator for sounds
 	private System.Random rand = new System.Random();
 
+	public bool ReadySet = false;
+
 	public bool owAirTrigger = false;
 
 	public string enemyScript;
@@ -109,6 +111,10 @@ public class PlayerController : MonoBehaviour
 
 	//crouching or not
 	public bool crouchCheck = false;
+
+	//for attacks that suck in their target
+	//downBoy is one of them
+	public bool flipDamage = false;
 
 	//blocking or not
 	public bool blockCheck = false;
@@ -222,11 +228,22 @@ public class PlayerController : MonoBehaviour
 	//the heart of all actions-------------------------------------------------------
 	void FixedUpdate () 
 	{
+		//this line checks if the character is on the ground at this frame
+		groundCheck = Physics2D.OverlapCircle (daGround.position, groundRadius, whatIsGround);
+		//setting up the animation for the frame
+		animationCalls ();
+		//Phase Start (counter going to 0 then fight begins)
+		if ( ReadySet == false )
+		{
+			determineFlip ();
+			return;
+		}
+						
 		//int randomNum = rand.Next(0,100);
 		//Debug.Log ( randomNum );
 
-		//this line checks if the character is on the ground at this frame
-		groundCheck = Physics2D.OverlapCircle (daGround.position, groundRadius, whatIsGround);
+
+
 
 		//this is nothing but debug code, feel free to uncomment 
 		//at your pleasure to see game activity
@@ -236,8 +253,7 @@ public class PlayerController : MonoBehaviour
 			freeze.tempFreeze();
 		}
 
-		//setting up the animation for the frame
-		animationCalls ();
+
 
 
 		//Phase 0 
@@ -373,7 +389,9 @@ public class PlayerController : MonoBehaviour
 		{
 			SD1trigger = false;
 			SD2trigger = false;
+			SD3trigger = false;
 			stellarDriveFrames--;
+			flush ();
 			return;
 		}
 
@@ -431,7 +449,7 @@ public class PlayerController : MonoBehaviour
 		//Phase 8
 		//player successfully implemented a stellar drive, game executes stellar drive
 		//hyper 1, 2, and 3 checked if entered at this moment
-		//hyper1Check ();
+		hyper1Check ();
 		if( SD1trigger == true )
 		{
 			stellarDriveFrames = stellarDrivedelay1;
@@ -563,21 +581,21 @@ public class PlayerController : MonoBehaviour
 		} 
 
 		//no buttons, so joystick inputs are next
-		else if( moveX < - 0.5f && moveY > .5f ) //down + left 
+		else if( moveX < - 0.5f && moveY < -.5f ) //down + left 
 		{
 			currentInput = "1";
 		}
-		else if( moveX > .5f && moveY > .5f ) //down + right
+		else if( moveX > .5f && moveY < -.5f ) //down + right
 		{
 			currentInput = "3";
 		}
 		else if ( moveY < - 0.5f ) // up (this pretty much cancels out anything since nothing requires up)
 		{
-			currentInput = "8";
+			currentInput = "2";
 		}
 		else if ( moveY > .5f ) //down
 		{
-			currentInput = "2";
+			currentInput = "8";
 		}
 		else if( moveX < - 0.5f ) //left
 		{
@@ -591,7 +609,7 @@ public class PlayerController : MonoBehaviour
 		{
 			currentInput = "X";
 		}
-		//Debug.Log (currentInput + " " + debugString);
+		//
 		return currentInput;
 	}
 
@@ -617,7 +635,7 @@ public class PlayerController : MonoBehaviour
 				placeHolder4.ToString() + placeHolder5.ToString() + placeHolder6.ToString() + nextInput;
 			previousInput = nextInput;
 			//Debug.Log ( placeHolder1 + placeHolder3 + placeHolder4 + placeHolder5 + placeHolder6 );
-			//Debug.Log (commands);
+			Debug.Log (commands);
 		}
 
 		else 
@@ -633,6 +651,7 @@ public class PlayerController : MonoBehaviour
 	//checkpoint if the hyper1 has been executed at this frame
 	void hyper1Check ()
 	{
+
 		//person was in the air at the time, hyper1 input doesn't count
 		if ( Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == false && groundCheck == false || 
 		    Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == false && groundCheck == false ) 
@@ -650,20 +669,16 @@ public class PlayerController : MonoBehaviour
 
 		//all conditions for hyper1 has been met
 		if ( Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == false && groundCheck == true || 
-		    Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == false && groundCheck == true ) 
+		    Equals (commands, Sdrive[ 1, 0 ] ) && facingLeft == false && groundCheck == true ) 
 		{
-			Debug.Log ("HADOUKEN");
-			//countDelayHyper = hyper1delay;
-			flush ();
+			SD1trigger = true;
 			return;
 			
 		}
-		else if(Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == true && groundCheck == true || 
-		        Equals (commands, Sdrive[ 0, 0 ] ) && facingLeft == true && groundCheck == true )
+		else if(Equals (commands, Sdrive[ 2, 0 ] ) && facingLeft == true && groundCheck == true || 
+		        Equals (commands, Sdrive[ 3, 0 ] ) && facingLeft == true && groundCheck == true )
 		{
-			Debug.Log ("HADOUKEN");
-			//countDelayHyper = hyper1delay;
-			flush ();
+			SD1trigger = true;
 			return;
 		}
 	}
@@ -1454,6 +1469,20 @@ public class PlayerController : MonoBehaviour
 		return false;
 	}
 
+	public bool amIgettingHitYAUA( int sendingHurtX, int sendingHurtY, int damageAmountSent, int damageTypeSent )
+	{
+		if( SD1 == true )
+		{
+			recieveHurtX = sendingHurtX;
+			recieveHurtY = sendingHurtY;
+			damageAmountRecieved = damageAmountSent;
+			damageTypeRecieved = damageTypeSent;
+			return beingHurt = true;
+		}
+		return false;
+	}
+
+
 
 	//amIgettingHit ends********************************************************************************************
 
@@ -1600,15 +1629,38 @@ public class PlayerController : MonoBehaviour
 	public void YouAreUnderArrestMethod()
 	{
 
+		if( facingLeft == false )
+		{
+			rigidbody2D.AddForce ( new Vector2 ( 30 , 0 ) );
+		}
+		else
+		{
+			rigidbody2D.AddForce ( new Vector2 ( -30 , 0 ) );
+		}
+
+		if( stellarDriveFrames % 10 == 0 )
+		{
+			attack.amIgettingHitYAUA( 200, 0, 20, 2 );
+		}
 	}
 
 	public void DownBoyMethod()
 	{
-		if( stellarDriveFrames % 3 == 0 )
+		if( stellarDriveFrames % 10 == 0 )
 		{
-			attack.amIgettingHitDownBoy( -10, 0, 10, 2 );
+			//flipDamage is used here so the target is bounced back and forth
+			//within the whip zone
+			if( flipDamage == false )
+			{
+				attack.amIgettingHitDownBoy( 200, 0, 20, 2 );
+				flipDamage = true;
+			}
+			else if ( flipDamage == true )
+			{
+				attack.amIgettingHitDownBoy( -200, 0, 20, 2 );
+				flipDamage = false;
+			}
 		}
-
 	}
 
 	public void OmniBlastMethod()

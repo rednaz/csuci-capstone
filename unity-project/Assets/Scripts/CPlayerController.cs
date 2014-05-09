@@ -54,7 +54,7 @@ public class CPlayerController : PlayerController
 		HPgrabber = "HP2";
 		LKgrabber = "LK2";
 		HKgrabber = "HK2";
-		maxHealth = 1000;
+		maxHealth = 500;
 		health = maxHealth;
 		
 		//drive inputs
@@ -134,5 +134,11 @@ public class CPlayerController : PlayerController
 		OmniBlast = true;				OmniBarrage = true;
 
 		//GamePad.GetButtonDown(GamePad.Button.A, 1);
+	}
+
+	//set to true once the fight starts
+	public void fightOn2()
+	{
+		ReadySet = true;
 	}
 }

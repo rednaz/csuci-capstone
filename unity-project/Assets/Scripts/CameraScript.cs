@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System.Collections;
 
 public class CameraScript : MonoBehaviour 
@@ -39,7 +40,6 @@ public class CameraScript : MonoBehaviour
 		{
 			newX = newX;
 		}
-
 		transform.position = new Vector3( newX, 6.26934f, 0 );
 	}
 }
